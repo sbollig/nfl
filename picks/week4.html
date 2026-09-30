@@ -2,6 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Week 4 Board</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../board.css?v=15">
 <style>
 :root{
   --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
@@ -352,11 +353,14 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 
   <div id="windows"></div>
 
+  <div id="board"></div>
+<script src="../board.js?v=15"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"picks", week:4, ver:"v15", collapsible:true});</script>
   <footer class="foot">
     <p><b>How to read a card.</b> Lines are home-side, book sign: a negative number means the home team is favored by that much. <b>Mack</b> is his line after this week's verified injury hits. <b>Edge</b> is his line minus the market; he leans against the spread only at 2 points or more. The win % is his straight-up confidence.</p>
     <p><b>Key injuries</b> are the top three per team from the ESPN injury report (Out, IR, Doubtful, Questionable); the arrow shows the next healthy player at that spot on the ESPN depth chart. "Depth piece" means the injured player was not a starter. Fetched Sep 28. Picks were re-read against the replacements: none changed; the Buccaneers' rookie starter and Justin Jefferson's status are the two to watch.</p>
     <p><b>QB notes applied.</b> Bears: Williams out, Bagent starts. Buccaneers: Mayfield out, rookie Jalon Daniels starts. Giants: Dart on IR, Winston starts. Commanders: Daniels doubtful, Mariota likely. Bills: Allen expected to play.</p>
-    <p>Prepared by: Mack. Picks and finals are shared across devices (refreshes every 20 seconds); the ratings update uses the official finals. <a href="../index.html">Home</a> · <a href="../discuss.html?v=14">Discussion</a> · <a href="../power-rankings/">Rankings</a> · <a href="../power-rankings/season.html">Season projection</a></p>
+    <p>Prepared by: Mack. Picks and finals are shared across devices (refreshes every 20 seconds); the ratings update uses the official finals. <a href="../index.html">Home</a> · <a href="../discuss.html?v=15">Discussion</a> · <a href="../power-rankings/">Rankings</a> · <a href="../power-rankings/season.html">Season projection</a></p>
   </footer>
 </div>
 
@@ -463,7 +467,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 4, KEY = "wk04-cache", BOARD_VER = "v14";
+const WEEK = 4, KEY = "wk04-cache", BOARD_VER = "v15";
 const PEOPLE = ["Todd","Ryota","Scott"];
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }

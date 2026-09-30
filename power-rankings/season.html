@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Charted: How the 2026 NFL Season Projects After Week 3</title>
+<link rel="stylesheet" href="../board.css?v=15">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Encode+Sans+Semi+Condensed:wght@600;700&family=Noto+Serif:wght@400;700&family=Fira+Sans:wght@400;600;700&display=swap');
   :root{--bg:#FAFAFA;--fg:#252525;--muted:#5f6368;--rule:#e3e5e8;--card:#ffffff;--vc:#91b537;--vc-dark:#2a6338;--navy:#0f1e3a;--navy2:#16294d;--gold:#f6d55c}
@@ -91,6 +92,9 @@
 <p>The update factor behind these ratings is one tenth of each game's surprise, softened from one fifth at ΖΓ636's suggestion so no single week dominates the season view.</p>
 <p>Ratings are frozen at this week's values. A bad week counts for the whole season until the next update moves it, so treat the table as a snapshot that will be rerun each week.</p>
 
+<div id="board"></div>
+<script src="../board.js?v=15"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"season", week:4, ver:"v15", collapsible:true});</script>
 <footer>Sources: ΖΓ559's 2026 NFL Weekly Intel workbook (ratings updated for every final through Week {N} at one tenth of each surprise); ESPN scoreboard feed, schedule and division membership, retrieved {datetime.date.today().isoformat()}. Win probabilities from a normal scatter of 13.5 points around the projected margin, my parameter. Ratings frozen at their post-Week-{N} values; no injuries, byes or rest. For entertainment only; not betting advice. Static page, no tracking.</footer>
 </body>
 </html>
