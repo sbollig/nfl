@@ -31,7 +31,7 @@ footer a{color:var(--orange)}
 </div>
 <script src="board.js?v=15"></script>
 <script>
-const BOARD_VER = "v15", MACK_VER = "321";
+const BOARD_VER = "v16", MACK_VER = "321";
 Board.mount(document.getElementById("board"), {topic:"general", week:4, ver:BOARD_VER, chips:true, topicSelect:true, showTopic:true});
 document.getElementById("byline").textContent = "Prepared by: Mack (" + MACK_VER + ").";
 (async () => { try { const r = await fetch("version.txt?t=" + Date.now(), {cache:"no-store"}); const v = (await r.text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) location.replace(location.pathname + "?v=" + v); } catch(e){} })();

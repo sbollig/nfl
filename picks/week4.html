@@ -355,7 +355,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 
   <div id="board"></div>
 <script src="../board.js?v=15"></script>
-<script>Board.mount(document.getElementById("board"), {topic:"picks", week:4, ver:"v15", collapsible:true});</script>
+<script>Board.mount(document.getElementById("board"), {topic:"picks", week:4, ver:"v16", collapsible:true});</script>
   <footer class="foot">
     <p><b>How to read a card.</b> Lines are home-side, book sign: a negative number means the home team is favored by that much. <b>Mack</b> is his line after this week's verified injury hits. <b>Edge</b> is his line minus the market; he leans against the spread only at 2 points or more. The win % is his straight-up confidence.</p>
     <p><b>Key injuries</b> are the top three per team from the ESPN injury report (Out, IR, Doubtful, Questionable); the arrow shows the next healthy player at that spot on the ESPN depth chart. "Depth piece" means the injured player was not a starter. Fetched Sep 28. Picks were re-read against the replacements: none changed; the Buccaneers' rookie starter and Justin Jefferson's status are the two to watch.</p>
@@ -467,7 +467,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 4, KEY = "wk04-cache", BOARD_VER = "v15";
+const WEEK = 4, KEY = "wk04-cache", BOARD_VER = "v16";
 const PEOPLE = ["Todd","Ryota","Scott"];
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
