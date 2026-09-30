@@ -44,3 +44,14 @@
 .bd-reply{all:unset;font-size:14px;color:var(--bd-orange);cursor:pointer;justify-self:start;padding:10px 12px 10px 0;min-height:44px;font-weight:600;display:inline-flex;align-items:center}
 .bd-empty{color:var(--bd-muted);font-size:14px;margin:0}
 .bd-count{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--bd-muted);font-weight:600}
+
+/* Hybrid layout: right column on wide screens, thread below the page otherwise (Scott 9/30). main first in DOM. */
+.layout{max-width:1440px;margin:0 auto}
+.layout>main{min-width:0}
+.layout>aside.bd{margin-top:24px}
+@media (min-width:1200px){
+  .layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}
+  .layout>aside{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow-y:auto}
+  .layout>aside.bd{max-width:none;margin:0}
+  .layout>aside .bd-toggle{cursor:default}
+}

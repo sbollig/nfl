@@ -27,7 +27,9 @@ a.card .go{color:var(--orange);font-weight:600;font-size:14px}
 footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
 @media (prefers-reduced-motion:reduce){a.card{transition:none}}
 @media (max-width:420px){h1{font-size:40px}header img{width:64px;height:64px}}
-</style></head><body>
+</style>
+<link rel="stylesheet" href="board.css?v=17"></head><body>
+<div class="layout"><main>
 <div class="wrap">
   <header>
     <img src="https://a.espncdn.com/i/teamlogos/nfl/500/den.png" alt="">
@@ -46,21 +48,18 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
   <section>
     <div class="lbl">Pages</div>
     <div class="grid" style="margin-top:8px">
-      <a class="card" href="discuss.html?v=15"><h2>Discussion</h2><p>Week 4 talk — post, reply, argue.</p><span class="go">Open →</span></a>
-      <a class="card" href="picks/week4.html?v=15"><h2>Week 4 Picks</h2><p>Todd, Ryota and Scott pick winners; enter finals and the board grades everyone. Injuries and replacements per game.</p><span class="go">Open →</span></a>
+      <a class="card" href="discuss.html?v=17"><h2>Discussion</h2><p>Week 4 talk — post, reply, argue.</p><span class="go">Open →</span></a>
+      <a class="card" href="picks/week4.html?v=17"><h2>Week 4 Picks</h2><p>Todd, Ryota and Scott pick winners; enter finals and the board grades everyone. Injuries and replacements per game.</p><span class="go">Open →</span></a>
       <a class="card" href="power-rankings/"><h2>Power Rankings</h2><p>All 32 teams after Week 3, movers, the Broncos panel, injuries, and this week's spreads against the market.</p><span class="go">Open →</span></a>
       <a class="card" href="power-rankings/season.html"><h2>Season Projection</h2><p>Expected wins and division odds by team, rerun weekly from the ratings.</p><span class="go">Open →</span></a>
     </div>
   </section>
 
-  <section>
-    <div class="lbl">General thread</div>
-    <div id="board" class="bd-dark" style="margin-top:8px"></div>
-  </section>
-
   <footer>Prepared by Mack (321). Ratings and picks are Mack's; market lines from DraftKings via ESPN; logos from ESPN. Updated Sep 30, 2026.</footer>
 </div>
-<link rel="stylesheet" href="board.css?v=15">
-<script src="board.js?v=15"></script>
-<script>Board.mount(document.getElementById("board"), {topic:"general", week:4, ver:"v16", collapsible:true, label:"General (injuries, anything else)"});</script>
+</main>
+<aside id="board" class="bd-dark"></aside>
+</div>
+<script src="board.js?v=17"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"general", week:4, ver:"v17", collapsible:true, label:"General (injuries, anything else)"});</script>
 </body></html>
