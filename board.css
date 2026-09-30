@@ -55,3 +55,6 @@
   .layout>aside.bd{max-width:none;margin:0}
   .layout>aside .bd-toggle{cursor:default}
 }
+.bd-who{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px;min-height:44px}
+.bd-who b{color:var(--bd-navy)}
+.bd-link{all:unset;color:var(--bd-orange);cursor:pointer;font-weight:600;font-size:13px;min-height:44px;display:inline-flex;align-items:center;padding:0 4px}

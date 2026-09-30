@@ -1,6 +1,6 @@
 /* Discussion board component — Mack, 2026-09-30.
    Board.mount(el, {topic:"picks", week:4, ver:"v15", collapsible:true, chips:false, topicSelect:false, showTopic:false, label:"Week 4 picks"})
-   Reads the shared store (open); writes need the board key (asked once, kept in localStorage). All user text via textContent. */
+   Reads the shared store (open); writes need YOUR board key (asked once, kept in localStorage); the store maps key -> person (whoami), so there is no name picker. All user text via textContent. */
 (function () {
   const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
   const TOPICS = ["general", "picks", "rankings", "season", "injuries"];
@@ -53,7 +53,7 @@
     // composer
     const compose = h("div", "bd-compose");
     const row = h("div", "bd-row");
-    const whoL = h("label", "", "You"); const who = document.createElement("select"); [["", "Choose…"], ["Todd", "Todd"], ["Ryota", "Ryota"], ["Scott", "Scott"]].forEach(([v, t]) => { const o = h("option", "", t); o.value = v; who.appendChild(o); }); whoL.appendChild(who); row.appendChild(whoL);
+    const whoBox = h("span", "bd-who"); const whoName = h("b", "", ""); const whoChange = h("button", "bd-link", "change key"); whoChange.type = "button"; whoBox.appendChild(whoName); whoBox.appendChild(whoChange); row.appendChild(whoBox);
     const wkL = h("label", "", "Week"); const wk = document.createElement("select"); for (let i = 1; i <= 18; i++) { const o = h("option", "", "Week " + i); o.value = i; wk.appendChild(o); } wkL.appendChild(wk); row.appendChild(wkL);
     let topicSel = null;
     if (opts.topicSelect) { const tL = h("label", "", "About"); topicSel = document.createElement("select"); TOPICS.forEach(t => { const o = h("option", "", LABEL[t]); o.value = t; topicSel.appendChild(o); }); tL.appendChild(topicSel); row.appendChild(tL); }
@@ -67,8 +67,14 @@
     const status = h("div", "bd-status"); const dot = h("span", "bd-dot"); const msg = h("span", "", "Connecting to the board…"); status.appendChild(dot); status.appendChild(msg); body.appendChild(status);
     const list = h("div"); body.appendChild(list);
 
-    who.value = store.get("board-who"); wk.value = store.get("board-week") || String(opts.week); if (!wk.value) wk.value = String(opts.week);
-    who.addEventListener("change", () => store.set("board-who", who.value)); wk.addEventListener("change", () => store.set("board-week", wk.value));
+    wk.value = store.get("board-week") || String(opts.week); if (!wk.value) wk.value = String(opts.week);
+    wk.addEventListener("change", () => store.set("board-week", wk.value));
+    let me = ""; // person, confirmed by the store from the key
+    function showMe() { whoName.textContent = me ? "Posting as " + me : "Not signed in"; whoChange.textContent = me ? "not you? change key" : "enter key"; }
+    async function whoami(key) { const r = await fetch(STORE + "?board=1&whoami=1&key=" + encodeURIComponent(key) + "&t=" + Date.now(), { cache: "no-store" }); const j = await r.json(); if (!j.ok) { if (j.error === "bad key") { store.del("board-key"); me = ""; showMe(); } throw new Error(j.error === "bad key" ? "that board key was not accepted" : (j.error || "store error")); } me = j.person; store.set("board-who", me); showMe(); return me; }
+    async function askKey() { const key = (prompt("Your board key (from Scott or Mack; remembered on this device):") || "").trim(); if (!key) return ""; store.set("board-key", key); try { await whoami(key); } catch (e) { setDb("off", e.message + ". Try again."); return ""; } return key; }
+    whoChange.addEventListener("click", () => { store.del("board-key"); store.del("board-who"); me = ""; showMe(); askKey(); });
+    showMe(); if (store.get("board-key")) whoami(store.get("board-key")).catch(e => setDb("off", e.message + "."));
     if (topicSel) topicSel.value = filter === "all" ? "general" : filter;
     const grow = () => { ta.style.height = "auto"; ta.style.height = Math.min(ta.scrollHeight + 2, window.innerHeight * 0.4) + "px"; };
     ta.addEventListener("input", () => { cnt.textContent = ta.value.length + " / 600"; grow(); });
@@ -123,18 +129,17 @@
       } catch (e) { setDb("off", "Could not reach the board just now, showing what loaded last. Retrying in 20 s."); updateCount(); }
     }
     async function post() {
-      const person = who.value, text = ta.value.trim(), week = Number(wk.value), topic = topicSel ? topicSel.value : opts.topic;
-      if (!person) { setDb("off", "Pick your name first."); who.focus(); return; }
+      const text = ta.value.trim(), week = Number(wk.value), topic = topicSel ? topicSel.value : opts.topic;
       if (!text) { ta.focus(); return; }
-      if (!pendingId) pendingId = newId();
       let key = store.get("board-key");
-      if (!key) { key = (prompt("Board key (ask Scott or Mack once; it is remembered on this device):") || "").trim(); if (!key) return; store.set("board-key", key); }
+      if (!key || !me) { key = await askKey(); if (!key) return; }
+      if (!pendingId) pendingId = newId();
       postBtn.disabled = true; setDb("", "Posting…");
       try {
-        const u = STORE + "?board=1&key=" + encodeURIComponent(key) + "&id=" + encodeURIComponent(pendingId) + "&person=" + encodeURIComponent(person) + "&week=" + week + "&topic=" + encodeURIComponent(topic) + "&text=" + encodeURIComponent(text) + "&reply_to=" + encodeURIComponent(replyTo) + "&t=" + Date.now();
+        const u = STORE + "?board=1&key=" + encodeURIComponent(key) + "&id=" + encodeURIComponent(pendingId) + "&week=" + week + "&topic=" + encodeURIComponent(topic) + "&text=" + encodeURIComponent(text) + "&reply_to=" + encodeURIComponent(replyTo) + "&t=" + Date.now();
         const r = await fetch(u, { cache: "no-store" }); const j = await r.json();
         if (!j.ok) {
-          if (j.error === "bad key") { store.del("board-key"); throw new Error("that board key was not accepted, try again"); }
+          if (j.error === "bad key") { store.del("board-key"); me = ""; showMe(); throw new Error("that board key was not accepted, try again"); }
           if (j.error === "slow down") throw new Error("the board is busy, wait a minute");
           if (j.error === "links only") throw new Error("add a few words with the link");
           throw new Error(j.error || "store error");
