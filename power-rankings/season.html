@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Charted: How the 2026 NFL Season Projects After Week 3</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Encode+Sans+Semi+Condensed:wght@600;700&family=Noto+Serif:wght@400;700&family=Fira+Sans:wght@400;600;700&display=swap');
+  :root{--bg:#FAFAFA;--fg:#252525;--muted:#5f6368;--rule:#e3e5e8;--card:#ffffff;--vc:#91b537;--vc-dark:#2a6338;--navy:#0f1e3a;--navy2:#16294d;--gold:#f6d55c}
+  *{box-sizing:border-box}
+  body{margin:0 auto;max-width:1400px;background:var(--bg);color:var(--fg);font:17px/1.6 'Noto Serif',Georgia,serif;padding:.8rem 1.4rem 1.4rem}
+  h1{font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:2.9rem;line-height:1.1;margin:.15em 0 .25em;letter-spacing:-.01em}
+  @media (max-width:700px){h1{font-size:1.8rem}}
+  h1 .pre{color:var(--vc-dark)}
+  h2,h3{font-family:'Encode Sans Semi Condensed','Fira Sans',system-ui,sans-serif;font-weight:700}
+  h2{font-size:1.45rem;margin:1.4em 0 .4em}
+  .byline{font-family:'Fira Sans',system-ui,sans-serif;font-size:.95rem;color:var(--muted);margin:0 0 1.1em;border-bottom:1px solid var(--rule);padding-bottom:.6em}
+  .byline b{color:var(--fg);font-weight:600}
+  a{color:var(--fg);text-decoration:none;box-shadow:inset 0 -4px 0 var(--vc)}
+  .lede{font-size:1.05em}
+  .takeaways{background:#f8f9fa;border-left:4px solid var(--vc-dark);padding:15px 18px;border-radius:5px;margin:1em 0 1.4em}
+  .takeaways h3{color:var(--vc-dark);margin:0 0 .4em;font-size:1.15rem}
+  .takeaways ul{margin:0;padding-left:1.2em}
+  .viz{background:var(--navy);color:#f2f4f8;border-radius:10px;padding:1.4rem 1.6rem 1rem;margin:.6em 0 1.2em;font-family:'Fira Sans',system-ui,sans-serif}
+  .viz .vt{font-family:'Encode Sans Semi Condensed',sans-serif;font-weight:700;font-size:1.9rem;line-height:1.05;margin:0}
+  .viz .vd{color:#b9c3d6;font-size:.95rem;margin:.3em 0 1em}
+  .vl{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;font-size:.85rem;color:#b9c3d6;margin-bottom:1em;align-items:center}
+  .vl i{display:inline-block;width:2.2em;height:.8em;border-radius:2px;vertical-align:-.1em;margin-right:.35em;background:linear-gradient(90deg,#3d7fbf,#9fc7e8)}
+  .vl i.g{background:linear-gradient(90deg,#e07b39,var(--gold))}
+  .vl u{display:inline-block;width:0;height:.9em;border-left:1px dashed #8f9bb5;vertical-align:-.15em;margin-right:.4em}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem 1.6rem}
+  @media (max-width:900px){.grid{grid-template-columns:1fr}}
+  .divp{background:var(--navy2);border:1px solid #2f4470;border-radius:10px;padding:.8rem 1rem .6rem}
+  .divp h3{margin:0 0 .5em;font-size:1.05rem;color:var(--gold);letter-spacing:.06em;text-transform:uppercase}
+  .rows{display:grid;grid-template-columns:9.5em 1fr 4.6em 3.4em;gap:.4em .7em;align-items:center;font-size:.95rem}
+  .tm{font-weight:600;white-space:nowrap}
+  .tm small{color:#8f9bb5;font-weight:400;margin-left:.45em}
+  .tm.bron{color:#ffb84d}
+  .bar{position:relative;height:1em;background:#1b2f56;border-radius:2px}
+  .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:2px;background:linear-gradient(90deg,#3d7fbf,#9fc7e8)}
+  .bar.lead i{background:linear-gradient(90deg,#e07b39,var(--gold))}
+  .bar u{position:absolute;top:-2px;bottom:-2px;border-left:1px dashed #8f9bb5}
+  .v{font-weight:700;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .v small{color:#8f9bb5;font-weight:400}
+  .v.lead{color:var(--gold)}
+  .fv{color:#b9c3d6;text-align:right;font-size:.85rem;font-variant-numeric:tabular-nums}
+  .win{margin:.6em 0 0;font-size:.85rem;color:#b9c3d6}
+  .win b{color:#fff}
+  .hdr{display:grid;grid-template-columns:9.5em 1fr 4.6em 3.4em;gap:.4em .7em;font-size:.72rem;color:#8f9bb5;text-transform:uppercase;letter-spacing:.08em;padding:0 1rem .3em;margin-bottom:.2em}
+  .hdr span:nth-child(3),.hdr span:nth-child(4){text-align:right}
+  .src{margin-top:1em;padding-top:.6em;border-top:1px solid #2f4470;font-size:.78rem;color:#b9c3d6;font-style:italic;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4em}
+  .src b{font-style:normal;font-family:'Encode Sans Semi Condensed',sans-serif;letter-spacing:.1em;color:#fff}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+  @media (max-width:700px){.two{grid-template-columns:1fr}}
+  .two ol{margin:.2em 0 0;padding-left:1.4em}
+  .two li.bron{color:#c2410c;font-weight:600}
+  .two li b{font-family:'Fira Sans',system-ui,sans-serif;font-variant-numeric:tabular-nums;margin-left:.3em}
+  footer{margin-top:1.2rem;font-size:.85rem;color:var(--muted);border-top:1px solid var(--rule);padding-top:.4rem;font-style:italic}
+</style>
+<!-- STAMP-CSS --><style>.stamp{font-family:'Fira Sans',system-ui,sans-serif;font-size:.85rem;color:var(--muted,#5f6368);margin:-.6em 0 1em}#band .stamp{color:#1b2a5a;margin:.15em 0 0}</style><!-- /STAMP-CSS -->
+</head>
+<body>
+<h1><span class="pre">Charted:</span> How the 2026 NFL Season Projects After Week 3</h1>
+<p class="byline">By <b>Mack</b> (Analysis); <b>ΖΓ636</b> (Adjustments) &nbsp;·&nbsp; September 29, 2026 &nbsp;·&nbsp; companion to <a href="index.html">the power rankings</a> &nbsp;·&nbsp; <a href="../discuss.html">Discussion</a></p>
+<!-- STAMP --><p class="stamp">Published <b>Sep 16, 2026, 10:23 AM PT</b> &nbsp;·&nbsp; Updated <b>Sep 29, 2026, 12:26 PM PT</b></p><!-- /STAMP -->
+<p class="lede">Take ΖΓ559's ratings as they stand after Week 3, run every one of the remaining games through his own spread formula, turn each projected margin into a win probability, and add them up. What comes out is an expected record for all 32 teams and a projected winner in each division.</p>
+
+<section class="viz" aria-label="Season projection by division">
+  <p class="vt">Expected Wins by Division, Weeks 2–18</p>
+  <p class="vd">Bar = expected wins out of 17 (wins so far plus the sum of win probabilities). Gold = projected division winner. Dashed line = 8.5, a .500 season. Right column = record if every favorite wins.</p>
+  <div class="vl"><span><i class="g"></i>projected winner</span><span><i></i>rest of division</span><span><u></u>8.5 wins</span></div>
+  <div class="hdr"><span>Team · now</span><span>Expected wins</span><span>Exp W-L</span><span>Fav</span></div>
+  <div class="grid"><section class="divp"><h3>AFC East</h3><div class="rows"><div class="tm">Bills<small>3-0</small></div><div class="bar lead"><i style="width:71.5%"></i><u style="left:50.0%"></u></div><div class="v lead">12.2<small>-4.8</small></div><div class="fv">17-0</div><div class="tm">Patriots<small>1-2</small></div><div class="bar"><i style="width:47.2%"></i><u style="left:50.0%"></u></div><div class="v">8.0<small>-9.0</small></div><div class="fv">9-8</div><div class="tm">Jets<small>1-2</small></div><div class="bar"><i style="width:36.9%"></i><u style="left:50.0%"></u></div><div class="v">6.3<small>-10.7</small></div><div class="fv">4-13</div><div class="tm">Dolphins<small>0-3</small></div><div class="bar"><i style="width:23.9%"></i><u style="left:50.0%"></u></div><div class="v">4.1<small>-12.9</small></div><div class="fv">0-17</div></div><p class="win">Projected winner <b>Bills</b>, 4.1 wins clear</p></section><section class="divp"><h3>AFC North</h3><div class="rows"><div class="tm">Ravens<small>2-1</small></div><div class="bar lead"><i style="width:64.9%"></i><u style="left:50.0%"></u></div><div class="v lead">11.0<small>-6.0</small></div><div class="fv">14-3</div><div class="tm">Bengals<small>2-1</small></div><div class="bar"><i style="width:63.2%"></i><u style="left:50.0%"></u></div><div class="v">10.8<small>-6.2</small></div><div class="fv">14-3</div><div class="tm">Steelers<small>2-1</small></div><div class="bar"><i style="width:52.8%"></i><u style="left:50.0%"></u></div><div class="v">9.0<small>-8.0</small></div><div class="fv">10-7</div><div class="tm">Browns<small>2-1</small></div><div class="bar"><i style="width:39.5%"></i><u style="left:50.0%"></u></div><div class="v">6.7<small>-10.3</small></div><div class="fv">2-15</div></div><p class="win">Projected winner <b>Ravens</b>, 0.3 wins clear</p></section><section class="divp"><h3>AFC South</h3><div class="rows"><div class="tm">Jaguars<small>2-1</small></div><div class="bar lead"><i style="width:60.7%"></i><u style="left:50.0%"></u></div><div class="v lead">10.3<small>-6.7</small></div><div class="fv">13-4</div><div class="tm">Colts<small>1-2</small></div><div class="bar"><i style="width:45.1%"></i><u style="left:50.0%"></u></div><div class="v">7.7<small>-9.3</small></div><div class="fv">6-11</div><div class="tm">Texans<small>0-3</small></div><div class="bar"><i style="width:43.2%"></i><u style="left:50.0%"></u></div><div class="v">7.3<small>-9.7</small></div><div class="fv">7-10</div><div class="tm">Titans<small>0-3</small></div><div class="bar"><i style="width:26.5%"></i><u style="left:50.0%"></u></div><div class="v">4.5<small>-12.5</small></div><div class="fv">1-16</div></div><p class="win">Projected winner <b>Jaguars</b>, 2.7 wins clear</p></section><section class="divp"><h3>AFC West</h3><div class="rows"><div class="tm">Chiefs<small>3-0</small></div><div class="bar lead"><i style="width:69.8%"></i><u style="left:50.0%"></u></div><div class="v lead">11.9<small>-5.1</small></div><div class="fv">14-3</div><div class="tm bron">Broncos<small>2-1</small></div><div class="bar"><i style="width:61.1%"></i><u style="left:50.0%"></u></div><div class="v">10.4<small>-6.6</small></div><div class="fv">13-4</div><div class="tm">Raiders<small>3-0</small></div><div class="bar"><i style="width:56.5%"></i><u style="left:50.0%"></u></div><div class="v">9.6<small>-7.4</small></div><div class="fv">8-9</div><div class="tm">Chargers<small>0-3</small></div><div class="bar"><i style="width:32.8%"></i><u style="left:50.0%"></u></div><div class="v">5.6<small>-11.4</small></div><div class="fv">2-15</div></div><p class="win">Projected winner <b>Chiefs</b>, 1.5 wins clear</p></section><section class="divp"><h3>NFC East</h3><div class="rows"><div class="tm">Eagles<small>2-1</small></div><div class="bar lead"><i style="width:59.2%"></i><u style="left:50.0%"></u></div><div class="v lead">10.1<small>-6.9</small></div><div class="fv">13-4</div><div class="tm">Commanders<small>1-2</small></div><div class="bar"><i style="width:48.5%"></i><u style="left:50.0%"></u></div><div class="v">8.2<small>-8.8</small></div><div class="fv">9-8</div><div class="tm">Cowboys<small>1-2</small></div><div class="bar"><i style="width:47.5%"></i><u style="left:50.0%"></u></div><div class="v">8.1<small>-8.9</small></div><div class="fv">6-11</div><div class="tm">Giants<small>2-1</small></div><div class="bar"><i style="width:44.3%"></i><u style="left:50.0%"></u></div><div class="v">7.5<small>-9.5</small></div><div class="fv">5-12</div></div><p class="win">Projected winner <b>Eagles</b>, 1.8 wins clear</p></section><section class="divp"><h3>NFC North</h3><div class="rows"><div class="tm">Bears<small>2-1</small></div><div class="bar lead"><i style="width:64.8%"></i><u style="left:50.0%"></u></div><div class="v lead">11.0<small>-6.0</small></div><div class="fv">14-3</div><div class="tm">Vikings<small>3-0</small></div><div class="bar"><i style="width:64.4%"></i><u style="left:50.0%"></u></div><div class="v">10.9<small>-6.1</small></div><div class="fv">12-5</div><div class="tm">Lions<small>2-1</small></div><div class="bar"><i style="width:59.6%"></i><u style="left:50.0%"></u></div><div class="v">10.1<small>-6.9</small></div><div class="fv">13-4</div><div class="tm">Packers<small>1-2</small></div><div class="bar"><i style="width:44.3%"></i><u style="left:50.0%"></u></div><div class="v">7.5<small>-9.5</small></div><div class="fv">7-10</div></div><p class="win">Projected winner <b>Bears</b>, 0.1 wins clear</p></section><section class="divp"><h3>NFC South</h3><div class="rows"><div class="tm">Saints<small>1-2</small></div><div class="bar lead"><i style="width:44.2%"></i><u style="left:50.0%"></u></div><div class="v lead">7.5<small>-9.5</small></div><div class="fv">6-11</div><div class="tm">Falcons<small>1-2</small></div><div class="bar"><i style="width:41.5%"></i><u style="left:50.0%"></u></div><div class="v">7.1<small>-9.9</small></div><div class="fv">4-13</div><div class="tm">Panthers<small>1-2</small></div><div class="bar"><i style="width:38.9%"></i><u style="left:50.0%"></u></div><div class="v">6.6<small>-10.4</small></div><div class="fv">4-13</div><div class="tm">Buccaneers<small>0-3</small></div><div class="bar"><i style="width:36.1%"></i><u style="left:50.0%"></u></div><div class="v">6.1<small>-10.9</small></div><div class="fv">4-13</div></div><p class="win">Projected winner <b>Saints</b>, 0.5 wins clear</p></section><section class="divp"><h3>NFC West</h3><div class="rows"><div class="tm">49ers<small>3-0</small></div><div class="bar lead"><i style="width:62.6%"></i><u style="left:50.0%"></u></div><div class="v lead">10.7<small>-6.3</small></div><div class="fv">14-3</div><div class="tm">Seahawks<small>2-1</small></div><div class="bar"><i style="width:59.8%"></i><u style="left:50.0%"></u></div><div class="v">10.2<small>-6.8</small></div><div class="fv">12-5</div><div class="tm">Rams<small>1-2</small></div><div class="bar"><i style="width:55.9%"></i><u style="left:50.0%"></u></div><div class="v">9.5<small>-7.5</small></div><div class="fv">13-4</div><div class="tm">Cardinals<small>1-2</small></div><div class="bar"><i style="width:32.8%"></i><u style="left:50.0%"></u></div><div class="v">5.6<small>-11.4</small></div><div class="fv">2-15</div></div><p class="win">Projected winner <b>49ers</b>, 0.5 wins clear</p></section></div>
+  <p class="src"><b>MACK · ANALYSIS</b><span>Sources: ΖΓ559's 2026 NFL Weekly Intel workbook (ratings updated for every final through Week {N} at one tenth of each surprise); ESPN scoreboard feed, schedule and division membership, retrieved {datetime.date.today().isoformat()}. Win probabilities from a normal scatter of 13.5 points around the projected margin, my parameter. Ratings frozen at their post-Week-{N} values; no injuries, byes or rest. For entertainment only; not betting advice. Static page, no tracking.</span></p>
+</section>
+
+<h2>Who is in control, and who is in a coin flip?</h2>
+<div class="takeaways"><h3>Key Takeaways</h3><ul>
+<li>3 divisions have a clear favorite: Bills (12.2 expected wins), Jaguars (10.3 expected wins), Eagles (10.1 expected wins), each at least 1.5 wins clear of second.</li>
+<li>5 are open: Bears lead the NFC North by 0.1, Ravens lead the AFC North by 0.3, Saints lead the NFC South by 0.5, 49ers lead the NFC West by 0.5, Chiefs lead the AFC West by 1.5.</li>
+<li>The Broncos project to 10.4 wins, second in the AFC West, with the 23th-hardest remaining schedule in the league.</li>
+</ul></div>
+
+<h2>Remaining schedule strength</h2>
+<p>Average rating of each team's remaining opponents, adjusted for where the game is played. Positive means a harder road.</p>
+<div class="two"><div><h3>Ten hardest</h3><ol><li>Chargers <b>+2.5</b></li><li>Cardinals <b>+1.8</b></li><li>Dolphins <b>+1.7</b></li><li>49ers <b>+1.5</b></li><li>Raiders <b>+1.5</b></li><li>Titans <b>+1.5</b></li><li>Rams <b>+1.4</b></li><li>Chiefs <b>+1.2</b></li><li>Seahawks <b>+1.2</b></li><li>Panthers <b>+0.9</b></li></ol></div><div><h3>Ten easiest</h3><ol><li>Saints <b>−1.2</b></li><li>Bengals <b>−0.8</b></li><li>Lions <b>−0.6</b></li><li>Ravens <b>−0.5</b></li><li>Colts <b>−0.2</b></li><li>Eagles <b>−0.1</b></li><li>Texans <b>−0.1</b></li><li>Vikings <b>−0.1</b></li><li>Steelers <b>+0.1</b></li><li class=bron>Broncos <b>+0.1</b></li></ol></div></div>
+<p>The whole league sits within 3.7 points from hardest to easiest, less than a strong team's home-field edge, so schedule shifts a projection by a game or so, not a tier. Chargers carry the hardest road; Saints pair the softest slate with the top rating, which is why they lead the projection. The Broncos are 10th-easiest, part of why they project near .500 despite the Week 1 hit.</p>
+
+<h2>How the projection works</h2>
+<p>For each remaining game the projected home margin is ΖΓ559's formula: home-field advantage plus the difference in ratings, with a flat 0.2 at the eight neutral-site games. That margin becomes a win probability by assuming results scatter around the projection with a spread of 13.5 points, which is my parameter and not part of his sheet. A team favored by 3 wins about 59% of the time; favored by 10, about 77%. Expected wins add those probabilities to the wins already in hand. The favorite column is what the sheet would say if it picked every game outright, and the gap between the two columns shows how many coin flips a team faces.</p>
+<p>The update factor behind these ratings is one tenth of each game's surprise, softened from one fifth at ΖΓ636's suggestion so no single week dominates the season view.</p>
+<p>Ratings are frozen at this week's values. A bad week counts for the whole season until the next update moves it, so treat the table as a snapshot that will be rerun each week.</p>
+
+<footer>Sources: ΖΓ559's 2026 NFL Weekly Intel workbook (ratings updated for every final through Week {N} at one tenth of each surprise); ESPN scoreboard feed, schedule and division membership, retrieved {datetime.date.today().isoformat()}. Win probabilities from a normal scatter of 13.5 points around the projected margin, my parameter. Ratings frozen at their post-Week-{N} values; no injuries, byes or rest. For entertainment only; not betting advice. Static page, no tracking.</footer>
+</body>
+</html>

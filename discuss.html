@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Discussion</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
+  --navy:#0b2340;--orange:#e4521c;--orange-soft:#fbe9e0;--good:#2f7a4a;--bad:#b23a2e;--field:#eef0e8;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  color-scheme:dark;--paper:#141a22;--card:#1d2530;--ink:#eef0f3;--muted:#98a3b3;--line:#333d4a;
+  --navy:#e9eef7;--orange:#ff7a3d;--orange-soft:#3b2317;--good:#6fcf8c;--bad:#f28b7d;--field:#222b36;}}
+:root[data-theme="dark"]{
+  color-scheme:dark;--paper:#141a22;--card:#1d2530;--ink:#eef0f3;--muted:#98a3b3;--line:#333d4a;
+  --navy:#e9eef7;--orange:#ff7a3d;--orange-soft:#3b2317;--good:#6fcf8c;--bad:#f28b7d;--field:#222b36;}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:Barlow,system-ui,sans-serif;font-size:16px;line-height:1.45;margin:0;padding-inline:16px;padding-block:20px 48px}
+.wrap{max-width:760px;margin:0 auto;display:grid;gap:20px}
+h1,h2{font-family:"Barlow Condensed",Barlow,system-ui,sans-serif;margin:0;text-wrap:balance}
+h1{font-size:44px;font-weight:700;line-height:1;letter-spacing:.01em;color:var(--navy)}
+h1 span{color:var(--orange)}
+.sub{color:var(--muted);margin-top:6px;font-size:14px}
+.lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+header{border-bottom:2px solid var(--navy);padding-bottom:12px}
+.compose{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:14px;display:grid;gap:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row label{display:grid;gap:3px;font-size:13px;color:var(--muted)}
+select,textarea,button{font:inherit;color:var(--ink);background:var(--field);border:1px solid var(--line);border-radius:5px;padding:8px 10px}
+select{min-width:110px}
+textarea{width:100%;min-height:84px;resize:vertical}
+button{background:var(--orange);color:#fff;border-color:var(--orange);font-weight:600;padding:10px 18px;cursor:pointer;min-height:44px}
+button:disabled{opacity:.5;cursor:default}
+.replying{font-size:13px;color:var(--muted);display:none;gap:8px;align-items:center}
+.replying.on{display:flex}
+.replying a{color:var(--orange);cursor:pointer}
+.status{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted);display:inline-block}
+.dot.on{background:var(--good)}.dot.off{background:var(--bad)}
+h2{font-size:22px;font-weight:600;color:var(--navy);border-bottom:2px solid var(--navy);padding-bottom:4px;display:flex;justify-content:space-between;align-items:baseline}
+h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
+.week{display:grid;gap:10px}
+.post{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:6px;padding:10px 14px;display:grid;gap:6px}
+.post.Todd{border-left-color:#2f7a4a}.post.Ryota{border-left-color:#2a6db0}.post.Scott{border-left-color:#8a7a2a}
+.post.mack{border-left-color:var(--orange);background:var(--orange-soft)}
+.meta{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.meta b{font-family:"Barlow Condensed";font-size:18px;color:var(--navy)}
+.badge{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;background:var(--orange);color:#fff;border-radius:3px;padding:2px 6px}
+.quote{font-size:13px;color:var(--muted);border-left:2px solid var(--line);padding-left:8px;white-space:pre-wrap;overflow-wrap:anywhere}
+.text{white-space:pre-wrap;overflow-wrap:anywhere}
+.reply{font-size:14px;color:var(--orange);cursor:pointer;justify-self:start;background:none;border:none;padding:10px 12px 10px 0;min-height:44px;font-weight:600}
+.post.gone{opacity:.45}
+.empty{color:var(--muted);font-size:14px}
+footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
+footer a{color:var(--orange)}
+@media (max-width:420px){h1{font-size:36px}}
+</style></head><body>
+<div class="wrap">
+  <header>
+    <div class="lbl">NFL 2026 · Talk</div>
+    <h1>Discussion <span>Board</span></h1>
+    <div class="sub">Pick your name, pick the week, say your piece. Everyone sees the same thread; Mack answers here too. Tap Reply on a post to answer it.</div>
+  </header>
+
+  <div class="compose">
+    <div class="row">
+      <label>You <select id="who"><option value="">Choose…</option><option>Todd</option><option>Ryota</option><option>Scott</option></select></label>
+      <label>Week <select id="wk"></select></label>
+    </div>
+    <div class="replying" id="replying"><span id="replymsg"></span><a id="cancelreply">cancel</a></div>
+    <textarea id="text" maxlength="600" placeholder="What do you see this week?"></textarea>
+    <div class="row" style="justify-content:space-between">
+      <span class="lbl" id="count">0 / 600</span>
+      <button id="post">Post</button>
+    </div>
+  </div>
+
+  <div class="status"><span class="dot" id="dbdot"></span><span id="dbmsg">Connecting to the board…</span></div>
+
+  <div id="weeks"></div>
+
+  <footer><span id="byline">Prepared by: Mack.</span> The thread refreshes every 20 seconds. <a href="index.html">Home</a> · <a href="picks/week4.html">Week 4 Board</a> · <a href="power-rankings/">Rankings</a> · <a href="power-rankings/season.html">Season projection</a></footer>
+</div>
+<script>
+const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
+const BOARD_VER = "v14", DEFAULT_WEEK = 4, MACK_VER = "321";
+const $ = id => document.getElementById(id);
+let posts = [], replyTo = "", pendingId = "";
+function newId(){ return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+
+// name + week remembered per device
+const wk = $("wk"); for (let i = 1; i <= 18; i++) { const o = document.createElement("option"); o.value = i; o.textContent = "Week " + i; wk.appendChild(o); }
+try { $("who").value = localStorage.getItem("board-who") || ""; } catch(e){}
+try { wk.value = localStorage.getItem("board-week") || DEFAULT_WEEK; } catch(e){ wk.value = DEFAULT_WEEK; }
+if (!wk.value) wk.value = DEFAULT_WEEK;
+$("who").addEventListener("change", () => { try { localStorage.setItem("board-who", $("who").value); } catch(e){} });
+wk.addEventListener("change", () => { try { localStorage.setItem("board-week", wk.value); } catch(e){} });
+$("text").addEventListener("input", () => { $("count").textContent = $("text").value.length + " / 600"; });
+
+function setDb(state, msg){ $("dbdot").className = "dot " + state; $("dbmsg").textContent = msg + " Board " + BOARD_VER + "."; }
+function fmt(iso){ const d = new Date(iso); return d.toLocaleDateString([], {weekday:"short", month:"short", day:"numeric"}) + " " + d.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}); }
+
+const rendered = {}; // id -> article element
+function weekSection(w){
+  const host = $("weeks"); let sec = host.querySelector('section[data-week="' + w + '"]');
+  if (sec) return sec;
+  sec = document.createElement("section"); sec.className = "week"; sec.dataset.week = w;
+  const h = document.createElement("h2"); h.textContent = "Week " + w; const n = document.createElement("small"); n.className = "cnt"; h.appendChild(n); sec.appendChild(h);
+  const after = [...host.querySelectorAll("section.week")].find(x => Number(x.dataset.week) < w);   // weeks newest first
+  host.insertBefore(sec, after || null);
+  return sec;
+}
+function makeArticle(p, byId){
+  const el = document.createElement("article"); el.className = "post " + (p.person === "Mack" ? "mack" : p.person); el.id = p.id; el.dataset.t = p.t;
+  const meta = document.createElement("div"); meta.className = "meta";
+  const who = document.createElement("b"); who.textContent = p.person; meta.appendChild(who);
+  if (p.person === "Mack") { const b = document.createElement("span"); b.className = "badge"; b.textContent = "Mack"; meta.appendChild(b); }
+  const t = document.createElement("span"); t.textContent = fmt(p.t); meta.appendChild(t);
+  el.appendChild(meta);
+  if (p.reply_to && byId[p.reply_to]) { const q = byId[p.reply_to]; const qd = document.createElement("div"); qd.className = "quote"; qd.textContent = q.person + ": " + (q.text.length > 140 ? q.text.slice(0,140) + "…" : q.text); el.appendChild(qd); }
+  const tx = document.createElement("div"); tx.className = "text"; tx.textContent = p.text; el.appendChild(tx);
+  const r = document.createElement("button"); r.className = "reply"; r.type = "button"; r.textContent = "Reply"; r.addEventListener("click", () => startReply(p)); el.appendChild(r);
+  return el;
+}
+function render(){
+  const host = $("weeks");
+  const empty = host.querySelector("p.empty"); if (empty) empty.remove();
+  if (!posts.length && !Object.keys(rendered).length) { const p = document.createElement("p"); p.className = "empty"; p.textContent = "No posts yet. Start the week."; host.appendChild(p); return; }
+  const byId = {}; posts.forEach(p => byId[p.id] = p);
+  // remove posts the server no longer has
+  Object.keys(rendered).forEach(id => { if (!byId[id]) { rendered[id].remove(); delete rendered[id]; } });
+  // add or update
+  posts.forEach(p => {
+    const cur = rendered[p.id];
+    if (cur) { const tx = cur.querySelector(".text"); if (tx.textContent !== p.text) tx.textContent = p.text; return; }
+    const sec = weekSection(p.week), el = makeArticle(p, byId);
+    const before = [...sec.querySelectorAll("article")].find(a => a.dataset.t < p.t);   // newest first inside a week
+    sec.insertBefore(el, before || null); rendered[p.id] = el;
+  });
+  host.querySelectorAll("section.week").forEach(sec => { const n = sec.querySelectorAll("article").length; if (!n) { sec.remove(); return; } sec.querySelector(".cnt").textContent = n + (n === 1 ? " post" : " posts"); });
+}
+function startReply(p){ replyTo = p.id; $("replymsg").textContent = "Replying to " + p.person + ": " + (p.text.length > 60 ? p.text.slice(0,60) + "…" : p.text); $("replying").classList.add("on"); wk.value = p.week; document.querySelector(".compose").scrollIntoView({behavior:"smooth", block:"start"}); setTimeout(() => { try { $("text").focus({preventScroll:true}); } catch(e) { $("text").focus(); } }, 450); }
+$("cancelreply").addEventListener("click", () => { replyTo = ""; $("replying").classList.remove("on"); });
+
+async function load(quiet){
+  try {
+    const r = await fetch(STORE + "?board=1&t=" + Date.now(), {cache:"no-store"}); const j = await r.json();
+    if (!j.ok) throw new Error(j.error || "store error");
+    posts = j.posts || []; render();
+    if (!quiet) setDb("on", "Connected. Same thread on every device.");
+  } catch(e) { setDb("off", "Could not reach the board just now, showing what loaded last. Retrying in 20 s."); }
+}
+async function post(){
+  const who = $("who").value, text = $("text").value.trim(), week = Number(wk.value);
+  if (!who) { setDb("off", "Pick your name first."); $("who").focus(); return; }
+  if (!text) { $("text").focus(); return; }
+  if (!pendingId) pendingId = newId();   // same id on retry, so a timeout cannot double-post
+  let key = ""; try { key = localStorage.getItem("board-key") || ""; } catch(e){}
+  if (!key) { key = (prompt("Board key (ask Scott or Mack once; it is remembered on this device):") || "").trim(); if (!key) return; try { localStorage.setItem("board-key", key); } catch(e){} }
+  $("post").disabled = true; setDb("", "Posting…");
+  try {
+    const u = STORE + "?board=1&key=" + encodeURIComponent(key) + "&id=" + encodeURIComponent(pendingId) + "&person=" + encodeURIComponent(who) + "&week=" + week + "&text=" + encodeURIComponent(text) + "&reply_to=" + encodeURIComponent(replyTo) + "&t=" + Date.now();
+    const r = await fetch(u, {cache:"no-store"}); const j = await r.json();
+    if (!j.ok) {
+      if (j.error === "bad key") { try { localStorage.removeItem("board-key"); } catch(e){} throw new Error("that board key was not accepted, try again"); }
+      if (j.error === "slow down") throw new Error("the board is busy, wait a minute");
+      throw new Error(j.error || "store error");
+    }
+    pendingId = ""; $("text").value = ""; $("count").textContent = "0 / 600"; replyTo = ""; $("replying").classList.remove("on");
+    await load(true); setDb("on", "Posted at " + new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}) + ".");
+  } catch(e) { setDb("off", "Post did not save (" + (e && e.message ? e.message : e) + "). Your text is still in the box, try again."); }
+  $("post").disabled = false;
+}
+$("post").addEventListener("click", post);
+$("byline").textContent = "Prepared by: Mack (" + MACK_VER + ").";
+load(false); setInterval(() => load(true), 20000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) load(true); });
+(async () => { try { const r = await fetch("version.txt?t=" + Date.now(), {cache:"no-store"}); const v = (await r.text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) location.replace(location.pathname + "?v=" + v); } catch(e){} })();
+</script>
+</body></html>

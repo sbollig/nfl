@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- TITLE --><title>Ranked: Mack's Analysis of ΖΓ559's NFL Power Rankings, After Week 3</title><!-- /TITLE -->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Encode+Sans+Semi+Condensed:wght@600;700&family=Noto+Serif:wght@400;700&family=Fira+Sans:wght@400;600;700&display=swap');
+  :root{
+    --bg:#fbfaf8; --fg:#1c1c1e; --muted:#5b5b62;
+    --rule:#dcd8d0; --card:#ffffff;
+    --input:#2a6f8f; --formula:#c9711d; --output:#1f6b3a; --dead:#9b2d2d; --mack:#5a4fa8; --seed:#b08a1e;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#16161a; --fg:#eceaf0; --muted:#a5a3ad;
+      --rule:#35353d; --card:#1e1e24;
+      --input:#7fc3e0; --formula:#f0954a; --output:#7fd6a0; --dead:#ff9c9c; --mack:#b3aaf3; --seed:#e0c05a;
+    }
+  }
+  *{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{margin:0;background:var(--bg);color:var(--fg);
+    font:18px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;padding:.8rem 1.4rem 1.4rem;max-width:1400px;margin:0 auto}
+  .kicker{font-size:.8em;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  h1{font-size:1.8em;line-height:1.15;margin:.1em 0 .15em}
+  h2{font-size:1.3em;margin:1.1em 0 .4em;border-bottom:1px solid var(--rule);padding-bottom:.2em}
+  .lede{color:var(--muted);margin:0 0 .7em}
+  .grid{display:grid;grid-template-columns:1fr;gap:1.2rem}
+  @media (max-width:820px){.grid{grid-template-columns:1fr}}
+  .panel{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:.7rem .9rem}
+  svg{width:100%;max-width:1000px;height:auto;display:block;margin:0 auto}
+  .box{stroke-width:1.4;rx:6}
+  .in{fill:color-mix(in srgb,var(--input) 14%,var(--card));stroke:var(--input)}
+  .fx{fill:color-mix(in srgb,var(--formula) 14%,var(--card));stroke:var(--formula)}
+  .out{fill:color-mix(in srgb,var(--output) 16%,var(--card));stroke:var(--output)}
+  .sd{fill:color-mix(in srgb,var(--seed) 16%,var(--card));stroke:var(--seed);stroke-dasharray:4 3}
+  .dd{fill:color-mix(in srgb,var(--dead) 10%,var(--card));stroke:var(--dead);stroke-dasharray:2 3}
+  .mk{fill:color-mix(in srgb,var(--mack) 14%,var(--card));stroke:var(--mack)}
+  .t{font-size:10.5px;fill:var(--fg);font-weight:600}
+  .s{font-size:8.8px;fill:var(--muted)}
+  .f{font-size:9px;fill:var(--fg);font-family:ui-monospace,Menlo,monospace}
+  .arrow{stroke:var(--muted);stroke-width:1.3;fill:none;marker-end:url(#ah)}
+  .arrow.mack{stroke:var(--mack);stroke-dasharray:4 3}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:.92em;background:color-mix(in srgb,var(--fg) 6%,transparent);padding:0 .3em;border-radius:4px}
+  .legend{display:grid;grid-template-columns:auto 1fr;gap:.6rem 1rem;font-size:1em;align-items:start}
+  .sw{display:inline-block;width:1.1em;height:1.1em;border-radius:4px;border:1.5px solid var(--c);background:color-mix(in srgb,var(--c) 16%,var(--card));vertical-align:-.15em}
+  .sw.dash{border-style:dashed}
+  .sym{font-weight:700;min-width:2.4em;display:inline-block;text-align:center}
+  table{border-collapse:collapse;width:100%;font-size:1em;font-variant-numeric:tabular-nums}
+  th,td{padding:.45em .7em;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
+  th:nth-child(-n+3),td:nth-child(-n+3){text-align:left}
+  th{font-size:.85em;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  td.c{text-align:center}
+  tr.seed td{color:var(--muted)}
+  .stat{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin:.4em 0 .8em}
+  .stat div{background:var(--card);border:1px solid var(--rule);border-left:8px solid var(--c);border-radius:0 10px 10px 0;padding:.7em 1em}
+  .stat b{display:block;font-size:1.8em}
+  .stat span{font-size:.9em;color:var(--muted)}
+  .wrap{overflow-x:auto}
+  .tier{display:inline-block;padding:.05em .55em;border-radius:999px;font-size:.8em;font-weight:700;color:var(--c);border:1.5px solid var(--c);background:color-mix(in srgb,var(--c) 12%,var(--card))}
+  table.rank th:nth-child(-n+3),table.rank td:nth-child(-n+3){text-align:left}
+  footer{margin-top:1.2rem;font-size:.85em;color:var(--muted);border-top:1px solid var(--rule);padding-top:.4rem}
+
+  /* editorial style */
+  :root{--bg:#FAFAFA;--fg:#252525;--muted:#5f6368;--rule:#e3e5e8;--card:#ffffff;--vc:#91b537;--vc-dark:#2a6338;--navy:#0f1e3a;--navy2:#16294d}
+  body{font-family:'Noto Serif',Georgia,serif;font-size:17px;line-height:1.6}
+  h1{font-family:'Playfair Display',Georgia,serif;font-weight:900;font-size:2.9rem;line-height:1.1;margin:.15em 0 .25em;letter-spacing:-.01em}
+  @media (max-width:700px){h1{font-size:1.8rem}}
+  h1 .pre{color:var(--vc-dark)}
+  h2,h3,th,.kicker,.byline,.tier,.stat b,.sym{font-family:'Encode Sans Semi Condensed','Fira Sans',system-ui,sans-serif}
+  h2{font-weight:700;font-size:1.45rem;border:0;padding:0;margin:1.4em 0 .4em}
+  .kicker{display:none}
+  .byline{font-family:'Fira Sans',system-ui,sans-serif;font-size:.95rem;color:var(--muted);margin:0 0 1.1em;border-bottom:1px solid var(--rule);padding-bottom:.6em}
+  .byline b{color:var(--fg);font-weight:600}
+  .lede{font-size:1.05em;color:var(--fg)}
+  a{color:var(--fg);text-decoration:none;box-shadow:inset 0 -4px 0 var(--vc)}
+  .takeaways{background:#f8f9fa;border-left:4px solid var(--vc-dark);padding:15px 18px;border-radius:5px;margin:1em 0 1.4em}
+  .takeaways h3{color:var(--vc-dark);margin:0 0 .4em;font-size:1.15rem}
+  .takeaways ul{margin:0;padding-left:1.2em}
+  .takeaways li{margin:.25em 0}
+  .viz{background:var(--navy);color:#f2f4f8;border-radius:10px;padding:1.4rem 1.6rem 1rem;margin:.6em 0 1.2em;font-family:'Fira Sans',system-ui,sans-serif}
+  .viz .vt{font-family:'Encode Sans Semi Condensed',sans-serif;font-weight:700;font-size:1.9rem;line-height:1.05;margin:0}
+  .viz .vd{color:#b9c3d6;font-size:.95rem;margin:.3em 0 1em}
+  .viz .vl{display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;font-size:.85rem;color:#b9c3d6;margin-bottom:.9em;align-items:center}
+  .viz .vl i{display:inline-block;width:2.2em;height:.8em;border-radius:2px;vertical-align:-.1em;margin-right:.35em;background:linear-gradient(90deg,#f6d55c,#e07b39)}
+  .viz .vl i.neg{background:linear-gradient(90deg,#3d7fbf,#9fc7e8)}
+  .viz .big{margin-left:auto;background:var(--navy2);border:1px solid #2f4470;border-radius:10px;padding:.35em .9em;text-align:center}
+  .viz .big b{display:block;font-size:1.5rem;color:#fff;line-height:1.1}
+  .viz .big span{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase}
+  .pg{display:flex;gap:.4rem;align-items:center;margin:.2em 0 .8em;font-size:.85rem;color:#b9c3d6}
+  .pg span{margin-right:.3rem;text-transform:uppercase;letter-spacing:.08em;font-size:.72rem}
+  .pg button{font:inherit;font-weight:600;color:#f2f4f8;background:#1b2f56;border:1px solid #2f4470;border-radius:999px;padding:.25em .9em;cursor:pointer}
+  .pg button[aria-selected="true"]{background:#f6d55c;color:var(--navy);border-color:#f6d55c}
+  .pg button:hover{border-color:#f6d55c}
+  .slope svg{width:100%;max-width:1100px;height:auto;display:block;margin:0 auto;font-family:'Fira Sans',system-ui,sans-serif}
+  .slope .lab{font-size:11px;fill:#f2f4f8;font-weight:600}
+  .slope .num{font-size:11px;fill:#b9c3d6;font-variant-numeric:tabular-nums}
+  .slope .col{font-size:11px;fill:#8f9bb5;text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+  .slope .ln{fill:none;stroke-width:2.2;opacity:.9}
+  .slope .bg{fill:#16294d}
+  .slope .d{font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+  .viz .vl i.dot{display:inline-block;width:.8em;height:.8em;border-radius:50%;margin-right:.35em;vertical-align:-.05em;background:var(--c)}
+  .vl.box{background:var(--navy2);border:1px solid #2f4470;border-radius:10px;padding:.5em .9em;display:inline-flex}
+  .rk{display:grid;grid-template-columns:2em 11em 1fr 3.4em 4.2em;gap:.35em .7em;align-items:center;font-size:.98rem}
+  [hidden]{display:none!important}
+  .rk .h button{all:unset;cursor:pointer;font:inherit;color:inherit;text-transform:inherit;letter-spacing:inherit}
+  .rk .h button:hover{color:#fff}
+  .rk .h.on{color:#f6d55c}
+  .rk .h .g{font-size:.9em;opacity:.7}
+  .rk .h.on .g{opacity:1}
+  .rk .h{color:#8f9bb5;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;padding-bottom:.3em;border-bottom:1px solid #2f4470}
+  .rk .n{display:inline-flex;width:1.7em;height:1.7em;border-radius:50%;background:#fff;color:var(--navy);font-weight:700;align-items:center;justify-content:center;font-size:.85rem}
+  .rk .tm{font-weight:600;white-space:nowrap}
+  .rk .tm small{color:#8f9bb5;font-weight:400;margin-left:.4em}
+  .rk .bar{position:relative;height:1.05em;background:#1b2f56;border-radius:2px}
+  .rk .bar i{position:absolute;top:0;bottom:0;border-radius:2px}
+  .rk .bar i.pos{left:50%;background:linear-gradient(90deg,#e07b39,#f6d55c)}
+  .rk .bar i.neg{right:50%;background:linear-gradient(90deg,#9fc7e8,#3d7fbf)}
+  .rk .bar u{position:absolute;left:50%;top:-2px;bottom:-2px;border-left:1px dashed #8f9bb5}
+  .rk .v{font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+  .rk .mv{color:#b9c3d6;text-align:right;font-size:.85rem;font-variant-numeric:tabular-nums}
+  .rk .mv.up{color:#9be27a}.rk .mv.dn{color:#ff9c9c}
+  .rk .bron{color:#ffb84d}
+  .rk .tag{font-size:.62rem;letter-spacing:.08em;background:#f6d55c;color:var(--navy);border-radius:3px;padding:0 .35em;margin-left:.4em;vertical-align:.1em}
+  .rk .tag.lo{background:#3d7fbf;color:#fff}
+  .viz .src{margin-top:1em;padding-top:.6em;border-top:1px solid #2f4470;font-size:.78rem;color:#b9c3d6;font-style:italic;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.4em}
+  .viz .src b{font-style:normal;font-family:'Encode Sans Semi Condensed',sans-serif;letter-spacing:.1em;color:#fff}
+  @media (prefers-color-scheme: dark){:root{--bg:#FAFAFA;--fg:#252525;--muted:#5f6368;--rule:#e3e5e8;--card:#ffffff}}
+  .panel{border-color:var(--rule)}
+  footer{font-style:italic}
+</style>
+<!-- SECTIONS-CSS -->
+<style>
+  .bpanel{background:var(--navy);color:#f2f4f8;border-radius:10px;padding:1rem 1.3rem .9rem;margin:.4em 0 1.2em;font-family:'Fira Sans',system-ui,sans-serif;border-left:8px solid #ffb84d}
+  .bhead{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;align-items:baseline;margin-bottom:.7em}
+  .bk{font-family:'Encode Sans Semi Condensed',sans-serif;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#ffb84d;font-size:.85rem}
+  .bopp{font-family:'Encode Sans Semi Condensed',sans-serif;font-size:1.6rem;font-weight:700;line-height:1}
+  .bwhen{color:#b9c3d6;font-size:.9rem;margin-left:auto}
+  .bgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:.8em}
+  @media (max-width:800px){.bgrid{grid-template-columns:1fr 1fr}}
+  .bnum{background:var(--navy2);border:1px solid #2f4470;border-radius:8px;padding:.5em .8em}
+  .bnum b{display:block;font-size:1.7rem;line-height:1.05;font-variant-numeric:tabular-nums}
+  .bnum span{display:block;font-size:.78rem;color:#b9c3d6;margin-top:.15em}
+  .bnum small{display:block;font-size:.72rem;color:#8f9bb5}
+  .binj{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media (max-width:700px){.binj{grid-template-columns:1fr}}
+  .binj h4,.icard h4{margin:0 0 .3em;font-family:'Encode Sans Semi Condensed',sans-serif;font-size:1rem}
+  .hit{font-weight:700;color:#ff9c9c;margin-left:.4em;font-variant-numeric:tabular-nums}
+  .binj ul,.icard ul{margin:0;padding-left:1.1em;font-size:.88rem;line-height:1.45}
+  .pos{color:#8f9bb5;font-size:.8em;margin:0 .2em}
+  .st{font-size:.72em;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:0 .35em;border-radius:3px;background:#2f4470}
+  .st.out,.st.injured{background:#9b2d2d}.st.doubtful{background:#b05a1e}.st.questionable{background:#6d5a12}
+  .w{color:#ff9c9c;font-variant-numeric:tabular-nums;margin-left:.3em}
+  .none{color:#8f9bb5;list-style:none;margin-left:-1.1em}
+  .bone{margin:.8em 0 0;font-size:.9rem;color:#dde3ee}
+  .igrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.7rem}
+  @media (max-width:1000px){.igrid{grid-template-columns:1fr 1fr}}
+  @media (max-width:600px){.igrid{grid-template-columns:1fr}}
+  .icard{background:var(--navy);color:#f2f4f8;border-radius:8px;padding:.6em .8em;font-family:'Fira Sans',system-ui,sans-serif}
+</style>
+<!-- /SECTIONS-CSS -->
+<!-- STAMP-CSS --><style>.stamp{font-family:'Fira Sans',system-ui,sans-serif;font-size:.85rem;color:var(--muted,#5f6368);margin:-.6em 0 1em}#band .stamp{color:#1b2a5a;margin:.15em 0 0}</style><!-- /STAMP-CSS -->
+</head>
+<body>
+<!-- H1 --><h1><span class="pre">Ranked:</span> Mack's Analysis of ΖΓ559's NFL Power Rankings, After Week 3</h1><!-- /H1 -->
+<!-- BYLINE --><p class="byline">By <b>Mack</b> (Analysis); <b>ΖΓ636</b> (Adjustments) &nbsp;·&nbsp; September 29, 2026, after all 16 Week 3 games &nbsp;·&nbsp; next: <a href="season.html">how the season projects by division</a> &nbsp;·&nbsp; <a href="../discuss.html">Discussion</a></p><!-- /BYLINE -->
+<!-- STAMP --><p class="stamp">Published <b>Sep 14, 2026, 12:13 PM PT</b> &nbsp;·&nbsp; Updated <b>Sep 29, 2026, 12:26 PM PT</b></p><!-- /STAMP -->
+<!-- LEDE --><!-- /LEDE -->
+<!-- MOVERS --><h2>Who moved in Week 3?</h2>
+<div class="takeaways"><h3>Key Takeaways</h3><ul>
+<li>Bills sit No. 1 at +6.5; the biggest climb is the Jaguars, up 6 places to 7th.</li>
+<li>The biggest fall is the Packers, down 6 places to 20th; the Broncos climb 1 to 9th at +3.6.</li>
+<li>Mack's projections (last week's ratings plus home field) went 10-6 straight up and 9-6 against the book.</li>
+</ul></div>
+<!-- /MOVERS -->
+
+<section class="viz" aria-label="Ranking graphic">
+<!-- RANK-HEAD -->  <p class="vt">ΖΓ559's Power Rankings, Re-run Through Week 3</p>
+  <p class="vd">Points better (or worse) than an average team on a neutral field. ΖΓ559's preseason ratings, adjusted by Mack for every final through Week 3.</p><!-- /RANK-HEAD -->
+  <div class="vl"><span><i></i>above average</span><span><i class="neg"></i>below average</span><span>dashed line = 0, an average team</span>
+    <span class="big"><b>+0.6</b><span>league average rating</span></span></div>
+  <div class="pg" role="tablist" aria-label="Show teams">
+    <span>Showing</span>
+    <button role="tab" aria-selected="true" data-pg="1">1–10</button>
+    <button role="tab" data-pg="2">11–20</button>
+    <button role="tab" data-pg="3">21–30</button>
+    <button role="tab" data-pg="4">31–32</button>
+  </div>
+  <div class="rk" id="rk"></div>
+<!-- RANK-SRC -->  <p class="src"><b>MACK · ANALYSIS</b><span>Source: ΖΓ559's 2026 NFL Weekly Intel workbook (ratings dated 2026-08-16); ESPN scoreboard, finals through Week 3, retrieved 2026-09-29. Figures rounded to one decimal.</span></p><!-- /RANK-SRC -->
+</section>
+
+
+<!-- BRONCOS-PANEL -->
+<section class="bpanel" aria-label="Broncos this week">
+  <div class="bhead"><span class="bk">Broncos this week</span><span class="bopp">at <b>49ers</b></span><span class="bwhen">Sun Oct 4, 1:25 PM PT · Week 4</span></div>
+  <div class="bgrid">
+    <div class="bnum"><b>−0.2</b><span>projected line, Broncos side, with injuries</span><small>+1.3 on ratings alone</small></div>
+    <div class="bnum"><b>+3.0</b><span>market line (Draft Kings)</span><small>O/U 46.5</small></div>
+    <div class="bnum"><b>+3.2</b><span>edge, home-side (projected − market)</span><small>model likes away</small></div>
+    <div class="bnum"><b>51%</b><span>Broncos win probability</span><small>13.5-pt scatter, my parameter</small></div>
+  </div>
+  <div class="binj">
+    <div><h4>Broncos injuries <span class="hit">−1.0</span></h4><ul><li><b>Marvin Mims Jr.</b> <span class="pos">WR</span> <span class="st out">Out</span> · Foot · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Jonah Coleman</b> <span class="pos">RB</span> <span class="st injured">Injured Reserve</span> · Ankle · back 2026-10-25 <span class="w">−0.5</span></li></ul></div>
+    <div><h4>49ers injuries <span class="hit">−2.5</span></h4><ul><li><b>Nick Bosa</b> <span class="pos">DE</span> <span class="st out">Out</span> · Calf · back 2026-10-11 <span class="w">−0.5</span></li><li><b>James Thompson Jr.</b> <span class="pos">DT</span> <span class="st out">Out</span> · Ankle · back 2026-10-11 <span class="w">−0.5</span></li><li><b>Romello Height</b> <span class="pos">DE</span> <span class="st out">Out</span> · Hand · back 2026-10-04 <span class="w">−0.5</span></li></ul></div>
+  </div>
+</section>
+<!-- /BRONCOS-PANEL -->
+<!-- PICKS --><h2>Week 4 picks</h2>
+<p class="vd">My line = ratings after Week 3, home field, and this week's injury hits. Market = Draft Kings via ESPN, fetched 2026-09-28 17:16. Edge = my line minus the market, home side; a lean is shown only when the gap is 2 points or more. ⚠ = a quarterback on the injury report; the feed does not say who starts. Sorted by size of edge. 4 leans this week.</p>
+<div class="wrap"><table class="picks"><thead><tr><th>Away</th><th>Home</th><th>My line</th><th>Market</th><th>Edge</th><th>Winner</th><th>Win %</th><th>Lean</th></tr></thead><tbody><tr><td>Jets</td><td>Bears ⚠</td><td class=n>−7.2</td><td class=n>−3.0</td><td class=n>−4.2</td><td>Bears</td><td class=n>70%</td><td>Bears</td></tr><tr><td>Falcons</td><td>Saints</td><td class=n>+1.2</td><td class=n>−2.5</td><td class=n>+3.7</td><td>Falcons</td><td class=n>54%</td><td>Falcons</td></tr><tr class=bron><td>Broncos</td><td>49ers</td><td class=n>+0.2</td><td class=n>−3.0</td><td class=n>+3.2</td><td>Broncos</td><td class=n>51%</td><td>Broncos</td></tr><tr><td>Rams</td><td>Eagles</td><td class=n>+0.2</td><td class=n>+2.5</td><td class=n>−2.3</td><td>Rams</td><td class=n>51%</td><td>Eagles</td></tr><tr><td>Jaguars</td><td>Bengals</td><td class=n>−0.5</td><td class=n>−2.5</td><td class=n>+2.0</td><td>Bengals</td><td class=n>52%</td><td>—</td></tr><tr><td>Steelers</td><td>Browns</td><td class=n>+4.4</td><td class=n>+2.5</td><td class=n>+1.9</td><td>Steelers</td><td class=n>63%</td><td>—</td></tr><tr><td>Colts</td><td>Commanders ⚠</td><td class=n>+1.9</td><td class=n>+3.5</td><td class=n>−1.6</td><td>Colts</td><td class=n>56%</td><td>—</td></tr><tr><td>Patriots</td><td>Bills</td><td class=n>−8.5</td><td class=n>−7.0</td><td class=n>−1.5</td><td>Bills</td><td class=n>74%</td><td>—</td></tr><tr><td>Lions</td><td>Panthers</td><td class=n>+4.4</td><td class=n>+3.5</td><td class=n>+0.9</td><td>Lions</td><td class=n>63%</td><td>—</td></tr><tr><td>Cowboys</td><td>Texans</td><td class=n>−1.6</td><td class=n>−2.5</td><td class=n>+0.9</td><td>Texans</td><td class=n>55%</td><td>—</td></tr><tr><td>Titans</td><td>Ravens</td><td class=n>−10.8</td><td class=n>−11.5</td><td class=n>+0.8</td><td>Ravens</td><td class=n>79%</td><td>—</td></tr><tr><td>Chargers</td><td>Seahawks</td><td class=n>−7.6</td><td class=n>−7.0</td><td class=n>−0.6</td><td>Seahawks</td><td class=n>71%</td><td>—</td></tr><tr><td>Packers</td><td>Buccaneers ⚠</td><td class=n>+3.0</td><td class=n>+3.5</td><td class=n>−0.5</td><td>Packers</td><td class=n>59%</td><td>—</td></tr><tr><td>Chiefs</td><td>Raiders</td><td class=n>+4.1</td><td class=n>+4.5</td><td class=n>−0.4</td><td>Chiefs</td><td class=n>62%</td><td>—</td></tr><tr><td>Dolphins</td><td>Vikings</td><td class=n>−10.4</td><td class=n>−10.5</td><td class=n>+0.1</td><td>Vikings</td><td class=n>78%</td><td>—</td></tr><tr><td>Cardinals</td><td>Giants</td><td class=n>+1.5</td><td class=n>+1.5</td><td class=n>+0.0</td><td>Cardinals</td><td class=n>54%</td><td>—</td></tr></tbody></table></div>
+<style>.picks td.n{text-align:right;font-variant-numeric:tabular-nums}.picks tr.bron td{background:#fff3df;font-weight:600}</style>
+<!-- /PICKS -->
+
+<section class="viz" aria-label="Previous week to this week">
+<!-- SLOPE-HEAD -->  <p class="vt">Week 2 to Week 3</p>
+  <p class="vd">Left: the order after Week 2. Right: the same ratings moved by every Week 3 final. Lines follow each team; color = tier after Week 3. A dot after a name means its Week 3 game is still to be played.</p><!-- /SLOPE-HEAD -->
+  <div class="vl" id="tierleg"></div>
+  <div class="slope" id="slope"></div>
+<!-- SLOPE-SRC -->  <p class="src"><b>MACK · ANALYSIS</b><span>Source: ΖΓ559's 2026 NFL Weekly Intel workbook (preseason ratings and home-field values); ESPN scoreboard, Week 3 finals, retrieved 2026-09-29. Tiers: Contender ≥ 4, Playoff ≥ 2, Middle to −2, Below to −4, Bottom under −4.</span></p><!-- /SLOPE-SRC -->
+</section>
+
+
+<!-- INJURIES -->
+<h2>Who is hurt going into Week 4?</h2>
+<p>Every team's heaviest listed injuries from ESPN's injury report, fetched 2026-09-28 17:16. The number beside each team is a one-week hit to its rating used only for this week's projections, never written into the rankings. Rule: QB Out -4 / Doubtful -3 / Questionable -1.5, one QB per team, starter unconfirmed (IR QBs excluded); others Out/IR -0.5, Doubtful -0.3, Questionable -0.15, non-QB cap -2.5. The feed does not say who starts, so a quarterback line is a flag to check, not a verdict. Teams sorted from most affected.</p>
+<div class="igrid"><div class="icard"><h4>Bears <span class="hit">−6.5</span></h4><ul><li><b>Caleb Williams</b> <span class="pos">QB</span> <span class="st out">Out</span> · starter, verified <span class="w">−4.0</span></li><li><b>Anthony Johnson Jr.</b> <span class="pos">S</span> <span class="st injured">Injured Reserve</span> · back 2026-10-18 <span class="w">−0.5</span></li><li><b>Ozzy Trapilo</b> <span class="pos">OT</span> <span class="st out">Out</span> · Coach's Decision · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Giants <span class="hit">−5.5</span></h4><ul><li><b>Jaxson Dart</b> <span class="pos">QB</span> <span class="st out">Out</span> · starter, verified <span class="w">−4.0</span></li><li><b>Brian Burns</b> <span class="pos">LB</span> <span class="st out">Out</span> · Knee - ACL · back 2027-02-15 <span class="w">−0.5</span></li><li><b>Tyler Nubin</b> <span class="pos">S</span> <span class="st out">Out</span> · Calf · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Buccaneers <span class="hit">−5.5</span></h4><ul><li><b>Baker Mayfield</b> <span class="pos">QB</span> <span class="st out">Out</span> · starter, verified <span class="w">−4.0</span></li><li><b>Jalen McMillan</b> <span class="pos">WR</span> <span class="st out">Out</span> · Knee - PCL · back 2026-11-22 <span class="w">−0.5</span></li><li><b>Josiah Trotter</b> <span class="pos">LB</span> <span class="st out">Out</span> · Shoulder · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Commanders <span class="hit">−5.5</span></h4><ul><li><b>Jayden Daniels</b> <span class="pos">QB</span> <span class="st doubtful">Doubtful</span> · starter, verified <span class="w">−3.0</span></li><li><b>Chig Okonkwo</b> <span class="pos">TE</span> <span class="st out">Out</span> · Hamstring · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Leo Chenal</b> <span class="pos">LB</span> <span class="st out">Out</span> · Neck · back 2027-02-15 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Panthers <span class="hit">−2.5</span></h4><ul><li><b>Devin Lloyd</b> <span class="pos">LB</span> <span class="st out">Out</span> · Calf · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Nick Scott</b> <span class="pos">S</span> <span class="st out">Out</span> · Ribs · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Xavier Legette</b> <span class="pos">WR</span> <span class="st out">Out</span> · Knee · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Cowboys <span class="hit">−2.5</span></h4><ul><li><b>Jalen Thompson</b> <span class="pos">S</span> <span class="st out">Out</span> · Hamstring · back 2026-11-01 <span class="w">−0.5</span></li><li><b>DeMarvion Overshown</b> <span class="pos">LB</span> <span class="st out">Out</span> · Hamstring · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Cobie Durant</b> <span class="pos">CB</span> <span class="st out">Out</span> · Hamstring · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Packers <span class="hit">−2.5</span></h4><ul><li><b>Jayden Reed</b> <span class="pos">WR</span> <span class="st out">Out</span> · Neck · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Zach Bako-Bewele</b> <span class="pos">OT</span> <span class="st out">Out</span> · Knee · back 2027-02-15 <span class="w">−0.5</span></li><li><b>Aaron Banks</b> <span class="pos">G</span> <span class="st out">Out</span> · Toe · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Texans <span class="hit">−2.5</span></h4><ul><li><b>Ed Ingram</b> <span class="pos">G</span> <span class="st out">Out</span> · Groin · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Jadeveon Clowney</b> <span class="pos">DE</span> <span class="st out">Out</span> · Knee · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Nico Collins</b> <span class="pos">WR</span> <span class="st out">Out</span> · Hamstring · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Chargers <span class="hit">−2.5</span></h4><ul><li><b>Brenen Thompson</b> <span class="pos">WR</span> <span class="st out">Out</span> · Quadriceps · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Dalvin Tomlinson</b> <span class="pos">DT</span> <span class="st out">Out</span> · Hamstring · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Charlie Kolar</b> <span class="pos">TE</span> <span class="st out">Out</span> · Forearm · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Rams <span class="hit">−2.5</span></h4><ul><li><b>Puka Nacua</b> <span class="pos">WR</span> <span class="st out">Out</span> · Hip · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Kamren Kinchens</b> <span class="pos">S</span> <span class="st out">Out</span> · Hamstring · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Myles Garrett</b> <span class="pos">DE</span> <span class="st injured">Injured Reserve</span> · Knee · back 2026-10-18 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Dolphins <span class="hit">−2.5</span></h4><ul><li><b>De'Von Achane</b> <span class="pos">RB</span> <span class="st injured">Injured Reserve</span> · Knee - ACL · back 2027-02-15 <span class="w">−0.5</span></li><li><b>Caleb Douglas</b> <span class="pos">WR</span> <span class="st out">Out</span> · Ankle · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Jaylen Wright</b> <span class="pos">RB</span> <span class="st out">Out</span> · Foot · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Patriots <span class="hit">−2.5</span></h4><ul><li><b>Craig Woodson</b> <span class="pos">S</span> <span class="st out">Out</span> · Shoulder · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Eli Raridon</b> <span class="pos">TE</span> <span class="st out">Out</span> · Thigh · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Dre'Mont Jones</b> <span class="pos">DE</span> <span class="st out">Out</span> · Shoulder · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Saints <span class="hit">−2.5</span></h4><ul><li><b>Travis Etienne Jr.</b> <span class="pos">RB</span> <span class="st out">Out</span> · Hamstring · back 2026-10-11 <span class="w">−0.5</span></li><li><b>Christen Miller</b> <span class="pos">DT</span> <span class="st out">Out</span> · Toe · back 2026-10-05 <span class="w">−0.5</span></li><li><b>Barion Brown</b> <span class="pos">WR</span> <span class="st out">Out</span> · Hamstring · back 2026-10-05 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Jets <span class="hit">−2.5</span></h4><ul><li><b>Mason Taylor</b> <span class="pos">TE</span> <span class="st out">Out</span> · Thumb · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Kiko Mauigoa</b> <span class="pos">LB</span> <span class="st out">Out</span> · Quadriceps · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Adonai Mitchell</b> <span class="pos">WR</span> <span class="st out">Out</span> · Finger · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>49ers <span class="hit">−2.5</span></h4><ul><li><b>Nick Bosa</b> <span class="pos">DE</span> <span class="st out">Out</span> · Calf · back 2026-10-11 <span class="w">−0.5</span></li><li><b>James Thompson Jr.</b> <span class="pos">DT</span> <span class="st out">Out</span> · Ankle · back 2026-10-11 <span class="w">−0.5</span></li><li><b>Romello Height</b> <span class="pos">DE</span> <span class="st out">Out</span> · Hand · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Seahawks <span class="hit">−2.5</span></h4><ul><li><b>Julian Love</b> <span class="pos">S</span> <span class="st out">Out</span> · Calf · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Ty Okada</b> <span class="pos">S</span> <span class="st out">Out</span> · Hamstring · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Brandon Pili</b> <span class="pos">DT</span> <span class="st out">Out</span> · Concussion · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Vikings <span class="hit">−2.1</span></h4><ul><li><b>Brett Thorson</b> <span class="pos">P</span> <span class="st out">Out</span> · Hamstring · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Josh Oliver</b> <span class="pos">TE</span> <span class="st out">Out</span> · Biceps · back 2027-01-16 <span class="w">−0.5</span></li><li><b>Charles Demmings</b> <span class="pos">CB</span> <span class="st out">Out</span> · Hamstring · back 2026-10-11 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Eagles <span class="hit">−2.0</span></h4><ul><li><b>Fred Johnson</b> <span class="pos">OT</span> <span class="st out">Out</span> · Knee · back 2026-10-04 <span class="w">−0.5</span></li><li><b>AJ Epenesa</b> <span class="pos">DE</span> <span class="st out">Out</span> · Coach's Decision · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Dallas Goedert</b> <span class="pos">TE</span> <span class="st out">Out</span> · Knee - MCL · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Bills <span class="hit">−1.6</span></h4><ul><li><b>Ar'maj Reed-Adams</b> <span class="pos">G</span> <span class="st out">Out</span> · Elbow · back 2026-10-04 <span class="w">−0.5</span></li><li><b>T.J. Sanders</b> <span class="pos">DT</span> <span class="st out">Out</span> · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Jordan Hancock</b> <span class="pos">CB</span> <span class="st injured">Injured Reserve</span> · Hamstring · back 2026-11-01 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Bengals <span class="hit">−1.6</span></h4><ul><li><b>Colbie Young</b> <span class="pos">WR</span> <span class="st out">Out</span> · Knee · back 2026-10-11 <span class="w">−0.5</span></li><li><b>B.J. Hill</b> <span class="pos">DT</span> <span class="st out">Out</span> · Achilles · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Andrei Iosivas</b> <span class="pos">WR</span> <span class="st injured">Injured Reserve</span> · Thumb · back 2026-11-01 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Browns <span class="hit">−1.6</span></h4><ul><li><b>Teven Jenkins</b> <span class="pos">G</span> <span class="st out">Out</span> · Back · back 2026-10-01 <span class="w">−0.5</span></li><li><b>Tyson Campbell</b> <span class="pos">CB</span> <span class="st out">Out</span> · Knee · back 2026-10-01 <span class="w">−0.5</span></li><li><b>Grant Delpit</b> <span class="pos">S</span> <span class="st questionable">Questionable</span> · Shoulder · back 2026-10-01 <span class="w">−0.1</span></li></ul></div><div class="icard"><h4>Ravens <span class="hit">−1.5</span></h4><ul><li><b>Ethan Pocic</b> <span class="pos">C</span> <span class="st out">Out</span> · Knee · back 2026-11-01 <span class="w">−0.5</span></li><li><b>Jovaughn Gwyn</b> <span class="pos">G</span> <span class="st out">Out</span> · Ankle · back 2026-11-01 <span class="w">−0.5</span></li><li><b>Ronnie Stanley</b> <span class="pos">OT</span> <span class="st out">Out</span> · Toe · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Lions <span class="hit">−1.5</span></h4><ul><li><b>Ben Bartch</b> <span class="pos">G</span> <span class="st out">Out</span> · Foot · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Thomas Harper</b> <span class="pos">S</span> <span class="st injured">Injured Reserve</span> · Ankle · back 2026-11-01 <span class="w">−0.5</span></li><li><b>Avonte Maddox</b> <span class="pos">CB</span> <span class="st injured">Injured Reserve</span> · Foot · back 2027-02-15 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Colts <span class="hit">−1.5</span></h4><ul><li><b>Alec Pierce</b> <span class="pos">WR</span> <span class="st injured">Injured Reserve</span> · Heel · back 2026-10-25 <span class="w">−0.5</span></li><li><b>Ashton Dulin</b> <span class="pos">WR</span> <span class="st out">Out</span> · Ankle · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Micheal Clemons</b> <span class="pos">DE</span> <span class="st injured">Injured Reserve</span> · Toe · back 2026-10-25 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Steelers <span class="hit">−1.3</span></h4><ul><li><b>Rico Dowdle</b> <span class="pos">RB</span> <span class="st out">Out</span> · Toe · back 2026-10-01 <span class="w">−0.5</span></li><li><b>Gennings Dunker</b> <span class="pos">G</span> <span class="st injured">Injured Reserve</span> · Knee · back 2026-10-25 <span class="w">−0.5</span></li><li><b>Jalen Ramsey</b> <span class="pos">CB</span> <span class="st questionable">Questionable</span> · Wrist · back 2026-10-01 <span class="w">−0.1</span></li></ul></div><div class="icard"><h4>Raiders <span class="hit">−1.1</span></h4><ul><li><b>Jack Bech</b> <span class="pos">WR</span> <span class="st out">Out</span> · Forearm · back 2026-11-01 <span class="w">−0.5</span></li><li><b>Treydan Stukes</b> <span class="pos">S</span> <span class="st out">Out</span> · Concussion · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Jackson Powers-Johnson</b> <span class="pos">G</span> <span class="st questionable">Questionable</span> · Groin · back 2026-10-04 <span class="w">−0.1</span></li></ul></div><div class="icard"><h4>Cardinals <span class="hit">−1.0</span></h4><ul><li><b>Dadrion Taylor-Demerson</b> <span class="pos">S</span> <span class="st out">Out</span> · Back · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Will Johnson</b> <span class="pos">CB</span> <span class="st injured">Injured Reserve</span> · Neck · back 2027-02-15 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Broncos <span class="hit">−1.0</span></h4><ul><li><b>Marvin Mims Jr.</b> <span class="pos">WR</span> <span class="st out">Out</span> · Foot · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Jonah Coleman</b> <span class="pos">RB</span> <span class="st injured">Injured Reserve</span> · Ankle · back 2026-10-25 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Jaguars <span class="hit">−1.0</span></h4><ul><li><b>Albert Regis</b> <span class="pos">DT</span> <span class="st out">Out</span> · Elbow · back 2026-10-04 <span class="w">−0.5</span></li><li><b>B.J. Green II</b> <span class="pos">DE</span> <span class="st injured">Injured Reserve</span> · Elbow · back 2026-10-18 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Chiefs <span class="hit">−1.0</span></h4><ul><li><b>Chamarri Conner</b> <span class="pos">S</span> <span class="st out">Out</span> · Knee · back 2026-10-04 <span class="w">−0.5</span></li><li><b>Josh Simmons</b> <span class="pos">OT</span> <span class="st out">Out</span> · Back · back 2026-10-04 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Falcons <span class="hit">−0.5</span></h4><ul><li><b>Samson Ebukam</b> <span class="pos">DE</span> <span class="st out">Out</span> · Hamstring · back 2026-10-05 <span class="w">−0.5</span></li></ul></div><div class="icard"><h4>Titans <span class="hit">−0.5</span></h4><ul><li><b>Fernando Carmona</b> <span class="pos">G</span> <span class="st doubtful">Doubtful</span> · Ankle · back 2026-10-04 <span class="w">−0.3</span></li><li><b>Jackson Slater</b> <span class="pos">G</span> <span class="st questionable">Questionable</span> · Foot · back 2026-10-04 <span class="w">−0.1</span></li></ul></div></div>
+<!-- /INJURIES -->
+
+<div class="grid">
+<section class="panel" aria-label="Logic flow">
+  <h2 style="margin-top:0">How does the spreadsheet get from ratings to a spread?</h2>
+  <svg viewBox="0 0 520 420" role="img" aria-labelledby="flowt"><title id="flowt">Flow from ΖΓ559's inputs to the edge, plus Mack's update loop</title>
+    <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="var(--muted)"/></marker></defs>
+
+    <!-- inputs row -->
+    <rect class="box in" x="10" y="14" width="120" height="44"/>
+    <text class="t" x="70" y="32" text-anchor="middle">Home Team (F)</text>
+    <text class="s" x="70" y="46" text-anchor="middle">schedule, nfl.com</text>
+
+    <rect class="box in" x="145" y="14" width="120" height="44"/>
+    <text class="t" x="205" y="32" text-anchor="middle">Neutral Site? (H)</text>
+    <text class="s" x="205" y="46" text-anchor="middle">Y / N</text>
+
+    <rect class="box in" x="280" y="14" width="110" height="44"/>
+    <text class="t" x="335" y="32" text-anchor="middle">HFA table (T:U)</text>
+    <text class="s" x="335" y="46" text-anchor="middle">32 teams, 1.2 to 2.4</text>
+
+    <rect class="box in" x="405" y="14" width="105" height="44"/>
+    <text class="t" x="457" y="32" text-anchor="middle">Ratings (J, K)</text>
+    <text class="s" x="457" y="46" text-anchor="middle">away, home; weekly</text>
+
+    <!-- HFA formula -->
+    <rect class="box fx" x="80" y="100" width="250" height="52"/>
+    <text class="t" x="205" y="118" text-anchor="middle">I · Projected HFA</text>
+    <text class="f" x="205" y="134" text-anchor="middle">=IF(H="Y", 0.2, VLOOKUP(F, T4:U35, 2))</text>
+    <text class="s" x="205" y="146" text-anchor="middle">neutral site is a flat 0.2, a constant inside the formula</text>
+
+    <path class="arrow" d="M70 58 V78 H150 V100"/>
+    <path class="arrow" d="M205 58 V100"/>
+    <path class="arrow" d="M335 58 V78 H260 V100"/>
+
+    <!-- spread formula -->
+    <rect class="box fx" x="120" y="190" width="290" height="52"/>
+    <text class="t" x="265" y="208" text-anchor="middle">L · Projected Spread (home)</text>
+    <text class="f" x="265" y="224" text-anchor="middle">= −( I + (K − J) )</text>
+    <text class="s" x="265" y="236" text-anchor="middle">negative = home favored, sportsbook sign</text>
+
+    <path class="arrow" d="M205 152 V190"/>
+    <path class="arrow" d="M457 58 V170 H330 V190"/>
+
+    <!-- book line -->
+    <rect class="box sd" x="10" y="270" width="170" height="52"/>
+    <text class="t" x="95" y="288" text-anchor="middle">M · Book line</text>
+    <text class="f" x="95" y="303" text-anchor="middle">seed =ROUND(L×2)/2</text>
+    <text class="s" x="95" y="315" text-anchor="middle">typed over by hand; 4 rows never were</text>
+
+    <!-- edge output -->
+    <rect class="box out" x="200" y="270" width="210" height="52"/>
+    <text class="t" x="305" y="288" text-anchor="middle">N · Edge = L − M</text>
+    <text class="s" x="305" y="303" text-anchor="middle">&lt; 0  ΖΓ559 likes home more than the book</text>
+    <text class="s" x="305" y="315" text-anchor="middle">&gt; 0  ΖΓ559 leans away</text>
+
+    <path class="arrow" d="M265 242 V270"/>
+    <path class="arrow" d="M180 296 H200"/>
+
+    <!-- dead-end input -->
+    <rect class="box dd" x="430" y="270" width="80" height="52"/>
+    <text class="t" x="470" y="291" text-anchor="middle">O · O/U</text>
+    <text class="s" x="470" y="306" text-anchor="middle">stored,</text>
+    <text class="s" x="470" y="316" text-anchor="middle">never used</text>
+
+    <!-- Mack loop -->
+    <rect class="box mk" x="60" y="352" width="400" height="54"/>
+    <text class="t" x="260" y="370" text-anchor="middle">Mack · rating update (not in ΖΓ559's sheet)</text>
+    <text class="f" x="260" y="386" text-anchor="middle">new = old + 0.1 × clamp(actual − projected, ±21)</text>
+    <text class="s" x="260" y="399" text-anchor="middle">winner up, loser down by the same amount; ratings sum is conserved</text>
+    <path class="arrow mack" d="M265 322 V352"/>
+    <path class="arrow mack" d="M460 379 H495 V40 H510"/>
+  </svg>
+</section>
+
+<section class="panel" aria-label="Legend">
+  <h2 style="margin-top:0">Legend</h2>
+  <div class="legend">
+    <span class="sw" style="--c:var(--input)"></span><span><b>Input</b>, blue. Typed by ΖΓ559 or copied from the schedule. No formula behind it.</span>
+    <span class="sw" style="--c:var(--formula)"></span><span><b>Formula</b>, orange. Computed by Excel from the cells above it. Column letter shown.</span>
+    <span class="sw" style="--c:var(--output)"></span><span><b>Output</b>, green. The one number the sheet exists to produce.</span>
+    <span class="sw dash" style="--c:var(--seed)"></span><span><b>Seeded</b>, gold dashed. Started as a formula, meant to be overwritten. Rows still holding the seed have no real book line.</span>
+    <span class="sw dash" style="--c:var(--dead)"></span><span><b>Dead end</b>, red dotted. Stored but referenced by nothing.</span>
+    <span class="sw" style="--c:var(--mack)"></span><span><b>Mack's addition</b>, purple. Logic ΖΓ559 never wrote; labeled so it is never mistaken for his.</span>
+    <span class="sym">−3.5</span><span><b>Spread sign</b>: home-side, sportsbook convention. Negative = home favored by that many points.</span>
+    <span class="sym">Edge</span><span>ΖΓ559's spread minus the book's. Negative = he has the home team stronger than Vegas; positive = he leans away.</span>
+    <span class="sym">SU</span><span><b>Straight up</b>: did the team ΖΓ559's spread favored win the game.</span>
+    <span class="sym">ATS</span><span><b>Against the spread</b>: did the side ΖΓ559's edge pointed to cover the book line. Blank on seeded rows.</span>
+    <span class="sym">✅ ❌</span><span>Hit / miss. <b>–</b> means no real book line, so not scoreable.</span>
+    <span class="sym">Tier</span><span><b>Contender</b> ≥ 4 · <b>Playoff</b> ≥ 2 · <b>Middle</b> −2 to 2 · <b>Below</b> ≥ −4 · <b>Bottom</b> below −4. Same cut lines used in the ranking above.</span>
+    <span class="sym">▲ ▼</span><span><b>Move</b>: places gained or lost versus the previous week's order. A team can move without playing when others pass it.</span>
+    <span class="sym">Surprise</span><span>Actual margin minus projected margin, clamped to ±21; one tenth of it moves each team, so one game is worth at most about 2 points.</span>
+  </div>
+</section>
+</div>
+
+<!-- LATEST-SCORE --><h2>How did Mack's numbers do in Week 3?</h2>
+<div class="stat">
+  <div style="--c:var(--output)"><b>10 / 16</b><span>straight-up winners</span></div>
+  <div style="--c:var(--output)"><b>9 / 15</b><span>against the DraftKings line as posted midweek</span></div>
+  <div style="--c:var(--formula)"><b>8.0 vs 8.3</b><span>mean spread error in points, Mack vs book</span></div>
+</div>
+<!-- /LATEST-SCORE -->
+<h2>How are the ratings updated?</h2>
+<!-- UPDATE-PARA --><p>ΖΓ559's ratings never move on their own. After each week I shift both teams by one tenth of the surprise, the actual home margin minus the projected margin, clamped to ±21 points. The home team gains that amount and the away team loses it, so the league total never drifts. Results after Week 3: Bills, Chiefs, Bears, Rams, Ravens are the top five; Packers fell 6 places, Jaguars rose 6.</p><!-- /UPDATE-PARA -->
+
+<!-- FOOTER --><footer>Sources: formulas and values read directly from the workbook (every derived cell recomputed, 0 mismatches) · scores from the ESPN scoreboard, Week 3, 16 of 16 games final · ratings and home-field values are ΖΓ559's opinions, not independently verified. For entertainment only; not betting advice. Static page, no tracking.</footer><!-- /FOOTER -->
+<script>
+/* DATA */const DATA=[{"rk": 1, "team": "Bills", "tonight": false, "v": 6.5, "old": 6.7, "mv": 0}, {"rk": 2, "team": "Chiefs", "tonight": false, "v": 6.1, "old": 5.6, "mv": 0}, {"rk": 3, "team": "Bears", "tonight": false, "v": 5.8, "old": 3.9, "mv": 5}, {"rk": 4, "team": "Rams", "tonight": false, "v": 5.2, "old": 5.6, "mv": -1}, {"rk": 5, "team": "Ravens", "tonight": false, "v": 4.8, "old": 4.9, "mv": -1}, {"rk": 6, "team": "Seahawks", "tonight": false, "v": 4.2, "old": 4.7, "mv": -1}, {"rk": 7, "team": "Jaguars", "tonight": false, "v": 4.2, "old": 2.1, "mv": 6}, {"rk": 8, "team": "Bengals", "tonight": false, "v": 3.7, "old": 4.3, "mv": -1}, {"rk": 9, "team": "Broncos", "tonight": false, "v": 3.6, "old": 3.2, "mv": 1}, {"rk": 10, "team": "49ers", "tonight": false, "v": 3.1, "old": 3.5, "mv": -1}, {"rk": 11, "team": "Eagles", "tonight": false, "v": 2.5, "old": 4.4, "mv": -5}, {"rk": 12, "team": "Lions", "tonight": false, "v": 2.3, "old": 2.4, "mv": 0}, {"rk": 13, "team": "Vikings", "tonight": false, "v": 2.3, "old": 1.8, "mv": 2}, {"rk": 14, "team": "Patriots", "tonight": false, "v": 0.9, "old": 3.0, "mv": -3}, {"rk": 15, "team": "Commanders", "tonight": false, "v": 0.9, "old": 0.4, "mv": 3}, {"rk": 16, "team": "Texans", "tonight": false, "v": 0.8, "old": 1.1, "mv": 0}, {"rk": 17, "team": "Cowboys", "tonight": false, "v": 0.8, "old": 0.7, "mv": 0}, {"rk": 18, "team": "Raiders", "tonight": false, "v": 0.5, "old": -0.4, "mv": 1}, {"rk": 19, "team": "Steelers", "tonight": false, "v": 0.0, "old": -0.6, "mv": 1}, {"rk": 20, "team": "Packers", "tonight": false, "v": -0.3, "old": 1.8, "mv": -6}, {"rk": 21, "team": "Colts", "tonight": false, "v": -1.0, "old": -1.3, "mv": 2}, {"rk": 22, "team": "Chargers", "tonight": false, "v": -1.1, "old": -1.3, "mv": -1}, {"rk": 23, "team": "Falcons", "tonight": false, "v": -1.5, "old": -3.6, "mv": 4}, {"rk": 24, "team": "Buccaneers", "tonight": false, "v": -1.8, "old": -1.3, "mv": -2}, {"rk": 25, "team": "Saints", "tonight": false, "v": -2.4, "old": -1.5, "mv": -1}, {"rk": 26, "team": "Panthers", "tonight": false, "v": -2.5, "old": -1.9, "mv": -1}, {"rk": 27, "team": "Giants", "tonight": false, "v": -2.9, "old": -3.1, "mv": -1}, {"rk": 28, "team": "Jets", "tonight": false, "v": -3.7, "old": -3.8, "mv": 0}, {"rk": 29, "team": "Cardinals", "tonight": false, "v": -4.5, "old": -4.9, "mv": 1}, {"rk": 30, "team": "Titans", "tonight": false, "v": -5.0, "old": -4.8, "mv": -1}, {"rk": 31, "team": "Browns", "tonight": false, "v": -5.7, "old": -6.3, "mv": 1}, {"rk": 32, "team": "Dolphins", "tonight": false, "v": -6.0, "old": -5.5, "mv": -1}], MX=6.5;/* /DATA */
+let sortKey='rk', dir=1, page='1';
+const rk=document.getElementById('rk');
+const cols=[['rk','Rk',''],['team','Team',''],['v','Rating vs average team, neutral field',''],['v2','Pts','text-align:right'],['mv','Move','text-align:right']];
+function render(){
+  const rows=[...DATA].sort((a,b)=>{const k=sortKey==='v2'?'v':sortKey; const x=a[k],y=b[k]; return (typeof x==='string'? x.localeCompare(y) : x-y)*dir;});
+  let h=cols.map(([k,l,st])=>{const ak=k==='v'?'v2':k; const on=(sortKey===k||(k==='v'&&sortKey==='v2')); const g=on?(dir===1?' ▴':' ▾'):' ▾'; return `<div class="h${on?' on':''}" data-k="${k}" style="${st}"><button>${l}<span class="g">${g}</span></button></div>`;}).join('');
+  const lo=(+page-1)*10, hi=lo+10;
+  rows.forEach((d,i)=>{
+    if(i<lo||i>=hi) return;
+    const w=Math.abs(d.v)/MX*50;
+    const tag=d.rk===1?' <span class="tag">HIGHEST</span>':(d.rk===32?' <span class="tag lo">LOWEST</span>':'');
+    const mv=d.mv===0?'—':(d.mv>0?'▲'+d.mv:'▼'+(-d.mv)); const mc=d.mv===0?'':(d.mv>0?' up':' dn');
+    h+=`<div><span class="n">${d.rk}</span></div><div class="tm${d.team==='Broncos'?' bron':''}">${d.team}${d.tonight?'<small>pending</small>':''}${tag}</div><div class="bar"><u></u><i class="${d.v>=0?'pos':'neg'}" style="width:${w.toFixed(1)}%"></i></div><div class="v">${d.v>0?'+':''}${d.v.toFixed(1)}</div><div class="mv${mc}">${mv}</div>`;
+  });
+  rk.innerHTML=h;
+  rk.querySelectorAll('.h button').forEach(b=>b.addEventListener('click',()=>{const k=b.parentElement.dataset.k; const key=k==='v2'?'v':k; if(sortKey===key){dir=-dir;} else {sortKey=key; dir=(key==='rk'||key==='team')?1:-1;} render();}));
+}
+document.querySelectorAll('.pg button').forEach(b=>b.addEventListener('click',()=>{page=b.dataset.pg; document.querySelectorAll('.pg button').forEach(x=>x.setAttribute('aria-selected',x===b)); render();}));
+render();
+
+// ---- slope chart: previous week vs this week ----
+(function(){
+  const TIER=[[4,'Contender','#f6d55c'],[2,'Playoff','#9be27a'],[-2,'Middle','#7fc3e0'],[-4,'Below','#f0954a'],[-Infinity,'Bottom','#ff6b6b']];
+  const tier=v=>TIER.find(t=>v>=t[0]);
+  const leg=document.getElementById('tierleg'); leg.className='vl box';
+  leg.innerHTML=TIER.map(t=>`<span><i class="dot" style="--c:${t[2]}"></i>${t[1]}</span>`).join('');
+  const before=[...DATA].sort((a,b)=>b.old-a.old);
+  const after=[...DATA].sort((a,b)=>a.rk-b.rk);
+  const RH=22, TOP=34, W=1100, LX=250, RX=850, PAD=6;
+  const H=TOP+RH*DATA.length+12;
+  const yB={}, yA={};
+  before.forEach((d,i)=>yB[d.team]=TOP+i*RH+RH/2);
+  after.forEach((d,i)=>yA[d.team]=TOP+i*RH+RH/2);
+  let g=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Slope chart of rank, previous week to this week">`;
+  g+=`<rect class="bg" x="0" y="0" width="${W}" height="${H}" rx="8"/>`;
+  g+=`<text class="col" x="${LX-PAD}" y="16" text-anchor="end">After Week 2 · Mack</text><text class="col" x="${RX+PAD}" y="16">After Week 3 · Mack</text><text class="col" x="${W-30}" y="16" text-anchor="end">Δ</text>`;
+  DATA.forEach(d=>{ const t=tier(d.v); const y1=yB[d.team], y2=yA[d.team];
+    g+=`<path class="ln" stroke="${t[2]}" d="M${LX+PAD*2} ${y1} C ${LX+300} ${y1}, ${RX-300} ${y2}, ${RX-PAD*2} ${y2}"/>`; });
+  before.forEach((d,i)=>{ const y=yB[d.team]; const t=tier(d.v);
+    g+=`<text class="num" x="${LX-190}" y="${y+4}" text-anchor="end">${i+1}</text><text class="lab" x="${LX-180}" y="${y+4}"${d.team==='Broncos'?' fill="#ffb84d"':''}>${d.team}</text><text class="num" x="${LX-PAD}" y="${y+4}" text-anchor="end">${d.old>0?'+':''}${d.old.toFixed(1)}</text><circle cx="${LX+PAD*2}" cy="${y}" r="3.5" fill="${t[2]}"/>`; });
+  after.forEach((d,i)=>{ const y=yA[d.team]; const t=tier(d.v); const dv=d.v-d.old;
+    const mv=d.mv===0?'—':(d.mv>0?'▲'+d.mv:'▼'+(-d.mv)); const mc=d.mv===0?'#b9c3d6':(d.mv>0?'#9be27a':'#ff9c9c');
+    g+=`<circle cx="${RX-PAD*2}" cy="${y}" r="3.5" fill="${t[2]}"/><text class="num" x="${RX+PAD}" y="${y+4}">${i+1}</text><text class="lab" x="${RX+PAD+22}" y="${y+4}"${d.team==='Broncos'?' fill="#ffb84d"':''}>${d.team}${d.tonight?' ·':''}</text><text class="num" x="${RX+150}" y="${y+4}" text-anchor="end">${d.v>0?'+':''}${d.v.toFixed(1)}</text><text class="d" fill="${mc}" x="${W-30}" y="${y+4}" text-anchor="end">${mv}</text>`; });
+  g+='</svg>';
+  document.getElementById('slope').innerHTML=g;
+})();
+</script>
+</body>
+</html>
