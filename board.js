@@ -61,7 +61,7 @@
     const replying = h("div", "bd-replying"); const replyMsg = h("span"); const cancel = h("button", "", "cancel"); cancel.type = "button"; replying.appendChild(replyMsg); replying.appendChild(cancel); compose.appendChild(replying);
     const ta = document.createElement("textarea"); ta.maxLength = 600; ta.rows = 1; ta.placeholder = opts.chips ? "What do you see this week?" : "Say something about " + label.toLowerCase() + "…"; compose.appendChild(ta);
     const row2 = h("div", "bd-row"); row2.style.justifyContent = "space-between";
-    const cnt = h("span", "bd-count", "0 / 600"); const hint = h("span", "bd-hint", "Enter sends · Shift+Enter for a new line"); const postBtn = h("button", "bd-post", "Post"); postBtn.type = "button";
+    const cnt = h("span", "bd-count", "0 / 600"); const hint = h("span", "bd-hint", "Mention Mack and he'll answer · Enter sends · Shift+Enter for a new line"); const postBtn = h("button", "bd-post", "Post"); postBtn.type = "button";
     const left = h("div", "bd-row"); left.appendChild(cnt); left.appendChild(hint); row2.appendChild(left); row2.appendChild(postBtn); compose.appendChild(row2);
     body.appendChild(compose);
     const status = h("div", "bd-status"); const dot = h("span", "bd-dot"); const msg = h("span", "", "Connecting to the board…"); status.appendChild(dot); status.appendChild(msg); body.appendChild(status);
