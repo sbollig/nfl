@@ -58,3 +58,11 @@
 .bd-who{display:inline-flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:14px;min-height:44px}
 .bd-who b{color:var(--bd-navy)}
 .bd-link{all:unset;color:var(--bd-orange);cursor:pointer;font-weight:600;font-size:13px;min-height:44px;display:inline-flex;align-items:center;padding:0 4px}
+
+/* Shared site nav (Scott 9/30: link to every other page at top and bottom). Static markup, one copy per position; builders emit it. */
+.site-nav{display:flex;flex-wrap:wrap;gap:6px 4px;margin:14px 0;padding:6px 0;border-top:1px solid var(--bd-line,#d9d5ca);border-bottom:1px solid var(--bd-line,#d9d5ca);font-family:Barlow,system-ui,sans-serif}
+.site-nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;border-radius:6px;color:var(--bd-orange,#e4521c);font-weight:600;font-size:15px;text-decoration:none}
+.site-nav a:hover,.site-nav a:focus-visible{background:var(--bd-orange-soft,#fbe9e0);outline:none}
+.site-nav a[aria-current="page"]{color:var(--bd-muted,#6b7787);background:none;cursor:default;pointer-events:none}
+.site-nav a[aria-current="page"]::before{content:"▸ "}
+.bd-dark ~ * .site-nav,body .layout>main .wrap .site-nav{color:inherit}
