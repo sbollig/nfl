@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Week 4 Board</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../board.css?v=27">
+<link rel="stylesheet" href="../board.css?v=28">
 <style>
 :root{
   --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
@@ -37,7 +37,7 @@ h2{font-size:22px;font-weight:600;color:var(--navy);border-bottom:2px solid var(
 h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .games{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
 .g{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:grid;gap:10px;position:relative}
-/* team-colored cards: card takes the colors of Mack's SU pick (ESPN teams API, fetched 2026-09-28) */
+/* team-colored cards: card takes the colors of Mack's SU pick; once the game is final, the outright winner's (ESPN teams API, fetched 2026-09-28) */
 .g.pick-Cardinals{--card:#a40227;--paper:#af2041;--ink:#ffffff;--muted:#e4b3be;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#af2041;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#a40227;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
 .g.pick-Cardinals .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
 .g.pick-Cardinals .lbl{color:#e4b3be}
@@ -361,6 +361,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
     <p><b>How to read a card.</b> Lines are home-side, book sign: a negative number means the home team is favored by that much. <b>Mack</b> is his line after this week's verified injury hits. <b>Edge</b> is his line minus the market; he takes the side his line favors, and the further the edge is from zero the stronger the opinion. The win % is his straight-up confidence.</p>
     <p><b>Key injuries</b> are the top three per team from the ESPN injury report (Out, IR, Doubtful, Questionable); the arrow shows the next healthy player at that spot on the ESPN depth chart. "Depth piece" means the injured player was not a starter. Fetched Sep 28. Picks were re-read against the replacements: none changed; the Buccaneers' rookie starter and Justin Jefferson's status are the two to watch.</p>
     <p><b>QB notes applied.</b> Bears: Williams out, Bagent starts. Buccaneers: Mayfield out, rookie Jalon Daniels starts. Giants: Dart on IR, Winston starts. Commanders: Daniels doubtful, Mariota likely. Bills: Allen expected to play.</p>
+    <p><b>Card colours.</b> Before a game, a card wears the colours of the team Mack picked to win. Once the final is in, it switches to the colours of the team that actually won.</p>
     <p><b>Picks lock at kickoff.</b> You can change a pick any time before that game starts. Once it kicks off, everyone's picks for that game are read-only; the scores can still be entered.</p>
     <p><b>Points.</b> One point for each correct pick: winner, spread, and over/under, so up to three a game. A push or a blank pick scores nothing. Mack's picks sit in the row under yours on each card. Like everyone's, they can change until that game kicks off and not after. The tiles at the top show each person's total, with the three records underneath. Mack is scored the same way on the picks he made: a winner in every game, a spread pick in every game (the side his line favors against the market; where the two are equal, the side of his winner), and an over/under in every game. His Thursday spread and over/under picks were added after that game ended, by running the same formula on the numbers available before kickoff. His totals come from each team's points scored and allowed so far this season, with a deduction for a missing starting quarterback.</p>
     <p>Prepared by: Mack. Picks and finals are shared across devices (refreshes every 20 seconds); the ratings update uses the official finals.</p>
@@ -369,8 +370,8 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 </main>
 <aside id="board"></aside>
 </div>
-<script src="../board.js?v=27"></script>
-<script>Board.mount(document.getElementById("board"), {topic:"picks", week:4, ver:"v27", collapsible:true});</script>
+<script src="../board.js?v=28"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"picks", week:4, ver:"v28", collapsible:true});</script>
 
 <script>
 // Game data: from Ideas/NFL/Picks_Wk04.md + Week04_Intel.json (Mack, 2026-09-28).
@@ -436,7 +437,9 @@ function card(g){
     ...PEOPLE.map(p => ["su","ats","ou"].map(k => r.ppl[p][k] ? chip(`${p} ${k==="su"?"W":k.toUpperCase()} ${r.ppl[p][k]==="ok"?"✓":r.ppl[p][k]==="no"?"✗":"push"}`, r.ppl[p][k]) : "").join("")),
     chip(`Total ${r.total} ${r.total>g.ou?"over":r.total<g.ou?"under":"push"}`, r.total===g.ou?"push":"")
   ].join("") : "";
-  return `<article class="g pick-${g.su.replace(/[^A-Za-z0-9]/g,"")} ${g.bron?"bron":""} ${r?"final":""}" data-id="${g.id}">
+  // card colour: Mack's pick before the game; once final, the team that won outright (Scott 10/1). A tie keeps the pick's colours.
+  const won = r && r.winner !== "Tie" ? r.winner : null, tint = won || g.su;
+  return `<article class="g pick-${tint.replace(/[^A-Za-z0-9]/g,"")} ${g.bron && (!won || won==="Broncos")?"bron":""} ${r?"final":""}" data-id="${g.id}">
     <span class="saved" id="sv-${g.id}">saved</span>
     <div class="kick">${g.kick}${g.qb?" · QB change":""}<span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span></div>
     <div class="teams">
@@ -485,7 +488,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 4, KEY = "wk04-cache", BOARD_VER = "v27";
+const WEEK = 4, KEY = "wk04-cache", BOARD_VER = "v28";
 const PEOPLE = ["Todd","Ryota","Scott"];
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
