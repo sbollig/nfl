@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Week 4 Board</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../board.css?v=24">
+<link rel="stylesheet" href="../board.css?v=25">
 <style>
 :root{
   --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
@@ -362,21 +362,21 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
     <p><b>Key injuries</b> are the top three per team from the ESPN injury report (Out, IR, Doubtful, Questionable); the arrow shows the next healthy player at that spot on the ESPN depth chart. "Depth piece" means the injured player was not a starter. Fetched Sep 28. Picks were re-read against the replacements: none changed; the Buccaneers' rookie starter and Justin Jefferson's status are the two to watch.</p>
     <p><b>QB notes applied.</b> Bears: Williams out, Bagent starts. Buccaneers: Mayfield out, rookie Jalon Daniels starts. Giants: Dart on IR, Winston starts. Commanders: Daniels doubtful, Mariota likely. Bills: Allen expected to play.</p>
     <p><b>Picks lock at kickoff.</b> You can change a pick any time before that game starts. Once it kicks off, everyone's picks for that game are read-only; the scores can still be entered.</p>
-    <p><b>Points.</b> One point for each correct pick: winner, spread, and over/under, so up to three a game. A push or a blank pick scores nothing. Mack's picks sit in the row under yours on each card and are fixed when the page is published. The tiles at the top show each person's total, with the three records underneath. Mack is scored the same way on the picks he made: a winner in every game, a spread pick only where his line is 2 or more points off the market, and an over/under in every game from Sunday on (he had none for Thursday's game). His totals come from each team's points scored and allowed so far this season, with a deduction for a missing starting quarterback.</p>
+    <p><b>Points.</b> One point for each correct pick: winner, spread, and over/under, so up to three a game. A push or a blank pick scores nothing. Mack's picks sit in the row under yours on each card and are fixed when the page is published. The tiles at the top show each person's total, with the three records underneath. Mack is scored the same way on the picks he made: a winner in every game, a spread pick only where his line is 2 or more points off the market, and an over/under in every game. His Thursday over/under was added after that game ended, by running the same formula on the numbers available before kickoff. His totals come from each team's points scored and allowed so far this season, with a deduction for a missing starting quarterback.</p>
     <p>Prepared by: Mack. Picks and finals are shared across devices (refreshes every 20 seconds); the ratings update uses the official finals.</p>
   </footer>
 </div>
 </main>
 <aside id="board"></aside>
 </div>
-<script src="../board.js?v=24"></script>
-<script>Board.mount(document.getElementById("board"), {topic:"picks", week:4, ver:"v24", collapsible:true});</script>
+<script src="../board.js?v=25"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"picks", week:4, ver:"v25", collapsible:true});</script>
 
 <script>
 // Game data: from Ideas/NFL/Picks_Wk04.md + Week04_Intel.json (Mack, 2026-09-28).
 // line = Mack's line with injuries, mkt = market, both home-side book sign. p = Mack's SU win% for his pick.
 const GAMES = [
- {id:"g01",ko:"2026-10-02T00:15Z",inj:{"away": ["Jalen Ramsey (CB, Q) → Brandin Echols (CB, 6 yr)"], "home": ["Teven Jenkins (G, Out) → Austin Barber (OT, rookie)", "Tyson Campbell (CB, Out) → Mekhi Blackmon (CB, None yr)", "Grant Delpit (S, Q) → Emmanuel McNeil-Warren (S, rookie)"]},win:"Thursday night",kick:"Thu Oct 1 · 5:15 PM PT",away:"Steelers",home:"Browns",base:4.1,line:4.4,mkt:2.5,ou:38.5,su:"Steelers",p:63,ats:""},
+ {id:"g01",ko:"2026-10-02T00:15Z",inj:{"away": ["Jalen Ramsey (CB, Q) → Brandin Echols (CB, 6 yr)"], "home": ["Teven Jenkins (G, Out) → Austin Barber (OT, rookie)", "Tyson Campbell (CB, Out) → Mekhi Blackmon (CB, None yr)", "Grant Delpit (S, Q) → Emmanuel McNeil-Warren (S, rookie)"]},win:"Thursday night",kick:"Thu Oct 1 · 5:15 PM PT",away:"Steelers",home:"Browns",base:4.1,line:4.4,mkt:2.5,ou:38.5,mou:"Over",su:"Steelers",p:63,ats:""},
  {id:"g02",ko:"2026-10-04T13:30Z",inj:{"away": ["Alec Pierce (WR, IR) → depth piece", "Ashton Dulin (WR, Out) → depth piece", "Micheal Clemons (DE, IR) → depth piece"], "home": ["Chig Okonkwo (TE, Out) → Ben Sinnott (TE, 3 yr)", "Frankie Luvu (LB, Out) → Kain Medrano (LB, 2 yr)", "Nick Cross (S, Out) → Tyler Owens (S, 3 yr)"]},win:"Sunday early (London)",kick:"Sun Oct 4 · 6:30 AM PT",away:"Colts",home:"Commanders",base:-2.1,line:1.9,mkt:3.5,ou:47.5,mou:"Over",su:"Colts",p:56,ats:"",qb:true},
  {id:"g03",ko:"2026-10-04T17:00Z",inj:{"away": ["Craig Woodson (S, Out) → Jaylen Reed (S, 2 yr)", "Dre'Mont Jones (DE, Out) → Gabe Jacas (LB, rookie)", "Greg Van Roten (G, Q) → Walter Rouse (OL, 3 yr)"], "home": ["T.J. Sanders (DT, Out) → Landon Jackson (DE, 2 yr)", "Christian Benford (CB, Q) → Davison Igbinosun (CB, rookie)", "Josh Allen (QB, Q) → Kyle Allen (QB, 8 yr)"]},win:"Sunday 10 AM",kick:"Sun Oct 4 · 10:00 AM PT",away:"Patriots",home:"Bills",base:-7.7,line:-8.5,mkt:-7.0,ou:48.5,mou:"Under",su:"Bills",p:74,ats:""},
  {id:"g04",ko:"2026-10-04T17:00Z",inj:{"away": ["Kiko Mauigoa (LB, Out) → Trevin Wallace (LB, 3 yr)", "Minkah Fitzpatrick (S, Out) → Malachi Moore (S, 2 yr)", "Breece Hall (RB, Q) → Braelon Allen (RB, 3 yr)"], "home": ["Caleb Williams (QB, Out) → Tyson Bagent (QB, 4 yr)"]},win:"Sunday 10 AM",kick:"Sun Oct 4 · 10:00 AM PT",away:"Jets",home:"Bears",base:-11.2,line:-7.2,mkt:-3.0,ou:43.5,mou:"Under",su:"Bears",p:70,ats:"Bears",qb:true},
@@ -485,7 +485,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 4, KEY = "wk04-cache", BOARD_VER = "v24";
+const WEEK = 4, KEY = "wk04-cache", BOARD_VER = "v25";
 const PEOPLE = ["Todd","Ryota","Scott"];
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
