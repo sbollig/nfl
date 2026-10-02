@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Week 4 Board</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../board.css?v=22">
+<link rel="stylesheet" href="../board.css?v=23">
 <style>
 :root{
   --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
@@ -320,6 +320,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .chip.push{border-color:var(--push);color:var(--push)}
 .you{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:6px 8px;align-items:center;font-size:13px}
 .you select,.you input[type=text]{font:inherit;padding:5px 7px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);min-width:0;width:100%}
+.you select.mk{opacity:1;-webkit-appearance:none;appearance:none;background-image:none}
 .you select:focus,.you input:focus{outline:2px solid var(--orange);outline-offset:1px}
 .kick{font-size:12px;color:var(--muted)}
 .inj{font-size:12px;color:var(--muted);display:grid;gap:2px;line-height:1.35}
@@ -360,15 +361,15 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
     <p><b>How to read a card.</b> Lines are home-side, book sign: a negative number means the home team is favored by that much. <b>Mack</b> is his line after this week's verified injury hits. <b>Edge</b> is his line minus the market; he leans against the spread only at 2 points or more. The win % is his straight-up confidence.</p>
     <p><b>Key injuries</b> are the top three per team from the ESPN injury report (Out, IR, Doubtful, Questionable); the arrow shows the next healthy player at that spot on the ESPN depth chart. "Depth piece" means the injured player was not a starter. Fetched Sep 28. Picks were re-read against the replacements: none changed; the Buccaneers' rookie starter and Justin Jefferson's status are the two to watch.</p>
     <p><b>QB notes applied.</b> Bears: Williams out, Bagent starts. Buccaneers: Mayfield out, rookie Jalon Daniels starts. Giants: Dart on IR, Winston starts. Commanders: Daniels doubtful, Mariota likely. Bills: Allen expected to play.</p>
-    <p><b>Points.</b> One point for each correct pick: winner, spread, and over/under, so up to three a game. A push or a blank pick scores nothing. The tiles at the top show each person's total, with the three records underneath. Mack is scored the same way on the picks he made: a winner in every game, a spread pick only where his line is 2 or more points off the market, and an over/under in every game from Sunday on (he had none for Thursday's game). His totals come from each team's points scored and allowed so far this season, with a deduction for a missing starting quarterback.</p>
+    <p><b>Points.</b> One point for each correct pick: winner, spread, and over/under, so up to three a game. A push or a blank pick scores nothing. Mack's picks sit in the row under yours on each card and are fixed when the page is published. The tiles at the top show each person's total, with the three records underneath. Mack is scored the same way on the picks he made: a winner in every game, a spread pick only where his line is 2 or more points off the market, and an over/under in every game from Sunday on (he had none for Thursday's game). His totals come from each team's points scored and allowed so far this season, with a deduction for a missing starting quarterback.</p>
     <p>Prepared by: Mack. Picks and finals are shared across devices (refreshes every 20 seconds); the ratings update uses the official finals.</p>
   </footer>
 </div>
 </main>
 <aside id="board"></aside>
 </div>
-<script src="../board.js?v=22"></script>
-<script>Board.mount(document.getElementById("board"), {topic:"picks", week:4, ver:"v22", collapsible:true});</script>
+<script src="../board.js?v=23"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"picks", week:4, ver:"v23", collapsible:true});</script>
 
 <script>
 // Game data: from Ideas/NFL/Picks_Wk04.md + Week04_Intel.json (Mack, 2026-09-28).
@@ -451,7 +452,7 @@ function card(g){
     <div class="inj"><span class="lbl">Key injuries → who steps in</span>
       <div><b>${g.away}</b> ${g.inj.away.length?g.inj.away.join(" · "):"none listed"}</div>
       <div><b>${g.home}</b> ${g.inj.home.length?g.inj.home.join(" · "):"none listed"}</div></div>
-    <div class="pick">${chip(`Mack: ${g.su} ${g.p}%`, "mack")}${g.ats?chip(`ATS lean ${g.ats}`):""}${g.mou?chip(`${g.mou} ${g.ou}`):""}${verdict}</div>
+    <div class="pick">${chip(`Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
     <div class="you">
       <span class="lbl"></span><span class="lbl">Winner</span><span class="lbl">Spread</span><span class="lbl">Total ${g.ou}</span>
       ${PEOPLE.map(p => { const pk=(s.picks||{})[p]||{}; const sel=(v,x)=>v===x?"selected":"";
@@ -460,6 +461,9 @@ function card(g){
         <select id="su-${p}-${g.id}" aria-label="${p} winner" ${canWrite?"":"disabled"}><option value="">—</option><option ${sel(pk.su,g.away)}>${g.away}</option><option ${sel(pk.su,g.home)}>${g.home}</option></select>
         <select id="ats-${p}-${g.id}" aria-label="${p} spread" ${canWrite?"":"disabled"}><option value="">—</option>${sp.map(([v,l])=>`<option value="${v}" ${sel(pk.ats,v)}>${l}</option>`).join("")}</select>
         <select id="ou-${p}-${g.id}" aria-label="${p} total" ${canWrite?"":"disabled"}><option value="">—</option><option ${sel(pk.ou,"Over")}>Over</option><option ${sel(pk.ou,"Under")}>Under</option></select>`; }).join("")}
+      ${(() => { const sp = g.mkt<0 ? {[g.away]:`${g.away} +${-g.mkt}`,[g.home]:`${g.home} ${g.mkt}`} : {[g.away]:`${g.away} ${g.mkt===0?"PK":"-"+g.mkt}`,[g.home]:`${g.home} ${g.mkt===0?"PK":"+"+g.mkt}`};
+        const cell = (v, what) => `<select class="mk" disabled aria-label="Mack ${what}"><option>${v||"—"}</option></select>`;   // Mack's picks: fixed at publish, read-only
+        return `<label class="lbl">Mack</label>${cell(g.su,"winner")}${cell(g.ats?sp[g.ats]:"","spread")}${cell(g.mou,"total")}`; })()}
     </div>
   </article>`;
 }
@@ -479,7 +483,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 4, KEY = "wk04-cache", BOARD_VER = "v22";
+const WEEK = 4, KEY = "wk04-cache", BOARD_VER = "v23";
 const PEOPLE = ["Todd","Ryota","Scott"];
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
