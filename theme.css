@@ -1,0 +1,26 @@
+/* Site theme — Broncos navy + orange on every page (Scott 10/4: "make all the pages the same background bronco colors").
+   Same palette as the hub (index.html) and standings.html, which carry it inline. Linked LAST in <head> on the other pages.
+   Triple :root outranks each page's own light/dark blocks, so the theme holds in either system appearance.
+   Team-coloured pick cards (.g.pick-*) and the data colours inside charts (gold/blue bars, tier dots) are left alone. */
+
+/* picks + discussion pages, and the board/nav tokens used on every page */
+:root:root:root{
+  color-scheme:dark;
+  --paper:#002244;--card:#0d2f57;--ink:#ffffff;--muted:#c9d3e0;--line:#1f4470;--navy:#ffffff;
+  --orange:#FB4F14;--orange-soft:#3b2317;--good:#6fcf8c;--good-soft:#1c3324;--bad:#f28b7d;--bad-soft:#3a1e1a;--push:#d8c25a;--field:#0a2444;
+  --bd-line:#1f4470;--bd-orange:#FB4F14;--bd-orange-soft:rgba(251,79,20,.15);--bd-muted:#c9d3e0;
+}
+:root:root:root .bd{--bd-paper:#002244;--bd-card:#0d2f57;--bd-ink:#ffffff;--bd-muted:#c9d3e0;--bd-line:#1f4470;--bd-navy:#ffffff;--bd-orange:#FB4F14;--bd-orange-soft:#3b2317;--bd-good:#6fcf8c;--bd-bad:#f28b7d;--bd-field:#0a2444}
+:root:root:root body{background:#002244}
+
+/* power rankings + season pages (<html class="ed">, set by their builders) */
+:root:root:root.ed{
+  --bg:#002244;--fg:#ffffff;--muted:#c9d3e0;--rule:#1f4470;--card:#0d2f57;
+  --vc:#FB4F14;--vc-dark:#FB4F14;--navy:#0d2f57;--navy2:#0a2444;
+  --input:#7fc3e0;--formula:#f0954a;--output:#7fd6a0;--dead:#ff9c9c;--mack:#b3aaf3;--seed:#e0c05a;
+}
+.ed .takeaways{background:#0d2f57}
+.ed .picks tr.bron td{background:rgba(251,79,20,.18)}
+.ed .two li.bron{color:#ffb84d}
+.ed .rk .n,.ed .rk .tag,.ed .pg button[aria-selected="true"]{color:#002244}
+.ed .site-nav a{box-shadow:none}
