@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tune the Index</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../board.css?v=35">
+<style>
+:root{--paper:#f6f4ee;--card:#fff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;--navy:#0b2340;--orange:#e4521c;--good:#2f7a4a;--bad:#b23a2e;--push:#8a7a2a}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){color-scheme:dark;--paper:#141a22;--card:#1d2530;--ink:#eef0f3;--muted:#98a3b3;--line:#333d4a;--navy:#e9eef7;--orange:#ff7a3d;--good:#6fcf8c;--bad:#f28b7d;--push:#d8c25a}}
+:root[data-theme="dark"]{color-scheme:dark;--paper:#141a22;--card:#1d2530;--ink:#eef0f3;--muted:#98a3b3;--line:#333d4a;--navy:#e9eef7;--orange:#ff7a3d;--good:#6fcf8c;--bad:#f28b7d;--push:#d8c25a}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:Barlow,system-ui,sans-serif;font-size:16px;line-height:1.45;margin:0;padding-inline:16px;padding-block:20px 48px}
+.wrap{max-width:900px;margin:0 auto;display:grid;gap:18px}
+h1{font-family:"Barlow Condensed",Barlow,system-ui,sans-serif;margin:0;font-size:44px;font-weight:700;line-height:1;letter-spacing:.01em;color:var(--navy)}
+h1 span{color:var(--orange)}
+h2{font-family:"Barlow Condensed",Barlow,system-ui,sans-serif;font-size:24px;font-weight:700;margin:0;line-height:1.1}
+.sub{color:var(--muted);margin-top:6px;font-size:14px}
+.lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+header{border-bottom:2px solid var(--navy);padding-bottom:12px}
+.rec{border-top:2px solid var(--navy);border-bottom:1px solid var(--line);padding:10px 0;font-size:14px}
+.rec b{font-family:"Barlow Condensed";font-size:17px;color:var(--orange);margin-right:6px}
+.knobs{display:grid;gap:14px}
+.knob{display:grid;gap:6px}
+.knob .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.knob .why{font-size:13px;color:var(--muted)}
+.knob[data-off="1"]{opacity:.45}
+.knob[data-off="1"] .bd-chip{pointer-events:none}
+.bd-chip{font:inherit;font-size:14px;font-weight:600;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:8px 14px;min-height:44px;cursor:pointer}
+.bd-chip[aria-pressed="true"]{background:var(--orange);border-color:var(--orange);color:#fff}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--orange);border-radius:6px;padding:10px 12px}
+.tile .v{font-family:"Barlow Condensed";font-size:28px;font-weight:700;line-height:1}
+.tile small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.cmp{grid-template-columns:1fr}}
+.col{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+.col h3{font-family:"Barlow Condensed";font-size:18px;margin:0 0 6px;font-weight:700}
+.col h3 small{font-family:Barlow;font-size:12px;color:var(--muted);font-weight:500;margin-left:6px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:15px}
+td{padding:5px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+td.n{color:var(--muted);width:2.2em;text-align:right}
+td.r{text-align:right;width:4em}
+td.d{text-align:right;width:3.2em;font-weight:600}
+td.d.up{color:var(--good)} td.d.dn{color:var(--bad)} td.d.same{color:var(--muted);font-weight:400}
+tr.bron td{background:rgba(251,79,20,.14)}
+tr.bump td{color:var(--muted);font-style:italic}
+.ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font:inherit;font-weight:700;background:var(--orange);color:#fff;border:0;border-radius:6px;padding:10px 16px;min-height:44px;cursor:pointer}
+.btn[disabled]{opacity:.5;cursor:default}
+.btn.ghost{background:transparent;color:var(--orange);border:1px solid var(--orange)}
+input[type=text]{font:inherit;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:10px 12px;min-height:44px;flex:1;min-width:200px}
+.status{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted);display:inline-block}
+.dot.on{background:var(--good)} .dot.off{background:var(--bad)}
+.props{display:grid;gap:10px}
+.prop{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--line);border-radius:6px;padding:10px 14px;display:grid;gap:6px}
+.prop.adopted{border-left-color:var(--good)} .prop.declined{border-left-color:var(--bad)} .prop.open{border-left-color:var(--orange)}
+.prop .top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.prop .who{font-size:13px;color:var(--muted)}
+.badge{font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;padding:3px 8px;border-radius:999px;border:1px solid currentColor}
+.badge.adopted{color:var(--good)} .badge.declined{color:var(--bad)} .badge.open{color:var(--orange)}
+.votes{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:14px}
+.votes .v{padding:4px 10px;border-radius:999px;border:1px solid var(--line)}
+.votes .v.yes{border-color:var(--good);color:var(--good)} .votes .v.no{border-color:var(--bad);color:var(--bad)}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.acts button{font:inherit;font-size:14px;font-weight:600;background:transparent;color:var(--orange);border:1px solid var(--line);border-radius:6px;padding:6px 12px;min-height:40px;cursor:pointer}
+.note{font-size:15px}
+.empty{color:var(--muted);font-size:14px}
+footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
+@media (max-width:420px){h1{font-size:36px}}
+</style>
+<link rel="stylesheet" href="../theme.css?v=35"></head><body>
+<div class="wrap">
+  <header>
+    <div class="lbl">NFL 2026 · Power index · <span id="asof">through Week —</span></div>
+    <h1>Tune <span>the Index</span></h1>
+    <div class="sub">The power rankings run on a handful of dials. Set them, see what the top 10 becomes from this season's results, and propose the setting you believe. Todd owns the official formula, so a proposal takes effect only when he says yes; it then drives next Tuesday's rankings.</div>
+  </header>
+<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../power-rankings/tune.html" aria-current="page">Tune</a><a href="../standings.html">Standings</a><a href="../picks/week5.html">Week 5 Picks</a><a href="../discuss.html">Discussion</a></nav>
+
+  <section class="rec" id="current"><b>Official method</b> <span id="curtxt">loading…</span></section>
+
+  <section class="knobs" id="knobs"></section>
+
+  <section class="sum" id="sum"></section>
+
+  <section>
+    <div class="ctl" style="justify-content:space-between">
+      <h2 id="cmph">Your setting vs the official index</h2>
+      <button class="bd-chip" id="all32" aria-pressed="false" type="button">Show all 32</button>
+    </div>
+    <div class="cmp" id="cmp" style="margin-top:10px"></div>
+  </section>
+
+  <section>
+    <h2>Propose this setting</h2>
+    <div class="sub" style="margin-bottom:8px">Your vote counts as yes. Todd's yes adopts it for next Tuesday's rankings; his no closes it.</div>
+    <div class="ctl">
+      <input type="text" id="note" maxlength="240" placeholder="Why this setting? (optional, 240 chars)">
+      <button class="btn" id="propose" type="button">Propose</button>
+    </div>
+    <div class="status" style="margin-top:8px"><span class="dot" id="dbdot"></span><span id="dbmsg">Connecting to the shared board…</span> <button class="acts" id="who" type="button" style="all:unset;color:var(--orange);cursor:pointer;font-weight:600;margin-left:6px"></button></div>
+  </section>
+
+  <section>
+    <h2>Proposals</h2>
+    <div class="props" id="props" style="margin-top:10px"><p class="empty">Loading…</p></div>
+  </section>
+
+<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../power-rankings/tune.html" aria-current="page">Tune</a><a href="../standings.html">Standings</a><a href="../picks/week5.html">Week 5 Picks</a><a href="../discuss.html">Discussion</a></nav>
+  <footer><span id="byline">Prepared by: Mack.</span> Settings are recomputed from the season's finals every Tuesday. Not betting advice.</footer>
+</div>
+<script>
+const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
+const BOARD_VER = "v35", MACK_VER = "326";
+const $ = (s, r=document) => r.querySelector(s);
+const store = { get(k){ try{ return localStorage.getItem(k)||""; }catch(e){ return ""; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }, del(k){ try{ localStorage.removeItem(k); }catch(e){} } };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+// ---- the dials ----
+const KNOBS = [
+  { id:"method", label:"Starting point", why:"Todd's start = his preseason ratings, nudged by each week's results. Results only = zero prior; the season's scores and schedule decide everything.",
+    opts:[["prior","Todd's start"],["results","Results only"]] },
+  { id:"k", label:"K — how much one game moves a team", why:"Each game's surprise (actual margin minus projected) times K is added to the rating. K 0.1 = a 20-point shock moves a team 2 points.", only:"prior",
+    opts:[["0.05","0.05"],["0.1","0.1"],["0.2","0.2"],["0.3","0.3"]] },
+  { id:"cap", label:"Cap on one game", why:"The most a single game can count, in points. A 14 cap says a 30-point blowout is no more informative than a 14-point win.",
+    opts:[["14","14"],["21","21"],["99","none"]] },
+  { id:"wk1", label:"Week 1 weight", why:"How much Week 1 counts in the results-only index. Half-weight treats openers as noisier than later games.", only:"results",
+    opts:[["0.5","half"],["1","full"]] },
+  { id:"gate", label:"Top-10 win% gate", why:"On = a team winning under 34% of its games cannot hold a top-10 slot, whatever its margins say; the next eligible team moves up.",
+    opts:[["0","off"],["1","on"]] },
+];
+let D = null, sel = {}, all32 = false, me = "", props = [], adopted = null;
+
+function settingKey(s){   // matches scenarios.json keys (sorted knobs) + gate appended
+  const parts = s.method === "prior" ? {cap:s.cap, k:s.k} : {cap:s.cap, wk1:s.wk1};
+  return s.method + "|" + Object.keys(parts).sort().map(k => k + "=" + Number(parts[k])).join("|");
+}
+function proposalString(s){ return settingKey(s) + "|gate=" + s.gate; }
+function parseSetting(str){
+  const [method, ...rest] = str.split("|"); const s = Object.assign({}, D.official, {method, gate:"0"});
+  s.k = String(D.official.k); s.cap = String(D.official.cap); s.wk1 = String(D.official.wk1); s.gate = D.official.gate ? "1" : "0";
+  for (const kv of rest){ const [k, v] = kv.split("="); if (k in s || k === "gate") s[k] = String(Number(v)); }
+  return s;
+}
+function words(s){
+  const cap = s.cap === "99" ? "no cap" : "cap " + s.cap;
+  return (s.method === "prior" ? "Todd's start · K " + s.k : "Results only · Week 1 " + (s.wk1 === "0.5" ? "half" : "full")) + " · " + cap + " · gate " + (s.gate === "1" ? "on" : "off");
+}
+function winpct(t){ const [w,l,d] = D.records[t] || [0,0,0]; const n = w+l+d; return n ? (w + 0.5*d)/n : 0; }
+function rec(t){ const [w,l,d] = D.records[t] || [0,0,0]; return w + "-" + l + (d ? "-" + d : ""); }
+function ranking(s){
+  let order = (D.scenarios[settingKey(s)] || []).slice();
+  let bumped = new Set();
+  if (s.gate === "1"){
+    const elig = order.filter(x => winpct(x[0]) >= D.gate_min_winpct); const top = elig.slice(0,10);
+    bumped = new Set(order.slice(0,10).filter(x => !top.includes(x)).map(x => x[0]));
+    order = top.concat(order.filter(x => !top.includes(x)));
+  }
+  return { order, bumped };
+}
+
+function renderKnobs(){
+  $("#knobs").innerHTML = KNOBS.map(k => `
+    <div class="knob" data-id="${k.id}" ${k.only && sel.method !== k.only ? 'data-off="1"' : ""}>
+      <div class="lbl">${k.label}${k.only && sel.method !== k.only ? " · not used by this starting point" : ""}</div>
+      <div class="row">${k.opts.map(([v,l]) => `<button class="bd-chip" type="button" data-k="${k.id}" data-v="${v}" aria-pressed="${sel[k.id]===v}">${l}</button>`).join("")}</div>
+      <div class="why">${k.why}</div>
+    </div>`).join("");
+  $("#knobs").querySelectorAll(".bd-chip").forEach(b => b.addEventListener("click", () => { sel[b.dataset.k] = b.dataset.v; renderKnobs(); renderCompare(); }));
+}
+
+function renderCompare(){
+  const off = ranking(officialSel()), mine = ranking(sel);
+  const offRank = {}; off.order.forEach((x,i) => offRank[x[0]] = i+1);
+  const myRank = {}; mine.order.forEach((x,i) => myRank[x[0]] = i+1);
+  const n = all32 ? 32 : 10;
+  const offTop = new Set(off.order.slice(0,10).map(x=>x[0])), myTop = new Set(mine.order.slice(0,10).map(x=>x[0]));
+  const inOut = [...myTop].filter(t => !offTop.has(t));
+  let big = null; for (const t of Object.keys(myRank)){ const d = offRank[t] - myRank[t]; if (!big || Math.abs(d) > Math.abs(big[1])) big = [t, d]; }
+  const same = proposalString(sel) === proposalString(officialSel());
+  $("#sum").innerHTML = [
+    tile(same ? "0" : String(inOut.length), "new team" + (inOut.length===1?"":"s") + " in the top 10" + (inOut.length ? ": " + inOut.join(", ") : "")),
+    tile(same ? "—" : (big && big[1] ? (big[1]>0?"+":"") + big[1] : "0"), same ? "identical to the official index" : "biggest rank move" + (big && big[1] ? ": " + big[0] : "")),
+    tile("#" + (myRank["Broncos"]||"—"), "Broncos under your setting (official #" + (offRank["Broncos"]||"—") + ")"),
+    tile(mine.bumped.size ? String(mine.bumped.size) : "0", "gated out of the top 10" + (mine.bumped.size ? ": " + [...mine.bumped].join(", ") : "")),
+  ].join("");
+  const col = (title, sub, r, other, bumped) => `<div class="col"><h3>${title}<small>${sub}</small></h3><table><tbody>${
+    r.order.slice(0,n).map((x,i) => { const d = other[x[0]] ? other[x[0]] - (i+1) : 0; const cls = d>0?"up":d<0?"dn":"same";
+      return `<tr class="${x[0]==="Broncos"?"bron":""}${bumped.has(x[0])?" bump":""}"><td class="n">${i+1}</td><td>${x[0]} <small style="color:var(--muted)">${rec(x[0])}</small></td><td class="r">${x[1]>0?"+":""}${x[1].toFixed(1)}</td><td class="d ${cls}">${d?((d>0?"▲":"▼")+Math.abs(d)):"·"}</td></tr>`; }).join("")
+  }</tbody></table></div>`;
+  $("#cmp").innerHTML = col("Official", words(officialSel()), off, myRank, off.bumped) + col("Yours", words(sel), mine, offRank, mine.bumped);
+  $("#cmph").textContent = same ? "Your setting is the official index" : "Your setting vs the official index";
+  $("#propose").disabled = same;
+}
+const tile = (v, s) => `<div class="tile"><div class="v">${esc(v)}</div><small>${esc(s)}</small></div>`;
+function officialSel(){ return adopted ? parseSetting(adopted.setting) : parseSetting(settingKey({method:D.official.method, k:String(D.official.k), cap:String(D.official.cap), wk1:String(D.official.wk1)}) + "|gate=" + (D.official.gate?1:0)); }
+
+// ---- store: whoami, proposals, votes ----
+function setDb(k,msg){ $("#dbdot").className = "dot " + k; $("#dbmsg").textContent = msg; }
+function showMe(){ $("#who").textContent = me ? "signed in as " + me + " · change key" : "enter your board key"; }
+async function whoami(key){ const r = await fetch(STORE + "?board=1&whoami=1&key=" + encodeURIComponent(key) + "&t=" + Date.now(), {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error("that board key was not accepted"); me = j.person; store.set("board-who", me); showMe(); return me; }
+async function askKey(){ const key = (prompt("Your board key (from Scott or Mack; remembered on this device):") || "").trim(); if (!key) return ""; store.set("board-key", key); try { await whoami(key); return key; } catch(e){ store.del("board-key"); me = ""; showMe(); setDb("off", e.message + "."); return ""; } }
+$("#who").addEventListener("click", () => { store.del("board-key"); store.del("board-who"); me = ""; showMe(); askKey(); });
+
+async function loadProps(){
+  try {
+    const r = await fetch(STORE + "?tune=1&t=" + Date.now(), {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error(j.error||"store error");
+    props = (j.proposals||[]).filter(p => p.status !== "withdrawn").reverse(); adopted = j.adopted || null;
+    renderCurrent(); renderProps(); renderCompare(); setDb("on", "Shared board connected.");
+  } catch(e){ setDb("off", "Could not reach the shared board (" + (e.message||e) + "). You can still try settings."); renderProps(); }
+}
+function renderCurrent(){
+  const o = words(parseSetting(settingKey({method:D.official.method, k:String(D.official.k), cap:String(D.official.cap), wk1:String(D.official.wk1)}) + "|gate=" + (D.official.gate?1:0)));
+  $("#curtxt").innerHTML = adopted
+    ? `<b style="color:var(--good)">Adopted</b> ${esc(words(parseSetting(adopted.setting)))} — approved by ${esc(adopted.by)} ${esc(when(adopted.t))}; runs from the next Tuesday update. <span style="color:var(--muted)">Was: ${esc(o)}.</span>`
+    : `${esc(o)} — Todd's preseason ratings, updated each Tuesday from the finals. Nothing adopted yet.`;
+}
+const when = t => new Date(t).toLocaleString([], {month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
+function renderProps(){
+  if (!props.length){ $("#props").innerHTML = '<p class="empty">No proposals yet. Set the dials above and propose the first one.</p>'; return; }
+  $("#props").innerHTML = props.map(p => {
+    const s = parseSetting(p.setting); const votes = ["Todd","Ryota","Scott"].map(n => `<span class="v ${p.votes[n]||""}">${n} ${p.votes[n]==="yes"?"✓":p.votes[n]==="no"?"✗":"—"}</span>`).join("");
+    const mine = me && me !== "Mack" && p.status === "open";
+    return `<article class="prop ${p.status}" data-id="${p.id}">
+      <div class="top"><div><strong>${esc(words(s))}</strong><div class="who">${esc(p.person)} · ${esc(when(p.t))}${p.status==="adopted"&&p.adopted_t?" · adopted "+esc(when(p.adopted_t)):""}</div></div><span class="badge ${p.status}">${p.status}</span></div>
+      ${p.note ? `<div class="note">${esc(p.note)}</div>` : ""}
+      <div class="votes">${votes}</div>
+      <div class="acts"><button type="button" data-try="${p.setting}">Try it</button>${mine ? `<button type="button" data-vote="${p.id}" data-v="yes">Yes</button><button type="button" data-vote="${p.id}" data-v="no">No</button>` : ""}${me && (me===p.person||me==="Mack") && p.status!=="adopted" ? `<button type="button" data-withdraw="${p.id}">Withdraw</button>` : ""}</div>
+    </article>`; }).join("");
+  $("#props").querySelectorAll("[data-try]").forEach(b => b.addEventListener("click", () => { sel = parseSetting(b.dataset.try); renderKnobs(); renderCompare(); $("#knobs").scrollIntoView({behavior:"smooth"}); }));
+  $("#props").querySelectorAll("[data-vote]").forEach(b => b.addEventListener("click", () => write({vote:b.dataset.vote, v:b.dataset.v}, "Vote saved")));
+  $("#props").querySelectorAll("[data-withdraw]").forEach(b => b.addEventListener("click", () => { if (confirm("Withdraw this proposal?")) write({withdraw:b.dataset.withdraw}, "Withdrawn"); }));
+}
+async function write(params, okmsg){
+  let key = store.get("board-key"); if (!key || !me){ key = await askKey(); if (!key) return; }
+  setDb("", "Saving…");
+  try {
+    const q = new URLSearchParams(Object.assign({tune:1, key, t:Date.now()}, params)).toString();
+    const r = await fetch(STORE + "?" + q, {cache:"no-store"}); const j = await r.json();
+    if (!j.ok){ if (j.error === "bad key"){ store.del("board-key"); me = ""; showMe(); } throw new Error(j.error || "store refused"); }
+    await loadProps(); setDb("on", okmsg + (j.status === "adopted" ? " — adopted; it runs from next Tuesday." : "."));
+  } catch(e){ setDb("off", "Did not save (" + (e.message||e) + ")."); }
+}
+$("#propose").addEventListener("click", async () => {
+  const note = $("#note").value.trim();
+  await write({propose: proposalString(sel), note}, "Proposed"); $("#note").value = "";
+});
+$("#all32").addEventListener("click", () => { all32 = !all32; $("#all32").setAttribute("aria-pressed", String(all32)); $("#all32").textContent = all32 ? "Show top 10" : "Show all 32"; renderCompare(); });
+
+// ---- boot ----
+(async () => {
+  try {
+    const r = await fetch("scenarios.json?v=" + BOARD_VER + "&t=" + Date.now(), {cache:"no-store"}); D = await r.json();
+  } catch(e){ $("#cmp").innerHTML = '<p class="empty">Could not load the scenario table. Try again in a minute.</p>'; return; }
+  $("#asof").textContent = "through Week " + D.week + " · " + D.games + " games";
+  sel = officialSel(); renderKnobs(); renderCompare(); renderCurrent();
+  showMe(); if (store.get("board-key")) whoami(store.get("board-key")).catch(() => {});
+  await loadProps(); setInterval(loadProps, 30000);
+  document.getElementById("byline").textContent = "Prepared by: Mack (" + MACK_VER + ").";
+  try { const v = (await (await fetch("../version.txt?t=" + Date.now(), {cache:"no-store"})).text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) location.replace(location.pathname + "?v=" + v); } catch(e){}
+})();
+</script>
+</body></html>
