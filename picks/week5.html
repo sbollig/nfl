@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 5 Board</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../board.css?v=32">
+<style>
+:root{
+  --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
+  --navy:#0b2340;--orange:#e4521c;--orange-soft:#fbe9e0;--good:#2f7a4a;--good-soft:#e3f1e7;--bad:#b23a2e;--bad-soft:#f7e3e0;--push:#8a7a2a;
+  --field:#eef0e8;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  color-scheme:dark;--paper:#141a22;--card:#1d2530;--ink:#eef0f3;--muted:#98a3b3;--line:#333d4a;
+  --navy:#e9eef7;--orange:#ff7a3d;--orange-soft:#3b2317;--good:#6fcf8c;--good-soft:#1c3324;--bad:#f28b7d;--bad-soft:#3a1e1a;--push:#d8c25a;--field:#222b36;}}
+:root[data-theme="dark"]{
+  color-scheme:dark;--paper:#141a22;--card:#1d2530;--ink:#eef0f3;--muted:#98a3b3;--line:#333d4a;
+  --navy:#e9eef7;--orange:#ff7a3d;--orange-soft:#3b2317;--good:#6fcf8c;--good-soft:#1c3324;--bad:#f28b7d;--bad-soft:#3a1e1a;--push:#d8c25a;--field:#222b36;}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:Barlow,system-ui,sans-serif;font-size:15px;line-height:1.4;margin:0;padding-inline:16px;padding-block:20px 48px;font-variant-numeric:tabular-nums}
+.wrap{max-width:1040px;margin:0 auto;display:grid;gap:22px}
+h1,h2,.disp{font-family:"Barlow Condensed",Barlow,system-ui,sans-serif;text-wrap:balance;margin:0}
+h1{font-size:44px;font-weight:700;line-height:1;letter-spacing:.01em;color:var(--navy)}
+h1 span{color:var(--orange)}
+.sub{color:var(--muted);margin-top:6px;font-size:14px}
+.lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.rec{border-top:2px solid var(--navy);border-bottom:1px solid var(--line);padding:10px 0}
+.recrow{display:grid;gap:4px;font-size:14px;margin-top:4px}
+.recrow b{font-family:"Barlow Condensed";font-size:17px;color:var(--orange);margin-right:6px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.tile{background:var(--card);border:1px solid var(--line);padding:12px 14px;border-radius:6px}
+.tile .v{font-family:"Barlow Condensed";font-size:30px;font-weight:700;line-height:1;margin-top:4px;color:var(--navy)}
+.tile .v small{font-size:13px;display:block;margin-left:0;margin-top:2px;color:var(--muted);font-weight:500;margin-left:4px}
+.status{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted);display:inline-block}
+.dot.on{background:var(--good)}.dot.off{background:var(--bad)}
+h2{font-size:22px;font-weight:600;color:var(--navy);border-bottom:2px solid var(--navy);padding-bottom:4px;display:flex;justify-content:space-between;align-items:baseline}
+h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
+.games{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
+.g{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:grid;gap:10px;position:relative}
+/* team-colored cards: card takes the colors of Mack's SU pick; once the game is final, the outright winner's (ESPN teams API, fetched 2026-09-28) */
+.g.pick-Cardinals{--card:#a40227;--paper:#af2041;--ink:#ffffff;--muted:#e4b3be;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#af2041;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#a40227;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Cardinals .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Cardinals .lbl{color:#e4b3be}
+.g.pick-Cardinals .score,.g.pick-Cardinals select{background:#af2041;color:#ffffff;border-color:#ffffff}
+.g.pick-Cardinals .chip{background:#af2041;color:#ffffff}
+.g.pick-Cardinals .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Cardinals .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Cardinals.final{background:#a40227}
+.g.pick-Falcons{--card:#a71930;--paper:#b23549;--ink:#ffffff;--muted:#e5bac1;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#b23549;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#a71930;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Falcons .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Falcons .lbl{color:#e5bac1}
+.g.pick-Falcons .score,.g.pick-Falcons select{background:#b23549;color:#ffffff;border-color:#ffffff}
+.g.pick-Falcons .chip{background:#b23549;color:#ffffff}
+.g.pick-Falcons .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Falcons .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Falcons.final{background:#a71930}
+.g.pick-Ravens{--card:#29126f;--paper:#432e80;--ink:#ffffff;--muted:#bfb8d4;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#432e80;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#29126f;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Ravens .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Ravens .lbl{color:#bfb8d4}
+.g.pick-Ravens .score,.g.pick-Ravens select{background:#432e80;color:#ffffff;border-color:#ffffff}
+.g.pick-Ravens .chip{background:#432e80;color:#ffffff}
+.g.pick-Ravens .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Ravens .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Ravens.final{background:#29126f}
+.g.pick-Bills{--card:#00338d;--paper:#1f4b9b;--ink:#ffffff;--muted:#b2c2dd;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#1f4b9b;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#00338d;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Bills .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Bills .lbl{color:#b2c2dd}
+.g.pick-Bills .score,.g.pick-Bills select{background:#1f4b9b;color:#ffffff;border-color:#ffffff}
+.g.pick-Bills .chip{background:#1f4b9b;color:#ffffff}
+.g.pick-Bills .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Bills .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Bills.final{background:#00338d}
+.g.pick-Panthers{--card:#0085ca;--paper:#007aba;--ink:#111111;--muted:#0c3448;--line:#000000;--navy:#000000;--orange:#000000;--orange-soft:#000000;--field:#007aba;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#0085ca;color:#111111;border:2px solid #000000;box-shadow:inset 6px 0 0 #000000}
+.g.pick-Panthers .chip.mack{color:#ffffff;background:#000000;border-color:#000000}
+.g.pick-Panthers .lbl{color:#0c3448}
+.g.pick-Panthers .score,.g.pick-Panthers select{background:#007aba;color:#111111;border-color:#000000}
+.g.pick-Panthers .chip{background:#007aba;color:#111111}
+.g.pick-Panthers .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Panthers .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Panthers.final{background:#0085ca}
+.g.pick-Bears{--card:#0b1c3a;--paper:#283752;--ink:#ffffff;--muted:#b6bbc4;--line:#e64100;--navy:#e64100;--orange:#e64100;--orange-soft:#e64100;--field:#283752;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#0b1c3a;color:#ffffff;border:2px solid #e64100;box-shadow:inset 6px 0 0 #e64100}
+.g.pick-Bears .chip.mack{color:#111111;background:#e64100;border-color:#e64100}
+.g.pick-Bears .lbl{color:#b6bbc4}
+.g.pick-Bears .score,.g.pick-Bears select{background:#283752;color:#ffffff;border-color:#e64100}
+.g.pick-Bears .chip{background:#283752;color:#ffffff}
+.g.pick-Bears .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Bears .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Bears.final{background:#0b1c3a}
+.g.pick-Bengals{--card:#fb4f14;--paper:#e74912;--ink:#111111;--muted:#572412;--line:#000000;--navy:#000000;--orange:#000000;--orange-soft:#000000;--field:#e74912;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#fb4f14;color:#111111;border:2px solid #000000;box-shadow:inset 6px 0 0 #000000}
+.g.pick-Bengals .chip.mack{color:#ffffff;background:#000000;border-color:#000000}
+.g.pick-Bengals .lbl{color:#572412}
+.g.pick-Bengals .score,.g.pick-Bengals select{background:#e74912;color:#111111;border-color:#000000}
+.g.pick-Bengals .chip{background:#e74912;color:#111111}
+.g.pick-Bengals .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Bengals .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Bengals.final{background:#fb4f14}
+.g.pick-Browns{--card:#472a08;--paper:#5d4426;--ink:#ffffff;--muted:#c8bfb5;--line:#ff3c00;--navy:#ff3c00;--orange:#ff3c00;--orange-soft:#ff3c00;--field:#5d4426;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#472a08;color:#ffffff;border:2px solid #ff3c00;box-shadow:inset 6px 0 0 #ff3c00}
+.g.pick-Browns .chip.mack{color:#111111;background:#ff3c00;border-color:#ff3c00}
+.g.pick-Browns .lbl{color:#c8bfb5}
+.g.pick-Browns .score,.g.pick-Browns select{background:#5d4426;color:#ffffff;border-color:#ff3c00}
+.g.pick-Browns .chip{background:#5d4426;color:#ffffff}
+.g.pick-Browns .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Browns .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Browns.final{background:#472a08}
+.g.pick-Cowboys{--card:#002a5c;--paper:#1f4470;--ink:#ffffff;--muted:#b2bfce;--line:#b0b7bc;--navy:#b0b7bc;--orange:#b0b7bc;--orange-soft:#b0b7bc;--field:#1f4470;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#002a5c;color:#ffffff;border:2px solid #b0b7bc;box-shadow:inset 6px 0 0 #b0b7bc}
+.g.pick-Cowboys .chip.mack{color:#111111;background:#b0b7bc;border-color:#b0b7bc}
+.g.pick-Cowboys .lbl{color:#b2bfce}
+.g.pick-Cowboys .score,.g.pick-Cowboys select{background:#1f4470;color:#ffffff;border-color:#b0b7bc}
+.g.pick-Cowboys .chip{background:#1f4470;color:#ffffff}
+.g.pick-Cowboys .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Cowboys .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Cowboys.final{background:#002a5c}
+.g.pick-Broncos{--card:#0a2343;--paper:#273d5a;--ink:#ffffff;--muted:#b6bdc7;--line:#fc4c02;--navy:#fc4c02;--orange:#fc4c02;--orange-soft:#fc4c02;--field:#273d5a;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#0a2343;color:#ffffff;border:2px solid #fc4c02;box-shadow:inset 6px 0 0 #fc4c02}
+.g.pick-Broncos .chip.mack{color:#111111;background:#fc4c02;border-color:#fc4c02}
+.g.pick-Broncos .lbl{color:#b6bdc7}
+.g.pick-Broncos .score,.g.pick-Broncos select{background:#273d5a;color:#ffffff;border-color:#fc4c02}
+.g.pick-Broncos .chip{background:#273d5a;color:#ffffff}
+.g.pick-Broncos .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Broncos .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Broncos.final{background:#0a2343}
+.g.pick-Lions{--card:#0076b6;--paper:#1f86bf;--ink:#ffffff;--muted:#b2d6e9;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#1f86bf;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#0076b6;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Lions .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Lions .lbl{color:#b2d6e9}
+.g.pick-Lions .score,.g.pick-Lions select{background:#1f86bf;color:#ffffff;border-color:#ffffff}
+.g.pick-Lions .chip{background:#1f86bf;color:#ffffff}
+.g.pick-Lions .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Lions .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Lions.final{background:#0076b6}
+.g.pick-Packers{--card:#204e32;--paper:#3b634b;--ink:#ffffff;--muted:#bccac2;--line:#ffb612;--navy:#ffb612;--orange:#ffb612;--orange-soft:#ffb612;--field:#3b634b;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#204e32;color:#ffffff;border:2px solid #ffb612;box-shadow:inset 6px 0 0 #ffb612}
+.g.pick-Packers .chip.mack{color:#111111;background:#ffb612;border-color:#ffb612}
+.g.pick-Packers .lbl{color:#bccac2}
+.g.pick-Packers .score,.g.pick-Packers select{background:#3b634b;color:#ffffff;border-color:#ffb612}
+.g.pick-Packers .chip{background:#3b634b;color:#ffffff}
+.g.pick-Packers .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Packers .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Packers.final{background:#204e32}
+.g.pick-Texans{--card:#021018;--paper:#202d34;--ink:#ffffff;--muted:#b3b7ba;--line:#eb0028;--navy:#eb0028;--orange:#eb0028;--orange-soft:#eb0028;--field:#202d34;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#021018;color:#ffffff;border:2px solid #eb0028;box-shadow:inset 6px 0 0 #eb0028}
+.g.pick-Texans .chip.mack{color:#ffffff;background:#eb0028;border-color:#eb0028}
+.g.pick-Texans .lbl{color:#b3b7ba}
+.g.pick-Texans .score,.g.pick-Texans select{background:#202d34;color:#ffffff;border-color:#eb0028}
+.g.pick-Texans .chip{background:#202d34;color:#ffffff}
+.g.pick-Texans .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Texans .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Texans.final{background:#021018}
+.g.pick-Colts{--card:#003b75;--paper:#1f5386;--ink:#ffffff;--muted:#b2c4d6;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#1f5386;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#003b75;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Colts .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Colts .lbl{color:#b2c4d6}
+.g.pick-Colts .score,.g.pick-Colts select{background:#1f5386;color:#ffffff;border-color:#ffffff}
+.g.pick-Colts .chip{background:#1f5386;color:#ffffff}
+.g.pick-Colts .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Colts .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Colts.final{background:#003b75}
+.g.pick-Jaguars{--card:#007487;--paper:#1f8595;--ink:#ffffff;--muted:#b2d5db;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#1f8595;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#007487;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Jaguars .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Jaguars .lbl{color:#b2d5db}
+.g.pick-Jaguars .score,.g.pick-Jaguars select{background:#1f8595;color:#ffffff;border-color:#ffffff}
+.g.pick-Jaguars .chip{background:#1f8595;color:#ffffff}
+.g.pick-Jaguars .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Jaguars .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Jaguars.final{background:#007487}
+.g.pick-Chiefs{--card:#e31837;--paper:#e6344f;--ink:#ffffff;--muted:#f7bac3;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#e6344f;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#e31837;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Chiefs .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Chiefs .lbl{color:#f7bac3}
+.g.pick-Chiefs .score,.g.pick-Chiefs select{background:#e6344f;color:#ffffff;border-color:#ffffff}
+.g.pick-Chiefs .chip{background:#e6344f;color:#ffffff}
+.g.pick-Chiefs .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Chiefs .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Chiefs.final{background:#e31837}
+.g.pick-Raiders{--card:#000000;--paper:#1f1f1f;--ink:#ffffff;--muted:#b2b2b2;--line:#a5acaf;--navy:#a5acaf;--orange:#a5acaf;--orange-soft:#a5acaf;--field:#1f1f1f;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#000000;color:#ffffff;border:2px solid #a5acaf;box-shadow:inset 6px 0 0 #a5acaf}
+.g.pick-Raiders .chip.mack{color:#111111;background:#a5acaf;border-color:#a5acaf}
+.g.pick-Raiders .lbl{color:#b2b2b2}
+.g.pick-Raiders .score,.g.pick-Raiders select{background:#1f1f1f;color:#ffffff;border-color:#a5acaf}
+.g.pick-Raiders .chip{background:#1f1f1f;color:#ffffff}
+.g.pick-Raiders .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Raiders .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Raiders.final{background:#000000}
+.g.pick-Chargers{--card:#0080c6;--paper:#0076b6;--ink:#111111;--muted:#0c3247;--line:#111111;--navy:#111111;--orange:#111111;--orange-soft:#111111;--field:#0076b6;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#0080c6;color:#111111;border:2px solid #111111;box-shadow:inset 6px 0 0 #111111}
+.g.pick-Chargers .chip.mack{color:#ffffff;background:#111111;border-color:#111111}
+.g.pick-Chargers .lbl{color:#0c3247}
+.g.pick-Chargers .score,.g.pick-Chargers select{background:#0076b6;color:#111111;border-color:#111111}
+.g.pick-Chargers .chip{background:#0076b6;color:#111111}
+.g.pick-Chargers .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Chargers .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Chargers.final{background:#0080c6}
+.g.pick-Rams{--card:#003594;--paper:#1f4da1;--ink:#ffffff;--muted:#b2c2df;--line:#ffd100;--navy:#ffd100;--orange:#ffd100;--orange-soft:#ffd100;--field:#1f4da1;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#003594;color:#ffffff;border:2px solid #ffd100;box-shadow:inset 6px 0 0 #ffd100}
+.g.pick-Rams .chip.mack{color:#111111;background:#ffd100;border-color:#ffd100}
+.g.pick-Rams .lbl{color:#b2c2df}
+.g.pick-Rams .score,.g.pick-Rams select{background:#1f4da1;color:#ffffff;border-color:#ffd100}
+.g.pick-Rams .chip{background:#1f4da1;color:#ffffff}
+.g.pick-Rams .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Rams .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Rams.final{background:#003594}
+.g.pick-Dolphins{--card:#008e97;--paper:#00838b;--ink:#111111;--muted:#0c3639;--line:#111111;--navy:#111111;--orange:#111111;--orange-soft:#111111;--field:#00838b;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#008e97;color:#111111;border:2px solid #111111;box-shadow:inset 6px 0 0 #111111}
+.g.pick-Dolphins .chip.mack{color:#ffffff;background:#111111;border-color:#111111}
+.g.pick-Dolphins .lbl{color:#0c3639}
+.g.pick-Dolphins .score,.g.pick-Dolphins select{background:#00838b;color:#111111;border-color:#111111}
+.g.pick-Dolphins .chip{background:#00838b;color:#111111}
+.g.pick-Dolphins .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Dolphins .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Dolphins.final{background:#008e97}
+.g.pick-Vikings{--card:#4f2683;--paper:#644092;--ink:#ffffff;--muted:#cabeda;--line:#ffc62f;--navy:#ffc62f;--orange:#ffc62f;--orange-soft:#ffc62f;--field:#644092;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#4f2683;color:#ffffff;border:2px solid #ffc62f;box-shadow:inset 6px 0 0 #ffc62f}
+.g.pick-Vikings .chip.mack{color:#111111;background:#ffc62f;border-color:#ffc62f}
+.g.pick-Vikings .lbl{color:#cabeda}
+.g.pick-Vikings .score,.g.pick-Vikings select{background:#644092;color:#ffffff;border-color:#ffc62f}
+.g.pick-Vikings .chip{background:#644092;color:#ffffff}
+.g.pick-Vikings .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Vikings .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Vikings.final{background:#4f2683}
+.g.pick-Patriots{--card:#002a5c;--paper:#1f4470;--ink:#ffffff;--muted:#b2bfce;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#1f4470;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#002a5c;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Patriots .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Patriots .lbl{color:#b2bfce}
+.g.pick-Patriots .score,.g.pick-Patriots select{background:#1f4470;color:#ffffff;border-color:#ffffff}
+.g.pick-Patriots .chip{background:#1f4470;color:#ffffff}
+.g.pick-Patriots .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Patriots .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Patriots.final{background:#002a5c}
+.g.pick-Saints{--card:#d3bc8d;--paper:#c2ad82;--ink:#111111;--muted:#4b4436;--line:#000000;--navy:#000000;--orange:#000000;--orange-soft:#000000;--field:#c2ad82;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#d3bc8d;color:#111111;border:2px solid #000000;box-shadow:inset 6px 0 0 #000000}
+.g.pick-Saints .chip.mack{color:#ffffff;background:#000000;border-color:#000000}
+.g.pick-Saints .lbl{color:#4b4436}
+.g.pick-Saints .score,.g.pick-Saints select{background:#c2ad82;color:#111111;border-color:#000000}
+.g.pick-Saints .chip{background:#c2ad82;color:#111111}
+.g.pick-Saints .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Saints .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Saints.final{background:#d3bc8d}
+.g.pick-Giants{--card:#003c7f;--paper:#1f538e;--ink:#ffffff;--muted:#b2c4d9;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#1f538e;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#003c7f;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Giants .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Giants .lbl{color:#b2c4d9}
+.g.pick-Giants .score,.g.pick-Giants select{background:#1f538e;color:#ffffff;border-color:#ffffff}
+.g.pick-Giants .chip{background:#1f538e;color:#ffffff}
+.g.pick-Giants .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Giants .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Giants.final{background:#003c7f}
+.g.pick-Jets{--card:#115740;--paper:#2e6b57;--ink:#ffffff;--muted:#b8cdc6;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#2e6b57;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#115740;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Jets .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Jets .lbl{color:#b8cdc6}
+.g.pick-Jets .score,.g.pick-Jets select{background:#2e6b57;color:#ffffff;border-color:#ffffff}
+.g.pick-Jets .chip{background:#2e6b57;color:#ffffff}
+.g.pick-Jets .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Jets .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Jets.final{background:#115740}
+.g.pick-Eagles{--card:#06424d;--paper:#245962;--ink:#ffffff;--muted:#b4c6ca;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#245962;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#06424d;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Eagles .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Eagles .lbl{color:#b4c6ca}
+.g.pick-Eagles .score,.g.pick-Eagles select{background:#245962;color:#ffffff;border-color:#ffffff}
+.g.pick-Eagles .chip{background:#245962;color:#ffffff}
+.g.pick-Eagles .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Eagles .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Eagles.final{background:#06424d}
+.g.pick-Steelers{--card:#000000;--paper:#1f1f1f;--ink:#ffffff;--muted:#b2b2b2;--line:#ffb612;--navy:#ffb612;--orange:#ffb612;--orange-soft:#ffb612;--field:#1f1f1f;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#000000;color:#ffffff;border:2px solid #ffb612;box-shadow:inset 6px 0 0 #ffb612}
+.g.pick-Steelers .chip.mack{color:#111111;background:#ffb612;border-color:#ffb612}
+.g.pick-Steelers .lbl{color:#b2b2b2}
+.g.pick-Steelers .score,.g.pick-Steelers select{background:#1f1f1f;color:#ffffff;border-color:#ffb612}
+.g.pick-Steelers .chip{background:#1f1f1f;color:#ffffff}
+.g.pick-Steelers .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Steelers .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Steelers.final{background:#000000}
+.g.pick-49ers{--card:#aa0000;--paper:#b41f1f;--ink:#ffffff;--muted:#e6b2b2;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#b41f1f;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#aa0000;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-49ers .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-49ers .lbl{color:#e6b2b2}
+.g.pick-49ers .score,.g.pick-49ers select{background:#b41f1f;color:#ffffff;border-color:#ffffff}
+.g.pick-49ers .chip{background:#b41f1f;color:#ffffff}
+.g.pick-49ers .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-49ers .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-49ers.final{background:#aa0000}
+.g.pick-Seahawks{--card:#002a5c;--paper:#1f4470;--ink:#ffffff;--muted:#b2bfce;--line:#69be28;--navy:#69be28;--orange:#69be28;--orange-soft:#69be28;--field:#1f4470;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#002a5c;color:#ffffff;border:2px solid #69be28;box-shadow:inset 6px 0 0 #69be28}
+.g.pick-Seahawks .chip.mack{color:#111111;background:#69be28;border-color:#69be28}
+.g.pick-Seahawks .lbl{color:#b2bfce}
+.g.pick-Seahawks .score,.g.pick-Seahawks select{background:#1f4470;color:#ffffff;border-color:#69be28}
+.g.pick-Seahawks .chip{background:#1f4470;color:#ffffff}
+.g.pick-Seahawks .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Seahawks .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Seahawks.final{background:#002a5c}
+.g.pick-Buccaneers{--card:#bd1c36;--paper:#c5374e;--ink:#ffffff;--muted:#ebbbc3;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#c5374e;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#bd1c36;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Buccaneers .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Buccaneers .lbl{color:#ebbbc3}
+.g.pick-Buccaneers .score,.g.pick-Buccaneers select{background:#c5374e;color:#ffffff;border-color:#ffffff}
+.g.pick-Buccaneers .chip{background:#c5374e;color:#ffffff}
+.g.pick-Buccaneers .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Buccaneers .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Buccaneers.final{background:#bd1c36}
+.g.pick-Titans{--card:#4495d2;--paper:#3f89c1;--ink:#111111;--muted:#20394b;--line:#001532;--navy:#001532;--orange:#001532;--orange-soft:#001532;--field:#3f89c1;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#4495d2;color:#111111;border:2px solid #001532;box-shadow:inset 6px 0 0 #001532}
+.g.pick-Titans .chip.mack{color:#ffffff;background:#001532;border-color:#001532}
+.g.pick-Titans .lbl{color:#20394b}
+.g.pick-Titans .score,.g.pick-Titans select{background:#3f89c1;color:#111111;border-color:#001532}
+.g.pick-Titans .chip{background:#3f89c1;color:#111111}
+.g.pick-Titans .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Titans .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Titans.final{background:#4495d2}
+.g.pick-Commanders{--card:#5a1414;--paper:#6e3030;--ink:#ffffff;--muted:#ceb8b8;--line:#ffb612;--navy:#ffb612;--orange:#ffb612;--orange-soft:#ffb612;--field:#6e3030;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#5a1414;color:#ffffff;border:2px solid #ffb612;box-shadow:inset 6px 0 0 #ffb612}
+.g.pick-Commanders .chip.mack{color:#111111;background:#ffb612;border-color:#ffb612}
+.g.pick-Commanders .lbl{color:#ceb8b8}
+.g.pick-Commanders .score,.g.pick-Commanders select{background:#6e3030;color:#ffffff;border-color:#ffb612}
+.g.pick-Commanders .chip{background:#6e3030;color:#ffffff}
+.g.pick-Commanders .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Commanders .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Commanders.final{background:#5a1414}
+.g.bron{--card:#002244;--paper:#0d2f57;--ink:#ffffff;--muted:#c9d3e0;--line:#FB4F14;--navy:#FB4F14;--orange:#FB4F14;--orange-soft:#FB4F14;--field:#0d2f57;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;
+  background:#002244;color:#fff;border:2px solid #FB4F14;box-shadow:inset 6px 0 0 #FB4F14}
+.g.bron .chip.mack{color:#002244;background:#FB4F14;border-color:#FB4F14}
+.g.bron .lbl{color:#c9d3e0}
+.g.bron .score,.g.bron select{background:#0d2f57;color:#fff;border-color:#FB4F14}
+.g.bron.final{background:#002244}
+.g.final{background:var(--field)}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.team{font-family:"Barlow Condensed";font-size:26px;font-weight:700;line-height:1;color:var(--navy)}
+.team.away{text-align:left}.team.home{text-align:right;justify-content:flex-end}
+.team{display:flex;align-items:center;gap:6px}
+.logo{width:34px;height:34px;object-fit:contain;flex:none;filter:drop-shadow(0 0 1px rgba(255,255,255,.6))}
+.at{font-size:12px;color:var(--muted);text-align:center}
+.score{width:100%;font:inherit;font-family:"Barlow Condensed";font-size:30px;font-weight:700;text-align:center;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);padding:4px 2px;min-width:0}
+.score:focus{outline:2px solid var(--orange);outline-offset:1px}
+.numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:13px}
+.numbers div{display:grid;gap:2px}
+.numbers b{font-weight:600}
+.pick{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:13px}
+.chip{border-radius:999px;padding:2px 9px;font-weight:600;font-size:12px;border:1px solid var(--line);background:var(--paper)}
+.chip.mack{background:var(--orange-soft);border-color:var(--orange);color:var(--orange)}
+.chip.ok{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.chip.no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.chip.push{border-color:var(--push);color:var(--push)}
+.you{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:6px 8px;align-items:center;font-size:13px}
+.you select,.you input[type=text]{font:inherit;padding:5px 7px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);min-width:0;width:100%}
+.you select.mk{opacity:1;-webkit-appearance:none;appearance:none;background-image:none}
+.you select:focus,.you input:focus{outline:2px solid var(--orange);outline-offset:1px}
+.kick{font-size:12px;color:var(--muted)}
+.inj{font-size:12px;color:var(--muted);display:grid;gap:2px;line-height:1.35}
+.inj b{color:var(--ink);font-weight:600}
+.saved{position:absolute;top:10px;right:12px;font-size:11px;color:var(--good);opacity:0;transition:opacity .3s}
+.saved.show{opacity:1}
+.foot{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.foot p{margin:0 0 6px}
+@media (prefers-reduced-motion:reduce){.saved{transition:none}}
+@media (max-width:420px){h1{font-size:36px}.team{font-size:22px}.numbers{grid-template-columns:repeat(2,1fr)}}
+</style>
+<link rel="stylesheet" href="../theme.css?v=32"></head><body>
+
+<div class="layout"><main>
+<div class="wrap">
+  <header>
+    <div class="lbl">NFL 2026 · Week 5 · ratings after Week 4 (all 16 final)</div>
+    <h1>Week 5 <span>Board</span></h1>
+    <div class="sub">Mack's line, the DraftKings market (via ESPN, fetched Oct 6 1:07 PM PT), and his pick for every game. Enter Todd's, Ryota's and Scott's winner, spread and over/under, then the finals as the games go. Everything saves to a shared board, so all three of you see the same page.</div>
+  </header>
+<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../standings.html">Standings</a><a href="../picks/week5.html" aria-current="page">Week 5 Picks</a><a href="../discuss.html">Discussion</a></nav>
+
+  <section class="rec">
+    <div class="lbl">Mack's record so far</div>
+    <div class="recrow">
+      <div><b>Week 2</b> 9-7 straight up · 6-10 against the spread · avg miss 13.5 pts (book 11.8)</div>
+      <div><b>Week 3</b> 10-6 straight up · 9-6-1 against the spread · avg miss 8.0 pts (book 8.3)</div>
+      <div><b>Week 4</b> 9-7 straight up · 9-6-1 against the spread · avg miss 7.3 pts (book 7.4)</div>
+      <div><b>Season</b> 28-20 straight up · 24-22-2 against the spread</div>
+    </div>
+  </section>
+
+  <section class="tiles" id="tiles"></section>
+  <div class="status"><span class="dot" id="dbdot"></span><span id="dbmsg">Connecting to the shared board…</span></div>
+
+  <div id="windows"></div>
+
+<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../standings.html">Standings</a><a href="../picks/week5.html" aria-current="page">Week 5 Picks</a><a href="../discuss.html">Discussion</a></nav>
+  <footer class="foot">
+    <p><b>How to read a card.</b> Lines are home-side, book sign: a negative number means the home team is favored by that much. <b>Mack</b> is his line after this week's verified injury hits. <b>Edge</b> is his line minus the market; he takes the side his line favors, and the further the edge is from zero the stronger the opinion. The win % is his straight-up confidence.</p>
+    <p><b>Key injuries</b> are the top three per team from the ESPN injury report (Out, IR, Doubtful, Questionable); the arrow shows the next healthy player at that spot on the ESPN depth chart. "Depth piece" means the injured player was not a starter. Players hurt in last week's games are included. Fetched Oct 6.</p>
+    <p><b>QB notes applied.</b> Ravens: Jackson expected to play. Bears: Williams out, Tyson Bagent starts. Buccaneers: Mayfield out, Jalon Daniels starts. Giants: Dart out, Jameis Winston starts. Commanders: Daniels expected to play.</p>
+    <p><b>Card colours.</b> Before a game, a card wears the colours of the team Mack picked to win. Once the final is in, it switches to the colours of the team that actually won. The Broncos game stays in Broncos colours either way.</p>
+    <p><b>Picks lock at kickoff</b> (the Sunday 10 AM games lock at 10:15 AM Pacific). You can change a pick any time before then. After that, everyone's picks for that game are read-only; the scores can still be entered.</p>
+    <p><b>Points.</b> One point for each correct pick: winner, spread, and over/under, so up to three a game. A push or a blank pick scores nothing. Mack's picks sit in the row under yours on each card. Like everyone's, they can change until that game kicks off and not after. The tiles at the top show each person's total, with the three records underneath. Mack is scored the same way on the picks he made: a winner in every game, a spread pick in every game (the side his line favors against the market; where the two are equal, the side of his winner), and an over/under in every game. His totals come from each team's points scored and allowed so far this season, with a deduction for a missing starting quarterback.</p>
+    <p>Prepared by: Mack. Picks and finals are shared across devices (refreshes every 20 seconds); the ratings update uses the official finals.</p>
+  </footer>
+</div>
+</main>
+<aside id="board"></aside>
+</div>
+<script src="../board.js?v=32"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"picks", week:5, ver:"v32", collapsible:true});</script>
+
+<script>
+// Game data: from Week05_Intel.json + ratings after Week 4, built by nfl_picks_board.py (Mack, 2026-10-06).
+// line = Mack's line with injuries, mkt = market, both home-side book sign. p = Mack's SU win% for his pick.
+const GAMES = [
+ {id:"g01",ko:"2026-10-09T00:15Z",inj:{"away": ["Baker Mayfield (QB, Out) → Jalon Daniels (QB, rookie)", "Antoine Winfield Jr. (S, Out) → Ifeatu Melifonwu (S, 6 yr)", "Chase McLaughlin (PK, Q) → depth piece"], "home": ["Tyler Smith (G, IR) → depth piece", "Jonathan Bullard (DT, IR) → depth piece", "Jalen Thompson (S, IR) → depth piece"]},win:"Thursday night",kick:"Thu Oct 8 · 5:15 PM PT",away:"Buccaneers",home:"Cowboys",base:-5.2,line:-8.0,mkt:-8.5,ou:47.5,mou:"Under",su:"Cowboys",p:72,ats:"Buccaneers",qb:true},
+ {id:"g02",ko:"2026-10-11T13:30Z",inj:{"away": ["Tank Bigsby (RB, Out) → depth piece", "Dallas Goedert (TE, D) → Johnny Mundt (TE, 9 yr)", "DeVonta Smith (WR, Q) → Britain Covey (WR, 5 yr)"], "home": ["Christian Braswell (CB, Q) → depth piece", "Montaric Brown (CB, Q) → Jarrian Jones (CB, 3 yr)", "Eric Murray (S, Q) → Rayuan Lane III (S, 2 yr)"]},win:"Sunday early (international)",kick:"Sun Oct 11 · 6:30 AM PT",away:"Eagles",home:"Jaguars",base:-2.8,line:-4.3,mkt:-7.0,ou:42.5,mou:"Under",su:"Jaguars",p:63,ats:"Eagles"},
+ {id:"g03",ko:"2026-10-11T17:00Z",inj:{"away": ["Caleb Williams (QB, Out) → Tyson Bagent (QB, 4 yr)", "Anthony Johnson Jr. (S, Out) → depth piece", "Braxton Jones (OT, IR) → depth piece"], "home": ["Micah Parsons (DE, Out) → depth piece", "Edgerrin Cooper (LB, Out) → depth piece", "Warren Brinson (DT, IR) → depth piece"]},win:"Sunday 10 AM",kick:"Sun Oct 11 · 10:00 AM PT",away:"Bears",home:"Packers",base:3.6,line:-0.4,mkt:3.0,ou:45.5,mou:"Under",su:"Packers",p:51,ats:"Packers",qb:true},
+ {id:"g04",ko:"2026-10-11T17:00Z",inj:{"away": ["Tank Dell (WR, IR) → depth piece", "British Brooks (RB, IR) → depth piece", "Azeez Al-Shaair (LB, Q) → K.C. Ossai (LB, 1 yr)"], "home": ["Jackson Slater (G, IR) → depth piece", "Fernando Carmona (G, IR) → depth piece"]},win:"Sunday 10 AM",kick:"Sun Oct 11 · 10:00 AM PT",away:"Texans",home:"Titans",base:3.2,line:2.6,mkt:7.5,ou:38.5,mou:"Over",su:"Texans",p:58,ats:"Titans"},
+ {id:"g05",ko:"2026-10-11T17:00Z",inj:{"away": ["Jalen Davis (CB, IR) → depth piece", "Colbie Young (WR, Q) → Andrei Iosivas (WR, 4 yr)", "Bryan Cook (S, Q) → PJ Jules (S, 2 yr)"], "home": ["Reese Taylor (CB, Out) → depth piece", "Kenneth Grant (DT, IR) → depth piece", "Storm Duck (CB, Out) → depth piece"]},win:"Sunday 10 AM",kick:"Sun Oct 11 · 10:00 AM PT",away:"Bengals",home:"Dolphins",base:6.9,line:7.8,mkt:7.0,ou:42.5,mou:"Under",su:"Bengals",p:72,ats:"Bengals"},
+ {id:"g06",ko:"2026-10-11T17:00Z",inj:{"away": ["Dont'e Thornton Jr. (WR, IR) → depth piece", "Jack Bech (WR, IR) → depth piece", "Jackson Powers-Johnson (G, Q) → Caleb Rogers (G, 2 yr)"], "home": ["Greg Van Roten (G, IR) → depth piece", "A.J. Brown (WR, IR) → depth piece", "Christian Gonzalez (CB, Q) → Karon Prunty (CB, rookie)"]},win:"Sunday 10 AM",kick:"Sun Oct 11 · 10:00 AM PT",away:"Raiders",home:"Patriots",base:-3.0,line:-2.6,mkt:-3.5,ou:45.5,mou:"Under",su:"Patriots",p:57,ats:"Raiders"},
+ {id:"g07",ko:"2026-10-11T17:00Z",inj:{"away": ["Donovan Jackson (G, Out) → depth piece", "Josh Oliver (TE, IR) → depth piece", "Brett Thorson (P, Q) → depth piece"], "home": ["Jordyn Tyson (WR, IR) → depth piece", "Travis Etienne Jr. (RB, IR) → depth piece", "Kaden Elliss (LB, Q) → Isaiah Stalbird (LB, 2 yr)"]},win:"Sunday 10 AM",kick:"Sun Oct 11 · 10:00 AM PT",away:"Vikings",home:"Saints",base:4.6,line:4.8,mkt:1.5,ou:42.5,mou:"Over",su:"Vikings",p:64,ats:"Vikings"},
+ {id:"g08",ko:"2026-10-11T17:00Z",inj:{"away": ["Tylan Wallace (WR, Q) → depth piece", "Elgton Jenkins (C, Q) → depth piece", "Teven Jenkins (G, Q) → depth piece"], "home": ["Braiden McGregor (DE, Out) → depth piece", "Arian Smith (WR, IR) → depth piece", "David Onyemata (DT, IR) → depth piece"]},win:"Sunday 10 AM",kick:"Sun Oct 11 · 10:00 AM PT",away:"Browns",home:"Jets",base:-2.7,line:-0.8,mkt:-2.5,ou:39.5,mou:"Over",su:"Jets",p:52,ats:"Browns"},
+ {id:"g09",ko:"2026-10-11T17:00Z",inj:{"away": ["Arden Key (DE, Out) → Jaylahn Tuimoloau (DE, 2 yr)", "Alec Pierce (WR, IR) → depth piece", "Micheal Clemons (DE, IR) → depth piece"], "home": ["Derrick Harmon (DT, IR) → depth piece", "Jamel Dean (CB, D) → Daylen Everette (CB, rookie)", "Rico Dowdle (RB, Q) → depth piece"]},win:"Sunday 10 AM",kick:"Sun Oct 11 · 10:00 AM PT",away:"Colts",home:"Steelers",base:-0.3,line:-1.1,mkt:-2.5,ou:44.5,mou:"Over",su:"Steelers",p:53,ats:"Colts"},
+ {id:"g10",ko:"2026-10-11T17:00Z",inj:{"away": ["Jaxson Dart (QB, Out) → depth piece", "Braxton Berrios (WR, D) → depth piece", "Chauncey Golston (DE, Q) → Darius Alexander (DT, 2 yr)"], "home": ["Jaylin Lane (WR, Out) → depth piece", "Rachaad White (RB, Q) → depth piece", "Terry McLaurin (WR, Q) → Treylon Burks (WR, 5 yr)"]},win:"Sunday 10 AM",kick:"Sun Oct 11 · 10:00 AM PT",away:"Giants",home:"Commanders",base:-2.4,line:-5.4,mkt:-3.5,ou:43.5,mou:"Under",su:"Commanders",p:66,ats:"Commanders",qb:true},
+ {id:"g11",ko:"2026-10-11T20:05Z",inj:{"away": ["Jonah Coleman (RB, IR) → depth piece", "Pat Bryant (WR, D) → no healthy backup listed", "Pat Surtain II (CB, D) → Jahdae Barron (CB, 2 yr)"], "home": ["Scott Matlock (FB, IR) → depth piece", "Rashawn Slater (OT, Out) → Logan Taylor (G, rookie)", "Brenen Thompson (WR, Q) → depth piece"]},win:"Sunday afternoon",kick:"Sun Oct 11 · 1:05 PM PT",away:"Broncos",home:"Chargers",base:2.5,line:3.5,mkt:3.5,ou:42.5,mou:"Over",su:"Broncos",p:60,ats:"Chargers",bron:true},
+ {id:"g12",ko:"2026-10-11T20:25Z",inj:{"away": ["Brian Branch (S, Out) → depth piece", "Cade Mays (C, IR) → depth piece", "Thomas Harper (S, IR) → depth piece"], "home": ["Paris Johnson Jr. (OT, Out) → depth piece", "Dadrion Taylor-Demerson (S, Q) → depth piece", "Andrew Wingard (S, Q) → Wydett Williams Jr. (S, rookie)"]},win:"Sunday afternoon",kick:"Sun Oct 11 · 1:25 PM PT",away:"Lions",home:"Cardinals",base:5.4,line:4.7,mkt:4.5,ou:54.5,mou:"Over",su:"Lions",p:64,ats:"Lions"},
+ {id:"g13",ko:"2026-10-11T20:25Z",inj:{"away": ["Christian Kirk (WR, IR) → depth piece", "James Thompson Jr. (DT, D) → depth piece", "Nick Bosa (DE, D) → Ogbo Okoronkwo (LB, 9 yr)"], "home": ["Jacardia Wright (RB, Out) → depth piece", "Zach Charbonnet (RB, Out) → depth piece", "Jadarian Price (RB, IR) → depth piece"]},win:"Sunday afternoon",kick:"Sun Oct 11 · 1:25 PM PT",away:"49ers",home:"Seahawks",base:-2.4,line:-2.1,mkt:-2.5,ou:46.5,mou:"Under",su:"Seahawks",p:56,ats:"49ers"},
+ {id:"g14",ko:"2026-10-12T00:20Z",inj:{"away": ["Durham Smythe (TE, Out) → depth piece", "Ethan Pocic (C, IR) → depth piece", "Jovaughn Gwyn (G, IR) → depth piece"], "home": ["Jake Matthews (OT, Q) → Michael Jerrell (OT, 3 yr)", "Za'Darius Smith (DE, Q) → Cameron Thomas (DE, 5 yr)"]},win:"Sunday night",kick:"Sun Oct 11 · 5:20 PM PT",away:"Ravens",home:"Falcons",base:2.2,line:0.3,mkt:-3.5,ou:43.5,mou:"Over",su:"Ravens",p:51,ats:"Ravens"},
+ {id:"g15",ko:"2026-10-13T00:15Z",inj:{"away": ["T.J. Sanders (DT, Q) → Landon Jackson (DE, 2 yr)", "Christian Benford (CB, Q) → Davison Igbinosun (CB, rookie)", "DJ Moore (WR, Q) → Joshua Palmer (WR, 6 yr)"], "home": ["Terrance Ferguson (TE, IR) → depth piece", "Myles Garrett (DE, IR) → depth piece", "Jaylen Watson (CB, Q) → Josh Wallace (CB, 3 yr)"]},win:"Monday night",kick:"Mon Oct 12 · 5:15 PM PT",away:"Bills",home:"Rams",base:-1.4,line:-0.7,mkt:-2.5,ou:54.5,mou:"Under",su:"Rams",p:52,ats:"Bills"},
+];
+const LOGO={"Cardinals":"https://a.espncdn.com/i/teamlogos/nfl/500/ari.png","Falcons":"https://a.espncdn.com/i/teamlogos/nfl/500/atl.png","Ravens":"https://a.espncdn.com/i/teamlogos/nfl/500/bal.png","Bills":"https://a.espncdn.com/i/teamlogos/nfl/500/buf.png","Panthers":"https://a.espncdn.com/i/teamlogos/nfl/500/car.png","Bears":"https://a.espncdn.com/i/teamlogos/nfl/500/chi.png","Bengals":"https://a.espncdn.com/i/teamlogos/nfl/500/cin.png","Browns":"https://a.espncdn.com/i/teamlogos/nfl/500/cle.png","Cowboys":"https://a.espncdn.com/i/teamlogos/nfl/500/dal.png","Broncos":"https://a.espncdn.com/i/teamlogos/nfl/500/den.png","Lions":"https://a.espncdn.com/i/teamlogos/nfl/500/det.png","Packers":"https://a.espncdn.com/i/teamlogos/nfl/500/gb.png","Texans":"https://a.espncdn.com/i/teamlogos/nfl/500/hou.png","Colts":"https://a.espncdn.com/i/teamlogos/nfl/500/ind.png","Jaguars":"https://a.espncdn.com/i/teamlogos/nfl/500/jax.png","Chiefs":"https://a.espncdn.com/i/teamlogos/nfl/500/kc.png","Raiders":"https://a.espncdn.com/i/teamlogos/nfl/500/lv.png","Chargers":"https://a.espncdn.com/i/teamlogos/nfl/500/lac.png","Rams":"https://a.espncdn.com/i/teamlogos/nfl/500/lar.png","Dolphins":"https://a.espncdn.com/i/teamlogos/nfl/500/mia.png","Vikings":"https://a.espncdn.com/i/teamlogos/nfl/500/min.png","Patriots":"https://a.espncdn.com/i/teamlogos/nfl/500/ne.png","Saints":"https://a.espncdn.com/i/teamlogos/nfl/500/no.png","Giants":"https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png","Jets":"https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png","Eagles":"https://a.espncdn.com/i/teamlogos/nfl/500/phi.png","Steelers":"https://a.espncdn.com/i/teamlogos/nfl/500/pit.png","49ers":"https://a.espncdn.com/i/teamlogos/nfl/500/sf.png","Seahawks":"https://a.espncdn.com/i/teamlogos/nfl/500/sea.png","Buccaneers":"https://a.espncdn.com/i/teamlogos/nfl/500/tb.png","Titans":"https://a.espncdn.com/i/teamlogos/nfl/500/ten.png","Commanders":"https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"};
+const state = {};   // id -> {as, hs, pick, note}
+let db = null, canWrite = true;
+const lockAt = g => Date.parse(g.ko) + (g.win === "Sunday 10 AM" ? 15*60000 : 0);   // Sunday 10 AM games lock at 10:15 (Scott 10/4); all others at kickoff (Scott 10/1)
+const started = g => Date.now() >= lockAt(g);   // scores stay editable
+const $ = (s, r=document) => r.querySelector(s);
+const fm = v => v === null || v === undefined ? "—" : (v > 0 ? "+" : "") + v.toFixed(1);
+const num = v => (v === "" || v === null || v === undefined) ? null : Number(v);
+
+function grade(g, s){
+  const as = num(s.as), hs = num(s.hs);
+  if (as === null || hs === null) return null;
+  const margin = hs - as;                       // home margin
+  const winner = margin > 0 ? g.home : margin < 0 ? g.away : "Tie";
+  const su = winner === "Tie" ? "push" : (winner === g.su ? "ok" : "no");
+  let ats = null;
+  if (g.ats){ const cover = margin + g.mkt;    // home covers if margin + mkt > 0
+    ats = cover === 0 ? "push" : ((cover > 0) === (g.ats === g.home) ? "ok" : "no"); }
+  const cover = margin + g.mkt, ppl = {};
+  for (const p of PEOPLE){ const pk = (s.picks||{})[p] || {};
+    ppl[p] = { su: pk.su ? (winner==="Tie" ? "push" : (winner===pk.su ? "ok":"no")) : null,
+               ats: pk.ats ? (cover===0 ? "push" : ((cover>0)===(pk.ats===g.home) ? "ok":"no")) : null,
+               ou: pk.ou ? (as+hs===g.ou ? "push" : (((as+hs)>g.ou)===(pk.ou==="Over") ? "ok":"no")) : null }; }
+  const mou = g.mou ? (as+hs===g.ou ? "push" : (((as+hs)>g.ou)===(g.mou==="Over") ? "ok":"no")) : null;   // Mack's over/under
+  return {margin, winner, su, ats, mou, ppl, total: as + hs};
+}
+
+function render(){
+  const wins = [...new Set(GAMES.map(g => g.win))];
+  $("#windows").innerHTML = wins.map(w => `
+    <section><h2>${w} <small>${GAMES.filter(g=>g.win===w).length} game${GAMES.filter(g=>g.win===w).length>1?"s":""}</small></h2>
+    <div class="games">${GAMES.filter(g=>g.win===w).map(card).join("")}</div></section>`).join("");
+  tiles();
+}
+function card(g){
+  const s = state[g.id] || {}; const r = grade(g, s);
+  const chip = (t, k) => `<span class="chip ${k||""}">${t}</span>`;
+  const verdict = r ? [
+    chip(`Mack SU ${r.su==="ok"?"✓":r.su==="no"?"✗":"push"}`, r.su),
+    r.ats ? chip(`ATS ${r.ats==="ok"?"✓":r.ats==="no"?"✗":"push"}`, r.ats) : "",
+    r.mou ? chip(`Mack O/U ${r.mou==="ok"?"✓":r.mou==="no"?"✗":"push"}`, r.mou) : "",
+    ...PEOPLE.map(p => ["su","ats","ou"].map(k => r.ppl[p][k] ? chip(`${p} ${k==="su"?"W":k.toUpperCase()} ${r.ppl[p][k]==="ok"?"✓":r.ppl[p][k]==="no"?"✗":"push"}`, r.ppl[p][k]) : "").join("")),
+    chip(`Total ${r.total} ${r.total>g.ou?"over":r.total<g.ou?"under":"push"}`, r.total===g.ou?"push":"")
+  ].join("") : "";
+  // card colour: Mack's pick before the game; once final, the team that won outright (Scott 10/1). A tie keeps the pick's colours.
+  const won = r && r.winner !== "Tie" ? r.winner : null, tint = g.bron ? "Broncos" : (won || g.su);   // Broncos game keeps its highlight regardless (Scott 10/2)
+  return `<article class="g pick-${tint.replace(/[^A-Za-z0-9]/g,"")} ${g.bron?"bron":""} ${r?"final":""}" data-id="${g.id}">
+    <span class="saved" id="sv-${g.id}">saved</span>
+    <div class="kick">${g.kick}${g.qb?" · QB change":""}<span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span></div>
+    <div class="teams">
+      <div class="team away"><img class="logo" src="${LOGO[g.away]}" alt="" loading="lazy">${g.away}</div><div class="at">at</div><div class="team home">${g.home}<img class="logo" src="${LOGO[g.home]}" alt="" loading="lazy"></div>
+      <input class="score" id="as-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${s.as ?? ""}" aria-label="${g.away} score" ${canWrite?"":"disabled"}>
+      <div></div>
+      <input class="score" id="hs-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${s.hs ?? ""}" aria-label="${g.home} score" ${canWrite?"":"disabled"}>
+    </div>
+    <div class="numbers">
+      <div><span class="lbl">Mack</span><b>${fm(g.line)}</b></div>
+      <div><span class="lbl">Market</span><b>${fm(g.mkt)}</b></div>
+      <div><span class="lbl">Edge</span><b>${fm(g.line-g.mkt)}</b></div>
+      <div><span class="lbl">O/U</span><b>${g.ou}</b></div>
+    </div>
+    <div class="inj"><span class="lbl">Key injuries → who steps in</span>
+      <div><b>${g.away}</b> ${g.inj.away.length?g.inj.away.join(" · "):"none listed"}</div>
+      <div><b>${g.home}</b> ${g.inj.home.length?g.inj.home.join(" · "):"none listed"}</div></div>
+    <div class="pick">${chip(`Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
+    <div class="you">
+      <span class="lbl"></span><span class="lbl">Winner</span><span class="lbl">Spread</span><span class="lbl">Total ${g.ou}</span>
+      ${PEOPLE.map(p => { const pk=(s.picks||{})[p]||{}; const sel=(v,x)=>v===x?"selected":"";
+        const sp = g.mkt<0 ? [[g.away, `${g.away} +${-g.mkt}`],[g.home, `${g.home} ${g.mkt}`]] : [[g.away, `${g.away} ${g.mkt===0?"PK":"-"+g.mkt}`],[g.home, `${g.home} ${g.mkt===0?"PK":"+"+g.mkt}`]];
+        return `<label class="lbl">${p}</label>
+        <select id="su-${p}-${g.id}" aria-label="${p} winner" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option><option ${sel(pk.su,g.away)}>${g.away}</option><option ${sel(pk.su,g.home)}>${g.home}</option></select>
+        <select id="ats-${p}-${g.id}" aria-label="${p} spread" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option>${sp.map(([v,l])=>`<option value="${v}" ${sel(pk.ats,v)}>${l}</option>`).join("")}</select>
+        <select id="ou-${p}-${g.id}" aria-label="${p} total" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option><option ${sel(pk.ou,"Over")}>Over</option><option ${sel(pk.ou,"Under")}>Under</option></select>`; }).join("")}
+      ${(() => { const sp = g.mkt<0 ? {[g.away]:`${g.away} +${-g.mkt}`,[g.home]:`${g.home} ${g.mkt}`} : {[g.away]:`${g.away} ${g.mkt===0?"PK":"-"+g.mkt}`,[g.home]:`${g.home} ${g.mkt===0?"PK":"+"+g.mkt}`};
+        const cell = (v, what) => `<select class="mk" disabled aria-label="Mack ${what}"><option>${v||"—"}</option></select>`;   // Mack's picks: fixed at publish, read-only
+        return `<label class="lbl">Mack</label>${cell(g.su,"winner")}${cell(g.ats?sp[g.ats]:"","spread")}${cell(g.mou,"total")}`; })()}
+    </div>
+  </article>`;
+}
+function tiles(){
+  let finals=0, su=[0,0], ats=[0,0], mou=[0,0]; const rec={}; for(const p of PEOPLE) rec[p]={su:[0,0],ats:[0,0],ou:[0,0]};
+  for (const g of GAMES){ const r = grade(g, state[g.id]||{}); if(!r) continue; finals++;
+    if(r.su!=="push"){su[1]++; if(r.su==="ok")su[0]++;}
+    if(r.ats&&r.ats!=="push"){ats[1]++; if(r.ats==="ok")ats[0]++;}
+    if(r.mou&&r.mou!=="push"){mou[1]++; if(r.mou==="ok")mou[0]++;}
+    for(const p of PEOPLE) for(const k of ["su","ats","ou"]){ const v=r.ppl[p][k]; if(v&&v!=="push"){rec[p][k][1]++; if(v==="ok")rec[p][k][0]++;} } }
+  const t = (l,v,s) => `<div class="tile"><div class="lbl">${l}</div><div class="v">${v}${s?`<small>${s}</small>`:""}</div></div>`;
+  const mpts = su[0] + ats[0] + mou[0];   // Mack: winner on every game, spread only where he leaned, totals from g.mou
+  $("#tiles").innerHTML = t("Finals in", finals, "/ " + GAMES.length) + PEOPLE.map(p => { const pts = rec[p].su[0] + rec[p].ats[0] + rec[p].ou[0];   // 1 point per correct pick (winner, spread, total)
+    return t(p, `${pts} pt${pts===1?"":"s"}`, `W ${rec[p].su[0]}-${rec[p].su[1]-rec[p].su[0]} · ATS ${rec[p].ats[0]}-${rec[p].ats[1]-rec[p].ats[0]} · O/U ${rec[p].ou[0]}-${rec[p].ou[1]-rec[p].ou[0]}`); }).join("")
+    + t("Mack", `${mpts} pt${mpts===1?"":"s"}`, `W ${su[0]}-${su[1]-su[0]} · ATS ${ats[0]}-${ats[1]-ats[0]} · O/U ${mou[0]}-${mou[1]-mou[0]}`);
+}
+
+// ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
+const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
+const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v32";
+const PEOPLE = ["Todd","Ryota","Scott"];
+function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
+function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+function setDb(k,msg){ $("#dbdot").className="dot "+k; $("#dbmsg").textContent=msg; }
+const timers = {}, baseline = {};   // baseline[id] = server-known row, taken once per pending save (iOS fires input+change per select)
+function queueSave(id){
+  const s = state[id] = state[id] || {};
+  if (!(id in baseline)) baseline[id] = JSON.stringify(s);
+  s.as = $("#as-"+id).value.trim(); s.hs = $("#hs-"+id).value.trim();
+  s.picks = {}; for (const p of PEOPLE) s.picks[p] = { su: $("#su-"+p+"-"+id).value, ats: $("#ats-"+p+"-"+id).value, ou: $("#ou-"+p+"-"+id).value };
+  saveCache(); tiles();
+  clearTimeout(timers[id]); timers[id] = setTimeout(() => push(id), 500);
+}
+async function push(id){
+  const s = state[id]; const before = baseline[id]; delete baseline[id];
+  const prev = before ? JSON.parse(before) : {};
+  const calls = [];
+  const G = GAMES.find(x => x.id === id);
+  if (!started(G)) for (const p of PEOPLE){ const v = s.picks[p], o = (prev.picks||{})[p]||{}; if (v.su!==o.su || v.ats!==o.ats || v.ou!==o.ou) calls.push({week:WEEK, game:id, person:p, su:v.su, ats:v.ats, ou:v.ou}); }
+  if (s.as !== (prev.as||"") || s.hs !== (prev.hs||"")) calls.push({week:WEEK, game:id, as:s.as, hs:s.hs});
+  try {
+    for (const body of calls){ const q = new URLSearchParams(body).toString(); const r = await fetch(STORE + "?" + q, {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error(j.error||"store refused"); }
+    const el=$("#sv-"+id); el.classList.add("show"); setTimeout(()=>el.classList.remove("show"),1200);
+    ping("saved:" + id);
+    setDb("on","Saved to the shared board at " + new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}) + ". Everyone sees the same picks and scores. Board " + BOARD_VER + ".");
+    await pull(false);
+  } catch(e){ if (!(id in baseline)) baseline[id] = before; ping("savefail:" + id + ":" + String(e).slice(0,30)); setDb("off","Could not reach the shared board; your entry is kept on this device and will show again here. Try later."); }
+}
+async function pull(quiet){
+  try {
+    const r = await fetch(STORE + "?week=" + WEEK, {cache:"no-store"}); const j = await r.json();
+    if (!j.ok) throw new Error(j.error||"store error");
+    let changed=false;
+    for (const [id,row] of Object.entries(j.data||{})){
+      const cur = state[id] || {}; const nxt = {as: row.as||"", hs: row.hs||"", picks:{}};
+      for (const p of PEOPLE){ const pk=(row.picks||{})[p]||{}; nxt.picks[p] = {su: pk.su||"", ats: pk.ats||"", ou: pk.ou||""}; }
+      if (JSON.stringify(cur.as||"")!==JSON.stringify(nxt.as) || JSON.stringify(cur.hs||"")!==JSON.stringify(nxt.hs) || JSON.stringify(cur.picks||{})!==JSON.stringify(nxt.picks)){ state[id]=nxt; changed=true; }
+    }
+    saveCache();
+    if (changed && !document.activeElement?.closest?.(".g")) render(); else tiles();
+    if (!quiet) setDb("on","Connected to the shared board. Picks and scores are the same on every device. Board " + BOARD_VER + ".");
+  } catch(e){ if(!quiet) setDb("off","Shared board not reachable right now; showing what this device last saw."); }
+}
+document.addEventListener("input", e => { const a = e.target.closest?.(".g"); if(a) queueSave(a.dataset.id); });
+document.addEventListener("change", e => { const a = e.target.closest?.(".g"); if(a) queueSave(a.dataset.id); });
+document.addEventListener("focusout", e => { const a = e.target.closest?.(".g"); if(a && document.activeElement && !a.contains(document.activeElement)) render(); });
+loadCache(); render(); setDb("", "Connecting to the shared board…"); pull(false);
+// Tell the store which version/browser loaded (diagnostic), and self-refresh if a newer board is published.
+function ping(ev){ try{ fetch(STORE + "?ping=1&ver=" + BOARD_VER + "&ev=" + encodeURIComponent(ev) + "&ua=" + encodeURIComponent(navigator.userAgent.slice(0,160)), {cache:"no-store"}).catch(()=>{}); }catch(e){} }
+ping("load");
+(async () => { try { const r = await fetch("../version.txt?t=" + Date.now(), {cache:"no-store"}); const v = (await r.text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) location.replace(location.pathname + "?v=" + v); } catch(e){} })();
+setInterval(() => { if (!document.activeElement?.closest?.(".g")) pull(true); }, 20000);
+// lock a game's pick dropdowns the moment it kicks off, even on a page left open
+function lockStarted(){ for (const g of GAMES) if (started(g)) { const lk = $("#lk-"+g.id); if (lk && !lk.textContent) lk.textContent = " · picks locked";
+  for (const p of PEOPLE) for (const k of ["su","ats","ou"]) { const el = $("#"+k+"-"+p+"-"+g.id); if (el && !el.disabled) { el.blur(); el.disabled = true; } } } }
+setInterval(lockStarted, 15000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) pull(true); });
+</script>
+</body></html>
