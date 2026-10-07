@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Week 5 Board</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../board.css?v=45">
+<link rel="stylesheet" href="../board.css?v=46">
 <style>
 :root{
   --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
@@ -332,6 +332,14 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .mu td b{display:block;color:var(--ink)} .mu td i{display:block;opacity:.7}
 .mu td.wa,.mu td.wh{background:rgba(255,255,255,.06)}
 .musum{font-size:11px} .musum b{color:var(--ink)}
+/* matchup on the right (Scott 10/7): wide screens get one card per row, split into two columns */
+@media (min-width:900px){
+  .games{grid-template-columns:1fr}
+  .g.has-mu{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:22px;align-items:start}
+  .g.has-mu>.kick,.g.has-mu>.teams,.g.has-mu>.numbers,.g.has-mu>.inj,.g.has-mu>.pick,.g.has-mu>.you{grid-column:1}
+  .g.has-mu>.mu{grid-column:2;grid-row:1/span 6;border-left:1px solid var(--line);padding-left:18px;height:100%}
+  .g.has-mu>.mu table{font-size:13px}
+}
 .inj{font-size:12px;color:var(--muted);display:grid;gap:2px;line-height:1.35}
 .inj b{color:var(--ink);font-weight:600}
 .saved{position:absolute;top:10px;right:12px;font-size:11px;color:var(--good);opacity:0;transition:opacity .3s}
@@ -341,7 +349,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 @media (prefers-reduced-motion:reduce){.saved{transition:none}}
 @media (max-width:420px){h1{font-size:36px}.team{font-size:22px}.numbers{grid-template-columns:repeat(2,1fr)}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=45"></head><body>
+<link rel="stylesheet" href="../theme.css?v=46"></head><body>
 
 <div class="layout"><main>
 <div class="wrap">
@@ -390,8 +398,8 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 </main>
 <aside id="board"></aside>
 </div>
-<script src="../board.js?v=45"></script>
-<script>Board.mount(document.getElementById("board"), {topic:"picks", week:5, ver:"v45", collapsible:true});</script>
+<script src="../board.js?v=46"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"picks", week:5, ver:"v46", collapsible:true});</script>
 
 <script>
 // Game data: from Week05_Intel.json + ratings after Week 4, built by nfl_picks_board.py (Mack, 2026-10-07).
@@ -459,7 +467,7 @@ function card(g){
   ].join("") : "";
   // card colour: Mack's pick before the game; once final, the team that won outright (Scott 10/1). A tie keeps the pick's colours.
   const won = r && r.winner !== "Tie" ? r.winner : null, tint = g.bron ? "Broncos" : (won || g.su);   // Broncos game keeps its highlight regardless (Scott 10/2)
-  return `<article class="g pick-${tint.replace(/[^A-Za-z0-9]/g,"")} ${g.bron?"bron":""} ${r?"final":""}" data-id="${g.id}">
+  return `<article class="g pick-${tint.replace(/[^A-Za-z0-9]/g,"")} ${g.bron?"bron":""} ${r?"final":""} ${g.mu?"has-mu":""}" data-id="${g.id}">
     <span class="saved" id="sv-${g.id}">saved</span>
     <div class="kick">${g.kick}${g.qb?" · QB change":""}<span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span></div>
     <div class="teams">
@@ -511,7 +519,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v45";
+const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v46";
 const PEOPLE = ["Todd","Ryota","Scott"];
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
