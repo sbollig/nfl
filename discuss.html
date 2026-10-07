@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Discussion</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="board.css?v=40">
+<link rel="stylesheet" href="board.css?v=41">
 <style>
 :root{--paper:#f6f4ee;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;--navy:#0b2340;--orange:#e4521c}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){color-scheme:dark;--paper:#141a22;--ink:#eef0f3;--muted:#98a3b3;--line:#333d4a;--navy:#e9eef7;--orange:#ff7a3d}}
@@ -20,7 +20,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
 footer a{color:var(--orange)}
 @media (max-width:420px){h1{font-size:36px}}
 </style>
-<link rel="stylesheet" href="theme.css?v=40"></head><body>
+<link rel="stylesheet" href="theme.css?v=41"></head><body>
 <div class="wrap">
   <header>
     <div class="lbl">NFL 2026 · Talk</div>
@@ -32,9 +32,9 @@ footer a{color:var(--orange)}
 <nav class="site-nav" aria-label="Site"><a href="./">Hub</a><a href="power-rankings/">Power Rankings</a><a href="power-rankings/season.html">Season</a><a href="standings.html">Standings</a><a href="injuries.html">Injuries</a><a href="picks/week5.html">Week 5 Picks</a><a href="discuss.html" aria-current="page">Discussion</a></nav>
   <footer><span id="byline">Prepared by: Mack.</span> The thread refreshes every 20 seconds.</footer>
 </div>
-<script src="board.js?v=40"></script>
+<script src="board.js?v=41"></script>
 <script>
-const BOARD_VER = "v40", MACK_VER = "326";
+const BOARD_VER = "v41", MACK_VER = "326";
 Board.mount(document.getElementById("board"), {topic:"general", week:5, ver:BOARD_VER, chips:true, topicSelect:true, showTopic:true});
 document.getElementById("byline").textContent = "Prepared by: Mack (" + MACK_VER + ").";
 (async () => { try { const r = await fetch("version.txt?t=" + Date.now(), {cache:"no-store"}); const v = (await r.text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) location.replace(location.pathname + "?v=" + v); } catch(e){} })();
