@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Week 5 Board</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../board.css?v=53">
+<link rel="stylesheet" href="../board.css?v=54">
 <style>
 :root{
   --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
@@ -329,7 +329,8 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .mu thead th.col{font-family:"Barlow Condensed";font-size:15px;text-align:center;padding:0 4px 4px;line-height:1.1}
 .mu thead th.col small{display:block;font-family:Barlow;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .mu td{padding:4px;border-top:1px solid var(--line);text-align:center;white-space:normal;overflow-wrap:anywhere;opacity:.6}
-.mu td.w{opacity:1;color:var(--ink);font-weight:700;background:rgba(255,255,255,.06)}
+.mu td.win{opacity:1;color:var(--good);font-weight:700}
+.mu td.lose{opacity:1;color:var(--bad);font-weight:700}
 .musum{font-size:11px} .musum b{color:var(--ink)}
 /* matchup on the right (Scott 10/7): wide screens get one card per row, split into two columns */
 @media (min-width:900px){
@@ -348,7 +349,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 @media (prefers-reduced-motion:reduce){.saved{transition:none}}
 @media (max-width:420px){h1{font-size:36px}.team{font-size:22px}.numbers{grid-template-columns:repeat(2,1fr)}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=53"></head><body>
+<link rel="stylesheet" href="../theme.css?v=54"></head><body>
 
 <div class="layout"><main>
 <div class="wrap">
@@ -397,8 +398,8 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 </main>
 <aside id="board"></aside>
 </div>
-<script src="../board.js?v=53"></script>
-<script>Board.mount(document.getElementById("board"), {topic:"picks", week:5, ver:"v53", collapsible:true});</script>
+<script src="../board.js?v=54"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"picks", week:5, ver:"v54", collapsible:true});</script>
 
 <script>
 // Game data: from Week05_Intel.json + ratings after Week 4, built by nfl_picks_board.py (Mack, 2026-10-07).
@@ -483,7 +484,7 @@ function card(g){
     </div>
     ${g.mu ? `<div class="mu"><table>
       <thead><tr><th><span class="lbl">Matchup</span></th><th class="col">${g.away}<small>offense</small></th><th class="col">${g.home}<small>offense</small></th></tr></thead>
-      <tbody>${g.mu.rows.map(r => `<tr><th>${r.k}</th><td class="${r.wa?"w":""}">${r.wa?`▲ ${r.wa} ${r.wa===g.away?"offense":"defense"}`:"even"}</td><td class="${r.wh?"w":""}">${r.wh?`▲ ${r.wh} ${r.wh===g.home?"offense":"defense"}`:"even"}</td></tr>`).join("")}</tbody></table></div>` : ""}
+      <tbody>${g.mu.rows.map(r => `<tr><th>${r.k}</th><td class="${r.wa?(r.wa===g.away?"win":"lose"):""}">${r.wa?(r.wa===g.away?"wins":"loses"):"even"}</td><td class="${r.wh?(r.wh===g.home?"win":"lose"):""}">${r.wh?(r.wh===g.home?"wins":"loses"):"even"}</td></tr>`).join("")}</tbody></table></div>` : ""}
     <div class="inj"><span class="lbl">Key injuries → who steps in</span>
       <div><b>${g.away}</b> ${g.inj.away.length?g.inj.away.join(" · "):"none listed"}</div>
       <div><b>${g.home}</b> ${g.inj.home.length?g.inj.home.join(" · "):"none listed"}</div></div>
@@ -518,7 +519,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v53";
+const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v54";
 const PEOPLE = ["Todd","Ryota","Scott"];
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
