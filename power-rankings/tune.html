@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tune the Power Rankings?</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../board.css?v=43">
+<link rel="stylesheet" href="../board.css?v=44">
 <style>
 :root{--paper:#f6f4ee;--card:#fff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;--navy:#0b2340;--orange:#e4521c;--good:#2f7a4a;--bad:#b23a2e;--push:#8a7a2a}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){color-scheme:dark;--paper:#141a22;--card:#1d2530;--ink:#eef0f3;--muted:#98a3b3;--line:#333d4a;--navy:#e9eef7;--orange:#ff7a3d;--good:#6fcf8c;--bad:#f28b7d;--push:#d8c25a}}
@@ -68,7 +68,7 @@ input[type=text]{font:inherit;background:var(--card);color:var(--ink);border:1px
 footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:420px){h1{font-size:36px}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=43"></head><body>
+<link rel="stylesheet" href="../theme.css?v=44"></head><body>
 <div class="wrap">
   <header>
     <div class="lbl">NFL 2026 · Power index · <span id="asof">through Week —</span></div>
@@ -117,7 +117,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
 </div>
 <script>
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const BOARD_VER = "v43", MACK_VER = "326";
+const BOARD_VER = "v44", MACK_VER = "326";
 const $ = (s, r=document) => r.querySelector(s);
 const store = { get(k){ try{ return localStorage.getItem(k)||""; }catch(e){ return ""; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }, del(k){ try{ localStorage.removeItem(k); }catch(e){} } };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
