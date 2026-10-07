@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tune the Power Rankings?</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../board.css?v=36">
+<link rel="stylesheet" href="../board.css?v=37">
 <style>
 :root{--paper:#f6f4ee;--card:#fff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;--navy:#0b2340;--orange:#e4521c;--good:#2f7a4a;--bad:#b23a2e;--push:#8a7a2a}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){color-scheme:dark;--paper:#141a22;--card:#1d2530;--ink:#eef0f3;--muted:#98a3b3;--line:#333d4a;--navy:#e9eef7;--orange:#ff7a3d;--good:#6fcf8c;--bad:#f28b7d;--push:#d8c25a}}
@@ -68,7 +68,7 @@ input[type=text]{font:inherit;background:var(--card);color:var(--ink);border:1px
 footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:420px){h1{font-size:36px}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=36"></head><body>
+<link rel="stylesheet" href="../theme.css?v=37"></head><body>
 <div class="wrap">
   <header>
     <div class="lbl">NFL 2026 · Power index · <span id="asof">through Week —</span></div>
@@ -102,6 +102,12 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
   </section>
 
   <section>
+    <h2>Questions for the table</h2>
+    <div class="sub" style="margin-bottom:8px">Tap your answer; everyone sees everyone's. Scott settles ties.</div>
+    <div class="props" id="polls"><p class="empty">Loading…</p></div>
+  </section>
+
+  <section>
     <h2>Proposals</h2>
     <div class="props" id="props" style="margin-top:10px"><p class="empty">Loading…</p></div>
   </section>
@@ -111,7 +117,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
 </div>
 <script>
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const BOARD_VER = "v36", MACK_VER = "326";
+const BOARD_VER = "v37", MACK_VER = "326";
 const $ = (s, r=document) => r.querySelector(s);
 const store = { get(k){ try{ return localStorage.getItem(k)||""; }catch(e){ return ""; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }, del(k){ try{ localStorage.removeItem(k); }catch(e){} } };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -198,7 +204,7 @@ function officialSel(){ return adopted ? parseSetting(adopted.setting) : parseSe
 // ---- store: whoami, proposals, votes ----
 function setDb(k,msg){ $("#dbdot").className = "dot " + k; $("#dbmsg").textContent = msg; }
 function showMe(){ $("#who").textContent = me ? "signed in as " + me + " · change key" : "enter your board key"; }
-async function whoami(key){ const r = await fetch(STORE + "?board=1&whoami=1&key=" + encodeURIComponent(key) + "&t=" + Date.now(), {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error("that board key was not accepted"); me = j.person; store.set("board-who", me); showMe(); return me; }
+async function whoami(key){ const r = await fetch(STORE + "?board=1&whoami=1&key=" + encodeURIComponent(key) + "&t=" + Date.now(), {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error("that board key was not accepted"); me = j.person; store.set("board-who", me); showMe(); renderPolls(); renderProps(); return me; }
 async function askKey(){ const key = (prompt("Your board key (from Scott or Mack; remembered on this device):") || "").trim(); if (!key) return ""; store.set("board-key", key); try { await whoami(key); return key; } catch(e){ store.del("board-key"); me = ""; showMe(); setDb("off", e.message + "."); return ""; } }
 $("#who").addEventListener("click", () => { store.del("board-key"); store.del("board-who"); me = ""; showMe(); askKey(); });
 
@@ -247,6 +253,38 @@ $("#propose").addEventListener("click", async () => {
 });
 $("#all32").addEventListener("click", () => { all32 = !all32; $("#all32").setAttribute("aria-pressed", String(all32)); $("#all32").textContent = all32 ? "Show top 10" : "Show all 32"; renderCompare(); });
 
+
+// ---- polls: questions for the table (Scott 10/6: "a question about how many games to pick") ----
+const POLLS = [
+  { id:"games-per-week", q:"How many games should we pick each week?",
+    opts:[["all","Every game, as now"],["window","Game of the week per TV window (Thu, Sun early, Sun late, Sun night, Mon)"],["channel","Game of the week per channel (CBS, Fox, NBC, ESPN, Prime)"],["three","Three games of your choice"]] },
+  { id:"broncos-game", q:"Keep the Broncos game in the picks?",
+    opts:[["yes","Yes, always in"],["no","No, we all pick them anyway"],["bonus","In, but as a bonus point only"]] },
+];
+let pollVotes = {};
+async function loadPolls(){
+  try { const r = await fetch(STORE + "?poll=1&t=" + Date.now(), {cache:"no-store"}); const j = await r.json(); if (j.ok) pollVotes = j.votes || {}; } catch(e){}
+  renderPolls();
+}
+function renderPolls(){
+  $("#polls").innerHTML = POLLS.map(pl => { const v = pollVotes[pl.id] || {}; const mine = me ? (v[me]||{}).v : "";
+    const who = ["Todd","Ryota","Scott"].map(n => `<span class="v ${v[n]?"yes":""}">${n} ${v[n] ? esc((pl.opts.find(o=>o[0]===v[n].v)||["",v[n].v])[1].split(" (")[0]) : "—"}</span>`).join("");
+    const notes = ["Todd","Ryota","Scott"].filter(n => v[n] && v[n].note).map(n => `<div class="who">${n}: ${esc(v[n].note)}</div>`).join("");
+    return `<article class="prop open" data-poll="${pl.id}"><div class="top"><strong>${esc(pl.q)}</strong></div>
+      <div class="row" style="display:flex;gap:8px;flex-wrap:wrap">${pl.opts.map(([k,l]) => `<button class="bd-chip" type="button" data-poll="${pl.id}" data-v="${k}" aria-pressed="${mine===k}">${esc(l)}</button>`).join("")}</div>
+      <div class="votes">${who}</div>${notes}
+      <div class="ctl"><input type="text" maxlength="200" placeholder="A word on why (optional)" data-note="${pl.id}"></div></article>`; }).join("");
+  $("#polls").querySelectorAll("button[data-poll]").forEach(b => b.addEventListener("click", async () => {
+    const note = ($("#polls").querySelector(`input[data-note="${b.dataset.poll}"]`)||{}).value || "";
+    let key = store.get("board-key"); if (!key || !me){ key = await askKey(); if (!key) return; }
+    setDb("", "Saving…");
+    try { const q = new URLSearchParams({poll:1, key, id:b.dataset.poll, v:b.dataset.v, note:note.trim(), t:Date.now()}).toString();
+      const r = await fetch(STORE + "?" + q, {cache:"no-store"}); const j = await r.json(); if (!j.ok){ if (j.error==="bad key"){ store.del("board-key"); me=""; showMe(); } throw new Error(j.error||"store refused"); }
+      await loadPolls(); setDb("on", "Answer saved.");
+    } catch(e){ setDb("off", "Did not save (" + (e.message||e) + ")."); }
+  }));
+}
+
 // ---- boot ----
 (async () => {
   try {
@@ -255,7 +293,7 @@ $("#all32").addEventListener("click", () => { all32 = !all32; $("#all32").setAtt
   $("#asof").textContent = "through Week " + D.week + " · " + D.games + " games";
   sel = officialSel(); renderKnobs(); renderCompare(); renderCurrent();
   showMe(); if (store.get("board-key")) whoami(store.get("board-key")).catch(() => {});
-  await loadProps(); setInterval(loadProps, 30000);
+  await loadProps(); await loadPolls(); setInterval(() => { loadProps(); loadPolls(); }, 30000);
   document.getElementById("byline").textContent = "Prepared by: Mack (" + MACK_VER + ").";
   try { const v = (await (await fetch("../version.txt?t=" + Date.now(), {cache:"no-store"})).text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) location.replace(location.pathname + "?v=" + v); } catch(e){}
 })();
