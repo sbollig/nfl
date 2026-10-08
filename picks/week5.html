@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Week 5 Board</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../board.css?v=56">
+<link rel="stylesheet" href="../board.css?v=57">
 <style>
 :root{
   --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
@@ -350,7 +350,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 @media (prefers-reduced-motion:reduce){.saved{transition:none}}
 @media (max-width:420px){h1{font-size:36px}.team{font-size:22px}.numbers{grid-template-columns:repeat(2,1fr)}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=56"></head><body>
+<link rel="stylesheet" href="../theme.css?v=57"></head><body>
 
 <div class="layout"><main>
 <div class="wrap">
@@ -359,7 +359,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
     <h1>Week 5 <span>Board</span></h1>
     <div class="sub">Mack's line, the DraftKings market (via ESPN, fetched Oct 6 1:07 PM PT), and his pick for every game. Enter Todd's, Ryota's and Scott's winner, spread and over/under, then the finals as the games go. Everything saves to a shared board, so all three of you see the same page.</div>
   </header>
-<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../picks/week5.html" aria-current="page">Week 5 Picks</a><a href="../discuss.html">Discussion</a></nav>
+<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../broncos/week5.html">Broncos Pre-Game</a><a href="../picks/week5.html" aria-current="page">Week 5 Picks</a><a href="../discuss.html">Discussion</a></nav>
 
 <!-- LASTWEEK -->
   <section class="rec">
@@ -385,7 +385,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 
   <div id="windows"></div>
 
-<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../picks/week5.html" aria-current="page">Week 5 Picks</a><a href="../discuss.html">Discussion</a></nav>
+<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../broncos/week5.html">Broncos Pre-Game</a><a href="../picks/week5.html" aria-current="page">Week 5 Picks</a><a href="../discuss.html">Discussion</a></nav>
   <footer class="foot">
     <p><b>How to read a card.</b> Lines are home-side, book sign: a negative number means the home team is favored by that much. <b>Mack</b> is his line after this week's verified injury hits. <b>Edge</b> is his line minus the market; he takes the side his line favors, and the further the edge is from zero the stronger the opinion. The win % is his straight-up confidence.</p>
     <p><b>Key injuries</b> are the top three per team from the ESPN injury report (Out, IR, Doubtful, Questionable); the arrow shows the next healthy player at that spot on the ESPN depth chart. "Depth piece" means the injured player was not a starter. Players hurt in last week's games are included. Fetched Oct 6.</p>
@@ -399,8 +399,8 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 </main>
 <aside id="board"></aside>
 </div>
-<script src="../board.js?v=56"></script>
-<script>Board.mount(document.getElementById("board"), {topic:"picks", week:5, ver:"v56", collapsible:true});</script>
+<script src="../board.js?v=57"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"picks", week:5, ver:"v57", collapsible:true});</script>
 
 <script>
 // Game data: from Week05_Intel.json + ratings after Week 4, built by nfl_picks_board.py (Mack, 2026-10-07).
@@ -520,7 +520,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v56";
+const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v57";
 const PEOPLE = ["Todd","Ryota","Scott"];
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
