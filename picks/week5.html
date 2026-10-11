@@ -323,7 +323,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .you select.mk{opacity:1;-webkit-appearance:none;appearance:none;background-image:none}
 .you select:focus,.you input:focus{outline:2px solid var(--orange);outline-offset:1px}
 .kick{font-size:12px;color:var(--muted)}
-.score.lv::placeholder{color:inherit;opacity:.85} .at.lv{font-weight:700;color:var(--ink);white-space:nowrap;text-align:center} .at .dd{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:2px;line-height:1.25} .at .dd.rz{color:#e02020} .poss{font-size:14px;margin:0 4px} .lead{display:inline-block;margin-left:8px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.02em;border:1.5px solid #fff;color:#fff;background:#e4521c;vertical-align:1px;text-shadow:0 1px 1px rgba(0,0,0,.35)} .lead.won{border-color:#fff;color:#fff;background:#2f7a4a} .lead:empty{display:none} .at.in::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#e02020;margin:0 5px 1px 0;animation:lv 1.4s infinite} @keyframes lv{50%{opacity:.25}}
+.score.lv::placeholder{color:inherit;opacity:.85} .at.lv{font-weight:700;color:var(--ink);white-space:nowrap;text-align:center} .at .dd{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:2px;line-height:1.25} .at .dd.rz{color:#e02020} .poss{font-size:14px;margin:0 4px} .lead{display:inline-block;margin-left:8px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.02em;border:1.5px solid #fff;color:#fff;background:#e4521c;vertical-align:1px;text-shadow:0 1px 1px rgba(0,0,0,.35)} .lead.won{border-color:#fff;color:#fff;background:#2f7a4a} .lead:empty{display:none} h2 .slate{margin-left:auto;margin-right:10px;font-family:Barlow;letter-spacing:.02em;font-size:12px;text-transform:none} h2 .slate.won{background:#b8860b;border-color:#fff} .at.in::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#e02020;margin:0 5px 1px 0;animation:lv 1.4s infinite} @keyframes lv{50%{opacity:.25}}
 .team .nm{display:flex;flex-direction:column;align-items:flex-start;gap:3px} .team.home .nm{align-items:flex-end} .team .rec{font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1}
 .mu{font-size:12px;color:var(--muted);display:grid;gap:4px;min-width:0;max-width:100%;overflow:hidden}
 .mu table{width:100%;border-collapse:collapse;table-layout:fixed}
@@ -467,11 +467,25 @@ function leadText(g){
   const who = Object.keys(pts).filter(p => pts[p] === top);
   return `${who.join(" & ")} ${who.length > 1 ? verbs : verb} · ${top} pt${top === 1 ? "" : "s"}`;
 }
+function slateInfo(w){
+  const gs = GAMES.filter(g => g.win === w); const pts = {}; let started = 0, finals = 0;
+  for (const g of gs) { const li = leadInfo(g); if (!li || !li.r) continue; started++; if (li.final) finals++;
+    for (const p of PEOPLE) pts[p] = (pts[p]||0) + ["su","ats","ou"].filter(k => li.r.ppl[p][k] === "ok").length;
+    pts.Mack = (pts.Mack||0) + [li.r.su, li.r.ats, li.r.mou].filter(x => x === "ok").length; }
+  if (!started) return null;
+  const top = Math.max(...Object.values(pts)); const who = Object.keys(pts).filter(p => pts[p] === top);
+  return { done: finals === gs.length, top, who };
+}
+function slateText(w){ const si = slateInfo(w); if (!si) return "";
+  if (si.done) return `🏆 ${si.who.join(" & ")} ${si.who.length > 1 ? "share the slate" : "wins the slate"} · ${si.top} pt${si.top === 1 ? "" : "s"}`;
+  return si.top === 0 ? "nobody leads yet" : `${si.who.join(" & ")} ${si.who.length > 1 ? "lead" : "leads"} · ${si.top} pt${si.top === 1 ? "" : "s"}`; }
+function slateClass(w){ const si = slateInfo(w); return "lead slate" + (si && si.done ? " won" : ""); }
+const slateId = w => "sl-" + w.replace(/[^A-Za-z0-9]/g, "");
 function leadClass(g){ const li = leadInfo(g); return "lead" + (li && li.final ? " won" : ""); }
 function render(){
   const wins = [...new Set(GAMES.map(g => g.win))];
   $("#windows").innerHTML = wins.map(w => `
-    <section><h2>${w} <small>${GAMES.filter(g=>g.win===w).length} game${GAMES.filter(g=>g.win===w).length>1?"s":""}</small></h2>
+    <section><h2>${w} <span class="${slateClass(w)}" id="${slateId(w)}">${slateText(w)}</span><small>${GAMES.filter(g=>g.win===w).length} game${GAMES.filter(g=>g.win===w).length>1?"s":""}</small></h2>
     <div class="games">${GAMES.filter(g=>g.win===w).map(card).join("")}</div></section>`).join("");
   tiles();
 }
@@ -539,7 +553,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v76";
+const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v77";
 const PEOPLE = ["Todd","Ryota","Scott"];
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
@@ -625,6 +639,7 @@ async function liveScores(){
       const ld = $("#ld-" + g.id); if (ld) { ld.textContent = leadText(g); ld.className = leadClass(g); }
       const pa = $("#pa-" + g.id), ph = $("#ph-" + g.id); if (pa) pa.textContent = poss === "away" ? "🏈" : ""; if (ph) ph.textContent = poss === "home" ? "🏈" : "";
     }
+    for (const w of new Set(GAMES.map(g => g.win))) { const el = $("#" + slateId(w)); if (el) { el.textContent = slateText(w); el.className = slateClass(w); } }
     ok = true;
   } catch (e) {}
   // a failed fetch retries in 30 s (was 5 min — a single bad first fetch left the page on dashes, Scott 10/11)
