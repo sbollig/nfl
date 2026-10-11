@@ -324,7 +324,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .you select:focus,.you input:focus{outline:2px solid var(--orange);outline-offset:1px}
 .kick{font-size:12px;color:var(--muted)}
 .score.lv::placeholder{color:inherit;opacity:.85} .at.lv{font-weight:700;color:var(--ink);white-space:nowrap;text-align:center} .at .dd{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:2px;line-height:1.25} .at .dd.rz{color:#e02020} .poss{font-size:14px;margin:0 4px} .at.in::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#e02020;margin:0 5px 1px 0;animation:lv 1.4s infinite} @keyframes lv{50%{opacity:.25}}
-.team .rec{font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.team .nm{display:flex;flex-direction:column;align-items:flex-start;gap:3px} .team.home .nm{align-items:flex-end} .team .rec{font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1}
 .mu{font-size:12px;color:var(--muted);display:grid;gap:4px;min-width:0;max-width:100%;overflow:hidden}
 .mu table{width:100%;border-collapse:collapse;table-layout:fixed}
 .mu th{text-align:left;font-weight:600;color:var(--ink);padding:3px 4px 3px 0;vertical-align:bottom;white-space:normal}
@@ -474,7 +474,7 @@ function card(g){
     <span class="saved" id="sv-${g.id}">saved</span>
     <div class="kick">${g.kick}${g.qb?" · QB change":""}<span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span></div>
     <div class="teams">
-      <div class="team away"><img class="logo" src="${LOGO[g.away]}" alt="" loading="lazy">${g.away}<span class="poss" id="pa-${g.id}">${LIVE[g.id]?.poss==="away"?"🏈":""}</span>${g.ar?` <small class="rec">${g.ar}</small>`:""}</div><div class="at ${LIVE[g.id]?"lv "+LIVE[g.id].state:""}" id="at-${g.id}">${LIVE[g.id]?.clock||"at"}${LIVE[g.id]?.dd?`<small class="dd ${LIVE[g.id].rz?"rz":""}">${LIVE[g.id].dd}</small>`:""}</div><div class="team home">${g.hr?`<small class="rec">${g.hr}</small> `:""}<span class="poss" id="ph-${g.id}">${LIVE[g.id]?.poss==="home"?"🏈":""}</span>${g.home}<img class="logo" src="${LOGO[g.home]}" alt="" loading="lazy"></div>
+      <div class="team away"><img class="logo" src="${LOGO[g.away]}" alt="" loading="lazy"><span class="nm">${g.away}${g.ar?`<small class="rec">${g.ar}</small>`:""}</span><span class="poss" id="pa-${g.id}">${LIVE[g.id]?.poss==="away"?"🏈":""}</span></div><div class="at ${LIVE[g.id]?"lv "+LIVE[g.id].state:""}" id="at-${g.id}">${LIVE[g.id]?.clock||"at"}${LIVE[g.id]?.dd?`<small class="dd ${LIVE[g.id].rz?"rz":""}">${LIVE[g.id].dd}</small>`:""}</div><div class="team home"><span class="poss" id="ph-${g.id}">${LIVE[g.id]?.poss==="home"?"🏈":""}</span><span class="nm">${g.home}${g.hr?`<small class="rec">${g.hr}</small>`:""}</span><img class="logo" src="${LOGO[g.home]}" alt="" loading="lazy"></div>
       <input class="score ${LIVE[g.id]?"lv":""}" id="as-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="${LIVE[g.id]?.as ?? "–"}" value="${s.as ?? ""}" aria-label="${g.away} score" ${canWrite?"":"disabled"}>
       <div></div>
       <input class="score ${LIVE[g.id]?"lv":""}" id="hs-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="${LIVE[g.id]?.hs ?? "–"}" value="${s.hs ?? ""}" aria-label="${g.home} score" ${canWrite?"":"disabled"}>
@@ -522,7 +522,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v70";
+const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v71";
 const PEOPLE = ["Todd","Ryota","Scott"];
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
