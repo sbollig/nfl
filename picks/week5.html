@@ -323,6 +323,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .you select.mk{opacity:1;-webkit-appearance:none;appearance:none;background-image:none}
 .you select:focus,.you input:focus{outline:2px solid var(--orange);outline-offset:1px}
 .kick{font-size:12px;color:var(--muted)}
+.live{font-weight:600;color:var(--ink)} .live.in::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#d33;margin:0 5px 1px 2px;animation:lv 1.4s infinite} @keyframes lv{50%{opacity:.25}}
 .team .rec{font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
 .mu{font-size:12px;color:var(--muted);display:grid;gap:4px;min-width:0;max-width:100%;overflow:hidden}
 .mu table{width:100%;border-collapse:collapse;table-layout:fixed}
@@ -449,6 +450,7 @@ function grade(g, s){
   return {margin, winner, su, ats, mou, ppl, total: as + hs};
 }
 
+const LIVE = {};   // live scores from ESPN, by game id (Scott 10/11: "put a live score on the picks page")
 function render(){
   const wins = [...new Set(GAMES.map(g => g.win))];
   $("#windows").innerHTML = wins.map(w => `
@@ -470,7 +472,7 @@ function card(g){
   const won = r && r.winner !== "Tie" ? r.winner : null, tint = g.bron ? "Broncos" : (won || g.su);   // Broncos game keeps its highlight regardless (Scott 10/2)
   return `<article class="g pick-${tint.replace(/[^A-Za-z0-9]/g,"")} ${g.bron?"bron":""} ${r?"final":""} ${g.mu?"has-mu":""}" data-id="${g.id}">
     <span class="saved" id="sv-${g.id}">saved</span>
-    <div class="kick">${g.kick}${g.qb?" · QB change":""}<span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span></div>
+    <div class="kick">${g.kick}${g.qb?" · QB change":""}<span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span><span class="live ${LIVE[g.id]?.state||""}" id="lv-${g.id}">${LIVE[g.id]?.text||""}</span></div>
     <div class="teams">
       <div class="team away"><img class="logo" src="${LOGO[g.away]}" alt="" loading="lazy">${g.away}${g.ar?` <small class="rec">${g.ar}</small>`:""}</div><div class="at">at</div><div class="team home">${g.hr?`<small class="rec">${g.hr}</small> `:""}${g.home}<img class="logo" src="${LOGO[g.home]}" alt="" loading="lazy"></div>
       <input class="score" id="as-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${s.as ?? ""}" aria-label="${g.away} score" ${canWrite?"":"disabled"}>
@@ -520,7 +522,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v65";
+const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v66";
 const PEOPLE = ["Todd","Ryota","Scott"];
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
@@ -578,5 +580,29 @@ function lockStarted(){ for (const g of GAMES) if (started(g)) { const lk = $("#
   for (const p of PEOPLE) for (const k of ["su","ats","ou"]) { const el = $("#"+k+"-"+p+"-"+g.id); if (el && !el.disabled) { el.blur(); el.disabled = true; } } } }
 setInterval(lockStarted, 15000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) pull(true); });
+// Live scores (Scott 10/11). ESPN's public scoreboard sends Access-Control-Allow-Origin: * so the viewer's browser fetches it
+// directly; nothing runs on a Village machine. Polls every 30 s while any game is in progress, every 5 min otherwise.
+// Matches on away/home team names, the same key nfl_finals_post.py uses. Any failure leaves the line as it was.
+const ESPN_SB = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&week=" + WEEK;
+async function liveScores(){
+  let anyLive = false;
+  try {
+    const sb = await (await fetch(ESPN_SB, {cache:"no-store"})).json();
+    for (const e of sb.events || []) {
+      const c = e.competitions?.[0]; if (!c) continue;
+      const t = {}; for (const x of c.competitors) t[x.homeAway] = x;
+      const g = GAMES.find(g => g.away === t.away?.team?.name && g.home === t.home?.team?.name); if (!g) continue;
+      const st = e.status?.type?.state;                       // pre | in | post
+      if (st === "pre") { LIVE[g.id] = null; continue; }
+      const clock = st === "post" ? "Final" : (e.status.type.shortDetail || "");   // "13:10 - 3rd", "Halftime"
+      const ab = x => x.team.abbreviation || x.team.name;
+      LIVE[g.id] = { state: st, text: ` · ${ab(t.away)} ${t.away.score} · ${ab(t.home)} ${t.home.score} · ${clock}` };
+      if (st === "in") anyLive = true;
+      const el = $("#lv-" + g.id); if (el) { el.textContent = LIVE[g.id].text; el.className = "live " + st; }
+    }
+  } catch (e) {}
+  setTimeout(liveScores, anyLive ? 30000 : 300000);
+}
+liveScores();
 </script>
 </body></html>
