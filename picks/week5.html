@@ -323,7 +323,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .you select.mk{opacity:1;-webkit-appearance:none;appearance:none;background-image:none}
 .you select:focus,.you input:focus{outline:2px solid var(--orange);outline-offset:1px}
 .kick{font-size:12px;color:var(--muted)}
-.live{font-weight:600;color:var(--ink)} .live.in::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#d33;margin:0 5px 1px 2px;animation:lv 1.4s infinite} @keyframes lv{50%{opacity:.25}}
+.score.lv::placeholder{color:inherit;opacity:.85} .at.lv{font-weight:700;color:var(--ink);white-space:nowrap} .at.in::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#e02020;margin:0 5px 1px 0;animation:lv 1.4s infinite} @keyframes lv{50%{opacity:.25}}
 .team .rec{font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
 .mu{font-size:12px;color:var(--muted);display:grid;gap:4px;min-width:0;max-width:100%;overflow:hidden}
 .mu table{width:100%;border-collapse:collapse;table-layout:fixed}
@@ -472,12 +472,12 @@ function card(g){
   const won = r && r.winner !== "Tie" ? r.winner : null, tint = g.bron ? "Broncos" : (won || g.su);   // Broncos game keeps its highlight regardless (Scott 10/2)
   return `<article class="g pick-${tint.replace(/[^A-Za-z0-9]/g,"")} ${g.bron?"bron":""} ${r?"final":""} ${g.mu?"has-mu":""}" data-id="${g.id}">
     <span class="saved" id="sv-${g.id}">saved</span>
-    <div class="kick">${g.kick}${g.qb?" · QB change":""}<span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span><span class="live ${LIVE[g.id]?.state||""}" id="lv-${g.id}">${LIVE[g.id]?.text||""}</span></div>
+    <div class="kick">${g.kick}${g.qb?" · QB change":""}<span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span></div>
     <div class="teams">
-      <div class="team away"><img class="logo" src="${LOGO[g.away]}" alt="" loading="lazy">${g.away}${g.ar?` <small class="rec">${g.ar}</small>`:""}</div><div class="at">at</div><div class="team home">${g.hr?`<small class="rec">${g.hr}</small> `:""}${g.home}<img class="logo" src="${LOGO[g.home]}" alt="" loading="lazy"></div>
-      <input class="score" id="as-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${s.as ?? ""}" aria-label="${g.away} score" ${canWrite?"":"disabled"}>
+      <div class="team away"><img class="logo" src="${LOGO[g.away]}" alt="" loading="lazy">${g.away}${g.ar?` <small class="rec">${g.ar}</small>`:""}</div><div class="at ${LIVE[g.id]?"lv "+LIVE[g.id].state:""}" id="at-${g.id}">${LIVE[g.id]?.clock||"at"}</div><div class="team home">${g.hr?`<small class="rec">${g.hr}</small> `:""}${g.home}<img class="logo" src="${LOGO[g.home]}" alt="" loading="lazy"></div>
+      <input class="score ${LIVE[g.id]?"lv":""}" id="as-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="${LIVE[g.id]?.as ?? "–"}" value="${s.as ?? ""}" aria-label="${g.away} score" ${canWrite?"":"disabled"}>
       <div></div>
-      <input class="score" id="hs-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${s.hs ?? ""}" aria-label="${g.home} score" ${canWrite?"":"disabled"}>
+      <input class="score ${LIVE[g.id]?"lv":""}" id="hs-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="${LIVE[g.id]?.hs ?? "–"}" value="${s.hs ?? ""}" aria-label="${g.home} score" ${canWrite?"":"disabled"}>
     </div>
     <div class="numbers">
       <div><span class="lbl">Mack</span><b>${fm(g.line)}</b></div>
@@ -522,7 +522,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v66";
+const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v67";
 const PEOPLE = ["Todd","Ryota","Scott"];
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
@@ -594,11 +594,13 @@ async function liveScores(){
       const g = GAMES.find(g => g.away === t.away?.team?.name && g.home === t.home?.team?.name); if (!g) continue;
       const st = e.status?.type?.state;                       // pre | in | post
       if (st === "pre") { LIVE[g.id] = null; continue; }
-      const clock = st === "post" ? "Final" : (e.status.type.shortDetail || "");   // "13:10 - 3rd", "Halftime"
-      const ab = x => x.team.abbreviation || x.team.name;
-      LIVE[g.id] = { state: st, text: ` · ${ab(t.away)} ${t.away.score} · ${ab(t.home)} ${t.home.score} · ${clock}` };
+      const sd = e.status.type.shortDetail || "";                   // "13:10 - 3rd", "Halftime", "Final"
+      const clock = st === "post" ? "Final" : sd === "Halftime" ? "Half" : sd.replace(" - ", " ");
+      LIVE[g.id] = { state: st, as: t.away.score, hs: t.home.score, clock };
       if (st === "in") anyLive = true;
-      const el = $("#lv-" + g.id); if (el) { el.textContent = LIVE[g.id].text; el.className = "live " + st; }
+      // placeholder only — a score someone typed (or nfl_finals_post wrote) is never touched
+      for (const [k, v] of [["as", t.away.score], ["hs", t.home.score]]) { const el = $("#" + k + "-" + g.id); if (el) { el.placeholder = v; el.classList.add("lv"); } }
+      const at = $("#at-" + g.id); if (at) { at.textContent = clock; at.className = "at lv " + st; }
     }
   } catch (e) {}
   setTimeout(liveScores, anyLive ? 30000 : 300000);
