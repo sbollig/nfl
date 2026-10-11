@@ -323,7 +323,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .you select.mk{opacity:1;-webkit-appearance:none;appearance:none;background-image:none}
 .you select:focus,.you input:focus{outline:2px solid var(--orange);outline-offset:1px}
 .kick{font-size:12px;color:var(--muted)}
-.score.lv::placeholder{color:inherit;opacity:.85} .at.lv{font-weight:700;color:var(--ink);white-space:nowrap;text-align:center} .at .dd{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:2px;line-height:1.25} .at .dd.rz{color:#e02020} .poss{font-size:14px;margin:0 4px} .at.in::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#e02020;margin:0 5px 1px 0;animation:lv 1.4s infinite} @keyframes lv{50%{opacity:.25}}
+.score.lv::placeholder{color:inherit;opacity:.85} .at.lv{font-weight:700;color:var(--ink);white-space:nowrap;text-align:center} .at .dd{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:2px;line-height:1.25} .at .dd.rz{color:#e02020} .poss{font-size:14px;margin:0 4px} .lead{font-weight:700;color:var(--ink)} .at.in::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#e02020;margin:0 5px 1px 0;animation:lv 1.4s infinite} @keyframes lv{50%{opacity:.25}}
 .team .nm{display:flex;flex-direction:column;align-items:flex-start;gap:3px} .team.home .nm{align-items:flex-end} .team .rec{font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1}
 .mu{font-size:12px;color:var(--muted);display:grid;gap:4px;min-width:0;max-width:100%;overflow:hidden}
 .mu table{width:100%;border-collapse:collapse;table-layout:fixed}
@@ -451,6 +451,15 @@ function grade(g, s){
 }
 
 const LIVE = {};   // live scores from ESPN, by game id (Scott 10/11: "put a live score on the picks page")
+function leadText(g){
+  const lv = LIVE[g.id]; if (!lv || lv.state === "pre") return "";
+  const r = grade(g, { as: lv.as, hs: lv.hs, picks: (state[g.id]||{}).picks }); if (!r) return "";
+  const pts = {}; for (const p of PEOPLE) pts[p] = ["su","ats","ou"].filter(k => r.ppl[p][k] === "ok").length;
+  pts.Mack = [r.su, r.ats, r.mou].filter(x => x === "ok").length;
+  const top = Math.max(...Object.values(pts)); if (top === 0) return " · nobody leads yet";
+  const who = Object.keys(pts).filter(p => pts[p] === top);
+  return ` · ${who.join(" & ")} ${who.length > 1 ? "lead" : "leads"} · ${top} pt${top === 1 ? "" : "s"}`;
+}
 function render(){
   const wins = [...new Set(GAMES.map(g => g.win))];
   $("#windows").innerHTML = wins.map(w => `
@@ -472,7 +481,7 @@ function card(g){
   const won = r && r.winner !== "Tie" ? r.winner : null, tint = g.bron ? "Broncos" : (won || g.su);   // Broncos game keeps its highlight regardless (Scott 10/2)
   return `<article class="g pick-${tint.replace(/[^A-Za-z0-9]/g,"")} ${g.bron?"bron":""} ${r?"final":""} ${g.mu?"has-mu":""}" data-id="${g.id}">
     <span class="saved" id="sv-${g.id}">saved</span>
-    <div class="kick">${g.kick}${g.qb?" · QB change":""}<span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span></div>
+    <div class="kick">${g.kick}${g.qb?" · QB change":""}<span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span><span class="lead" id="ld-${g.id}">${leadText(g)}</span></div>
     <div class="teams">
       <div class="team away"><img class="logo" src="${LOGO[g.away]}" alt="" loading="lazy"><span class="nm">${g.away}${g.ar?`<small class="rec">${g.ar}</small>`:""}</span><span class="poss" id="pa-${g.id}">${LIVE[g.id]?.poss==="away"?"🏈":""}</span></div><div class="at ${LIVE[g.id]?"lv "+LIVE[g.id].state:""}" id="at-${g.id}">${LIVE[g.id]?.clock||"at"}${LIVE[g.id]?.dd?`<small class="dd ${LIVE[g.id].rz?"rz":""}">${LIVE[g.id].dd}</small>`:""}</div><div class="team home"><span class="poss" id="ph-${g.id}">${LIVE[g.id]?.poss==="home"?"🏈":""}</span><span class="nm">${g.home}${g.hr?`<small class="rec">${g.hr}</small>`:""}</span><img class="logo" src="${LOGO[g.home]}" alt="" loading="lazy"></div>
       <input class="score ${LIVE[g.id]?"lv":""}" id="as-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="${LIVE[g.id]?.as ?? "–"}" value="${s.as ?? ""}" aria-label="${g.away} score" ${canWrite?"":"disabled"}>
@@ -522,7 +531,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v71";
+const WEEK = 5, KEY = "wk05-cache", BOARD_VER = "v72";
 const PEOPLE = ["Todd","Ryota","Scott"];
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
@@ -605,6 +614,7 @@ async function liveScores(){
       // placeholder only — a score someone typed (or nfl_finals_post wrote) is never touched
       for (const [k, v] of [["as", t.away.score], ["hs", t.home.score]]) { const el = $("#" + k + "-" + g.id); if (el) { el.placeholder = v; el.classList.add("lv"); } }
       const at = $("#at-" + g.id); if (at) { at.innerHTML = clock + (dd ? `<small class="dd ${LIVE[g.id].rz?"rz":""}">${dd}</small>` : ""); at.className = "at lv " + st; }
+      const ld = $("#ld-" + g.id); if (ld) ld.textContent = leadText(g);
       const pa = $("#pa-" + g.id), ph = $("#ph-" + g.id); if (pa) pa.textContent = poss === "away" ? "🏈" : ""; if (ph) ph.textContent = poss === "home" ? "🏈" : "";
     }
     ok = true;
