@@ -3,6 +3,8 @@
 (function () {
   const base = document.currentScript.src.replace(/faces\.js.*$/, ""), ver = (document.currentScript.src.split("?v=")[1] || "");
   const FACES = { Ryota: "img/ryota.jpg", Scott: "img/scott.jpg", Todd: "img/todd.jpg", Mack: "img/mack.svg" };   // Mack = robot coach (Scott 10/14: "make your pic a robot pic")   // Todd pending Scott's confirmation of the photo
+  const only = (document.currentScript.dataset.only || "").split(",").filter(Boolean);   // e.g. data-only="Todd": limit a page to these faces
+  if (only.length) for (const k of Object.keys(FACES)) if (!only.includes(k)) delete FACES[k];
   const SKIP = "script,style,title,textarea,select,option,input,.who,dialog,.inj,.mu,.pm,.pmr,.ihp,.pl,.numbers,.chip,footer,.byline,h1,h2";   // player areas: an NFL player named Scott must not get the face
   const re = new RegExp("\\b(" + Object.keys(FACES).join("|") + ")\\b");
   const css = document.createElement("style");
