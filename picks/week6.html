@@ -370,8 +370,8 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 @media (prefers-reduced-motion:reduce){.saved{transition:none}}
 @media (max-width:420px){h1{font-size:36px}.team{font-size:22px}.numbers{grid-template-columns:repeat(2,1fr)}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=103"><link rel="stylesheet" href="../players.css?v=103"><script src="../players.js?v=103" defer></script>
-<script src="../faces.js?v=103" defer></script>
+<link rel="stylesheet" href="../theme.css?v=104"><link rel="stylesheet" href="../players.css?v=104"><script src="../players.js?v=104" defer></script>
+<script src="../faces.js?v=104" defer></script>
 </head><body>
 
 <div class="layout"><main>
@@ -585,7 +585,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v103";
+const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v104";
 const PEOPLE = ["Todd","Ryota","Scott"];
 const CHAMP = "Ryota";   // last week's winner wears the crown; set by nfl_site_week.py each Tuesday
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Ryota caricature">
+  <!-- Ryota: spiky black hair, open-mouth laugh, grey Broncos tee with shades on the collar, tiny champ crown (Mack 2026-10-14) -->
+  <circle cx="100" cy="100" r="100" fill="#0b2340"/>
+  <!-- tee with navy sleeves + horse swoosh -->
+  <path d="M36 200 C38 166 64 152 100 152 C136 152 162 166 164 200 Z" fill="#6f7276"/>
+  <path d="M36 200 C38 178 46 166 58 160 L66 200 Z M164 200 C162 178 154 166 142 160 L134 200 Z" fill="#1d2c4a"/>
+  <path d="M78 186 C92 172 116 170 128 180 C116 178 104 182 96 190 Z" fill="#FB4F14"/>
+  <!-- sunglasses hooked on the collar -->
+  <path d="M100 156 L100 166" stroke="#222" stroke-width="3"/>
+  <rect x="88" y="164" width="11" height="9" rx="3" fill="#1a3a5a"/><rect x="101" y="164" width="11" height="9" rx="3" fill="#1a3a5a"/>
+  <!-- ears + head -->
+  <ellipse cx="48" cy="106" rx="10" ry="15" fill="#d9a07a"/><ellipse cx="152" cy="106" rx="10" ry="15" fill="#d9a07a"/>
+  <path d="M52 94 C52 62 148 62 148 94 L146 122 C142 150 122 162 100 162 C78 162 58 150 54 122 Z" fill="#e0ab86"/>
+  <!-- spiky hair -->
+  <path d="M48 96 L44 70 L58 78 L54 50 L72 64 L74 34 L90 56 L100 26 L110 54 L126 34 L128 62 L146 48 L142 76 L156 70 L152 96 C146 76 128 68 100 68 C72 68 54 76 48 96 Z" fill="#1b1b1f"/>
+  <!-- tiny champ crown -->
+  <path d="M84 30 L88 18 L95 26 L100 14 L105 26 L112 18 L116 30 Z" fill="#f6c945" stroke="#c9952a" stroke-width="2" transform="rotate(-12 100 24)"/>
+  <!-- eyebrows + cheerful eyes -->
+  <path d="M66 88 Q78 82 90 88 M110 88 Q122 82 134 88" fill="none" stroke="#1b1b1f" stroke-width="5" stroke-linecap="round"/>
+  <path d="M68 102 Q78 96 88 102 M112 102 Q122 96 132 102" fill="none" stroke="#2a1d15" stroke-width="5" stroke-linecap="round"/>
+  <!-- nose -->
+  <path d="M100 104 Q94 118 100 121 Q106 122 107 119" fill="none" stroke="#b07a58" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- mid-sentence laugh -->
+  <ellipse cx="100" cy="138" rx="17" ry="12" fill="#5a1f1a"/>
+  <path d="M84 134 Q100 130 116 134 L114 138 Q100 135 86 138 Z" fill="#fff"/>
+  <ellipse cx="100" cy="144" rx="8" ry="4" fill="#e0707a"/>
+  <circle cx="68" cy="122" r="7" fill="#f08a7a" opacity=".4"/><circle cx="132" cy="122" r="7" fill="#f08a7a" opacity=".4"/>
+</svg>

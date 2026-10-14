@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Scott caricature">
+  <!-- Scott: blue throwback D cap, round tortoise glasses, dry half-smirk, sage hoodie (Mack 2026-10-14) -->
+  <circle cx="100" cy="100" r="100" fill="#0b2340"/>
+  <!-- hoodie + tee -->
+  <path d="M38 200 C40 166 64 152 100 152 C136 152 160 166 162 200 Z" fill="#a9b8a0"/>
+  <path d="M84 154 L100 182 L116 154 Z" fill="#fff"/>
+  <path d="M100 160 L100 200" stroke="#7d8c75" stroke-width="3"/>
+  <!-- ears + head -->
+  <ellipse cx="50" cy="104" rx="10" ry="15" fill="#f2c4a8"/><ellipse cx="150" cy="104" rx="10" ry="15" fill="#f2c4a8"/>
+  <path d="M52 92 C52 60 148 60 148 92 L146 124 C142 150 122 162 100 162 C78 162 58 150 54 124 Z" fill="#f6cdb3"/>
+  <!-- stubble -->
+  <path d="M64 128 C70 152 88 160 100 160 C112 160 130 152 136 128 C126 146 74 146 64 128 Z" fill="#c9a28c" opacity=".55"/>
+  <!-- cap -->
+  <path d="M44 86 C44 30 156 30 156 86 Z" fill="#2a56c6"/>
+  <path d="M40 86 C70 74 130 74 172 88 C150 98 70 96 40 86 Z" fill="#1f45a8"/>
+  <rect x="84" y="40" width="34" height="30" rx="6" fill="#fff"/>
+  <text x="101" y="66" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="30" fill="#FB4F14">D</text>
+  <!-- glasses: big round tortoise -->
+  <g fill="#dbe8f5" fill-opacity=".35" stroke="#5b3a22" stroke-width="5">
+    <circle cx="78" cy="104" r="17"/><circle cx="122" cy="104" r="17"/>
+  </g>
+  <path d="M95 102 Q100 98 105 102" fill="none" stroke="#5b3a22" stroke-width="4"/>
+  <path d="M61 102 L52 98 M139 102 L148 98" stroke="#5b3a22" stroke-width="4"/>
+  <circle cx="80" cy="106" r="4.5" fill="#3d6fa6"/><circle cx="124" cy="106" r="4.5" fill="#3d6fa6"/>
+  <circle cx="81.5" cy="104.5" r="1.6" fill="#fff"/><circle cx="125.5" cy="104.5" r="1.6" fill="#fff"/>
+  <!-- one raised eyebrow = the skeptic -->
+  <path d="M64 82 Q78 78 90 84" fill="none" stroke="#8a6a55" stroke-width="4" stroke-linecap="round"/>
+  <path d="M110 80 Q124 72 138 80" fill="none" stroke="#8a6a55" stroke-width="4" stroke-linecap="round"/>
+  <!-- nose + half-smirk -->
+  <path d="M100 108 Q96 124 101 128 Q106 129 107 126" fill="none" stroke="#c98f72" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M86 140 Q102 142 116 134" fill="none" stroke="#8a4b3a" stroke-width="4" stroke-linecap="round"/>
+</svg>

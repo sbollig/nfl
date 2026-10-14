@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Todd caricature">
+  <!-- Todd: silver swoop of hair, enormous grin, white spa robe (Mack 2026-10-14) -->
+  <circle cx="100" cy="100" r="100" fill="#0b2340"/>
+  <!-- robe -->
+  <path d="M34 200 C36 164 62 150 100 150 C138 150 164 164 166 200 Z" fill="#f4f4f1"/>
+  <path d="M74 150 C86 172 92 186 100 200 C108 186 114 172 126 150" fill="none" stroke="#d9d9d4" stroke-width="10"/>
+  <path d="M100 160 L100 200" stroke="#cfcfca" stroke-width="2"/>
+  <!-- ears + head (sun-tanned) -->
+  <ellipse cx="46" cy="104" rx="11" ry="16" fill="#e2a581"/><ellipse cx="154" cy="104" rx="11" ry="16" fill="#e2a581"/>
+  <path d="M50 92 C48 52 152 52 150 92 L148 120 C146 148 124 160 100 160 C76 160 54 148 52 120 Z" fill="#eab08c"/>
+  <!-- silver hair: tousled, wavy -->
+  <path d="M46 96 C40 76 44 60 54 52 C52 40 64 32 74 36 C78 24 94 20 104 28 C112 18 132 22 136 34 C148 34 158 46 154 60 C162 70 158 86 154 96 C150 80 140 70 128 70 C120 62 108 64 100 68 C90 62 76 64 70 72 C60 72 50 82 46 96 Z" fill="#d5dade"/>
+  <path d="M60 58 C70 48 82 46 92 50 M98 40 C110 34 124 38 132 46 M70 70 C80 60 96 58 108 62 M114 58 C126 56 138 62 144 72" fill="none" stroke="#9aa3ad" stroke-width="3" stroke-linecap="round"/>
+  <!-- squinty happy eyes + crow's feet -->
+  <path d="M66 98 Q78 88 90 98 M110 98 Q122 88 134 98" fill="none" stroke="#3b2a20" stroke-width="5" stroke-linecap="round"/>
+  <path d="M56 94 L50 90 M57 100 L50 101 M144 94 L150 90 M143 100 L150 101" stroke="#b9805f" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M64 84 Q78 78 90 84 M110 84 Q122 78 136 84" fill="none" stroke="#9aa3ad" stroke-width="4" stroke-linecap="round"/>
+  <!-- nose -->
+  <path d="M100 100 Q93 116 100 120 Q107 121 108 117" fill="none" stroke="#b9805f" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- the grin: huge, all teeth -->
+  <path d="M66 126 Q100 166 134 126 Q100 138 66 126 Z" fill="#5a1f1a"/>
+  <path d="M70 128 Q100 138 130 128 L128 136 Q100 144 72 136 Z" fill="#fff"/>
+  <path d="M85 131 L85 140 M100 133 L100 142 M115 131 L115 140" stroke="#ddd" stroke-width="1.5"/>
+  <circle cx="64" cy="118" r="7" fill="#f08a7a" opacity=".45"/><circle cx="136" cy="118" r="7" fill="#f08a7a" opacity=".45"/>
+</svg>
