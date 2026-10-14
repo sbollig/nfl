@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Mack, a robot coach">
+  <!-- Mack: original robot coach avatar (2026-10-14). Broncos navy + orange, headset, football antenna. -->
+  <circle cx="100" cy="100" r="100" fill="#0b2340"/>
+  <!-- antenna + football -->
+  <rect x="97" y="22" width="6" height="22" rx="3" fill="#c9d3e0"/>
+  <ellipse cx="100" cy="20" rx="13" ry="8.5" fill="#8a4b22" transform="rotate(-20 100 20)"/>
+  <path d="M93 20 h14 M97 17v6 M100 16.5v7 M103 17v6" stroke="#fff" stroke-width="1.6" stroke-linecap="round" transform="rotate(-20 100 20)"/>
+  <!-- headset band -->
+  <path d="M38 98 C38 48 162 48 162 98" fill="none" stroke="#1f4470" stroke-width="10" stroke-linecap="round"/>
+  <!-- head -->
+  <rect x="48" y="46" width="104" height="100" rx="22" fill="#FB4F14"/>
+  <rect x="48" y="46" width="104" height="22" rx="11" fill="#ff7a3d" opacity=".55"/>
+  <!-- visor + eyes -->
+  <rect x="60" y="72" width="80" height="34" rx="14" fill="#0b2340"/>
+  <circle cx="82" cy="89" r="8.5" fill="#6fe3ff"/><circle cx="118" cy="89" r="8.5" fill="#6fe3ff"/>
+  <circle cx="84.5" cy="86.5" r="3" fill="#fff"/><circle cx="120.5" cy="86.5" r="3" fill="#fff"/>
+  <!-- grin -->
+  <path d="M80 120 Q100 134 120 120" fill="none" stroke="#0b2340" stroke-width="5" stroke-linecap="round"/>
+  <!-- bolts -->
+  <circle cx="58" cy="136" r="3.2" fill="#0b2340"/><circle cx="142" cy="136" r="3.2" fill="#0b2340"/>
+  <!-- ear cups + mic boom -->
+  <rect x="30" y="84" width="20" height="34" rx="8" fill="#1f4470"/>
+  <rect x="150" y="84" width="20" height="34" rx="8" fill="#1f4470"/>
+  <path d="M40 116 C40 140 58 146 76 140" fill="none" stroke="#1f4470" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="78" cy="139" r="6" fill="#c9d3e0"/>
+  <!-- neck + chest plate -->
+  <rect x="84" y="146" width="32" height="12" fill="#c9d3e0"/>
+  <path d="M52 200 C52 170 70 158 100 158 C130 158 148 170 148 200 Z" fill="#1f4470"/>
+  <text x="100" y="192" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="28" fill="#FB4F14">M</text>
+</svg>
