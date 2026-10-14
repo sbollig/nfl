@@ -67,7 +67,7 @@ input[type=text]{font:inherit;background:var(--card);color:var(--ink);border:1px
 footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:420px){h1{font-size:36px}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=95"></head><body>
+<link rel="stylesheet" href="../theme.css?v=96"></head><body>
 <div class="wrap">
   <header>
     <div class="lbl">NFL 2026 · Power index · <span id="asof">through Week —</span></div>
@@ -116,7 +116,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
 </div>
 <script>
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const BOARD_VER = "v95", MACK_VER = "326";
+const BOARD_VER = "v96", MACK_VER = "326";
 const $ = (s, r=document) => r.querySelector(s);
 const store = { get(k){ try{ return localStorage.getItem(k)||""; }catch(e){ return ""; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }, del(k){ try{ localStorage.removeItem(k); }catch(e){} } };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));

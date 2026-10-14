@@ -1,0 +1,17 @@
+/* Player pop-up (Mack 2026-10-14). Fixed colours on purpose: the team-coloured pick cards redefine --line/--ink to white. */
+img[src*="/headshots/nfl/players/full/"],.pmr,.ihp,.pl,b.pn[data-team]{cursor:pointer}
+.ihp,.pl b,b.pn[data-team],.pmn>b{text-decoration:underline dotted rgba(251,79,20,.8);text-underline-offset:3px}
+dialog.pcard{border:2px solid #FB4F14;border-radius:10px;background:#0d2f57;color:#fff;padding:0;width:min(380px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,.5);font:15px/1.45 Barlow,system-ui,sans-serif;text-align:left}
+dialog.pcard::backdrop{background:rgba(0,10,25,.6)}
+.pcard .pc-top{display:flex;gap:12px;align-items:center;padding:14px 44px 10px 14px;border-bottom:1px solid #1f4470;position:relative}
+.pcard .pc-top img{width:76px;height:76px;border-radius:50%;object-fit:cover;object-position:top;background:#fff;border:3px solid #FB4F14;flex:none;cursor:default}
+.pcard h2{font-family:"Barlow Condensed",Barlow,sans-serif;font-size:24px;margin:0;line-height:1;color:#fff}
+.pcard .sub{color:#c9d3e0;font-size:13px;margin-top:3px}
+.pcard .st{display:inline-block;margin-top:5px;font-size:11px;font-weight:700;letter-spacing:.04em;padding:1px 6px;border-radius:3px;background:#3a1e1a;color:#f28b7d;border:1px solid #f28b7d}
+.pcard .x{all:unset;cursor:pointer;position:absolute;top:8px;right:8px;font-size:20px;color:#c9d3e0;width:32px;height:32px;text-align:center;line-height:32px;border-radius:50%}
+.pcard .x:hover,.pcard .x:focus-visible{background:#1f4470;color:#fff}
+.pcard dl{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;padding:10px 14px;margin:0;font-size:13px}
+.pcard dt{color:#c9d3e0} .pcard dd{margin:0}
+.pcard .season{margin:0 14px;padding:8px 10px;border-radius:6px;background:#002244;font-size:13px} .pcard .season b{color:#FB4F14}
+.pcard .bio{padding:10px 14px 4px;font-size:13.5px;line-height:1.5;margin:0}
+.pcard .src{padding:6px 14px 12px;font-size:11px;color:#c9d3e0} .pcard .src a{color:#c9d3e0}
