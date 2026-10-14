@@ -67,7 +67,7 @@ input[type=text]{font:inherit;background:var(--card);color:var(--ink);border:1px
 footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:420px){h1{font-size:36px}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=98"><script src="../faces.js?v=98" defer></script>
+<link rel="stylesheet" href="../theme.css?v=99"><script src="../faces.js?v=99" defer></script>
 </head><body>
 <div class="wrap">
   <header>
@@ -117,7 +117,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
 </div>
 <script>
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const BOARD_VER = "v98", MACK_VER = "326";
+const BOARD_VER = "v99", MACK_VER = "326";
 const $ = (s, r=document) => r.querySelector(s);
 const store = { get(k){ try{ return localStorage.getItem(k)||""; }catch(e){ return ""; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }, del(k){ try{ localStorage.removeItem(k); }catch(e){} } };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
