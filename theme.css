@@ -3,14 +3,13 @@
    Triple :root outranks each page's own light/dark blocks, so the theme holds in either system appearance.
    Team-coloured pick cards (.g.pick-*) and the data colours inside charts (gold/blue bars, tier dots) are left alone. */
 
-/* picks + discussion pages, and the board/nav tokens used on every page */
+/* picks pages and the nav tokens used on every page */
 :root:root:root{
   color-scheme:dark;
   --paper:#002244;--card:#0d2f57;--ink:#ffffff;--muted:#c9d3e0;--line:#1f4470;--navy:#ffffff;
   --orange:#FB4F14;--orange-soft:#3b2317;--good:#6fcf8c;--good-soft:#1c3324;--bad:#f28b7d;--bad-soft:#3a1e1a;--push:#d8c25a;--field:#0a2444;
   --bd-line:#1f4470;--bd-orange:#FB4F14;--bd-orange-soft:rgba(251,79,20,.15);--bd-muted:#c9d3e0;
 }
-:root:root:root .bd{--bd-paper:#002244;--bd-card:#0d2f57;--bd-ink:#ffffff;--bd-muted:#c9d3e0;--bd-line:#1f4470;--bd-navy:#ffffff;--bd-orange:#FB4F14;--bd-orange-soft:#3b2317;--bd-good:#6fcf8c;--bd-bad:#f28b7d;--bd-field:#0a2444}
 :root:root:root body{background:#002244}
 
 /* power rankings + season pages (<html class="ed">, set by their builders) */
@@ -24,3 +23,9 @@
 .ed .two li.bron{color:#ffb84d}
 .ed .rk .n,.ed .rk .tag,.ed .pg button[aria-selected="true"]{color:#002244}
 .ed .site-nav a{box-shadow:none}
+/* Shared site nav (moved here from board.css when the discussion board was removed, 2026-10-14) */
+.site-nav{display:flex;flex-wrap:wrap;gap:6px 4px;margin:14px 0;padding:6px 0;border-top:1px solid var(--line,#1f4470);border-bottom:1px solid var(--line,#1f4470);font-family:Barlow,system-ui,sans-serif}
+.site-nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;border-radius:6px;color:var(--orange,#FB4F14);font-weight:600;font-size:15px;text-decoration:none}
+.site-nav a:hover,.site-nav a:focus-visible{background:var(--orange-soft,#3b2317);outline:none}
+.site-nav a[aria-current="page"]{color:var(--muted,#c9d3e0);background:none;cursor:default;pointer-events:none}
+.site-nav a[aria-current="page"]::before{content:"▸ "}
