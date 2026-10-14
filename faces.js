@@ -2,8 +2,8 @@
 // Wraps each "Name" text in <span class="who"><img>Name</span>; a MutationObserver re-applies it when the picks board re-renders.
 (function () {
   const base = document.currentScript.src.replace(/faces\.js.*$/, ""), ver = (document.currentScript.src.split("?v=")[1] || "");
-  const FACES = { Ryota: "img/ryota.jpg" };
-  const SKIP = "script,style,title,textarea,select,option,input,.who,dialog";
+  const FACES = { Ryota: "img/ryota.jpg", Scott: "img/scott.jpg" };   // Todd pending Scott's confirmation of the photo
+  const SKIP = "script,style,title,textarea,select,option,input,.who,dialog,.inj,.mu,.pm,.pmr,.ihp,.pl";   // player areas: an NFL player named Scott must not get the face
   const re = new RegExp("\\b(" + Object.keys(FACES).join("|") + ")\\b");
   const css = document.createElement("style");
   css.textContent = ".who{white-space:nowrap}.who img{width:1.35em;height:1.35em;border-radius:50%;object-fit:cover;vertical-align:-.3em;margin-right:.3em;border:1.5px solid #FB4F14;background:#fff}";
