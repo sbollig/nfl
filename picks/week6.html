@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Week 6 Board</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../board.css?v=79">
+<link rel="stylesheet" href="../board.css?v=80">
 <style>
 :root{
   --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
@@ -31,7 +31,9 @@ h1 span{color:var(--orange)}
 .tile .v{font-family:"Barlow Condensed";font-size:30px;font-weight:700;line-height:1;margin-top:4px;color:var(--navy)}
 .tile.champ{position:relative;border-color:var(--push);box-shadow:inset 0 0 0 1px var(--push)}
 .tile.champ::before{content:"👑";position:absolute;top:-16px;left:6px;font-size:24px;line-height:1;transform:rotate(-14deg)}
-.you .mo-note{grid-column:1/-1;color:var(--muted);font-style:italic}
+.you .px-note{grid-column:1/-1;color:var(--muted);font-style:italic}
+.pxf{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;margin:8px 0}
+.pxf input{width:52px;font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink)}
 .tile .v small{font-size:13px;display:block;margin-left:0;margin-top:2px;color:var(--muted);font-weight:500;margin-left:4px}
 .status{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
 .dot{width:9px;height:9px;border-radius:50%;background:var(--muted);display:inline-block}
@@ -354,7 +356,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 @media (prefers-reduced-motion:reduce){.saved{transition:none}}
 @media (max-width:420px){h1{font-size:36px}.team{font-size:22px}.numbers{grid-template-columns:repeat(2,1fr)}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=79"></head><body>
+<link rel="stylesheet" href="../theme.css?v=80"></head><body>
 
 <div class="layout"><main>
 <div class="wrap">
@@ -403,14 +405,14 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 </main>
 <aside id="board"></aside>
 </div>
-<script src="../board.js?v=79"></script>
-<script>Board.mount(document.getElementById("board"), {topic:"picks", week:6, ver:"v79", collapsible:true});</script>
+<script src="../board.js?v=80"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"picks", week:6, ver:"v80", collapsible:true});</script>
 
 <script>
 // Game data: from Week06_Intel.json + ratings after Week 5, built by nfl_picks_board.py (Mack, 2026-10-14).
 // line = Mack's line with injuries, mkt = market, both home-side book sign. p = Mack's SU win% for his pick.
 const GAMES = [
- {id:"g01",ko:"2026-10-16T00:15Z",inj:{"away": ["Zach Charbonnet (RB, Out) → depth piece", "Julian Neal (CB, IR) → depth piece", "Jaxon Smith-Njigba (WR, Q) → Tory Horton (WR, 2 yr)"], "home": ["Pat Bryant (WR, IR) → depth piece", "Pat Surtain II (CB, D) → Jahdae Barron (CB, 2 yr)", "Riley Moss (CB, Q) → Kris Abrams-Draine (CB, 3 yr)"]},win:"Thursday night",kick:"Thu Oct 15 · 5:15 PM PT",away:"Seahawks",home:"Broncos",base:-1.9,line:-2.4,mkt:2.5,ou:40.5,mou:"Over",su:"Broncos",p:57,ats:"Broncos",mu:{"rows":[{"k":"Passing","wa":"","wh":"Seahawks"},{"k":"Running","wa":"","wh":"Seahawks"},{"k":"Sacks","wa":"Broncos","wh":"Broncos"},{"k":"Third down","wa":"Broncos","wh":"Seahawks"},{"k":"Turnovers","wa":"Broncos","wh":"Seahawks"}],"aw":4,"hm":4,"g":5},ar:"3-2",hr:"3-2",qb:true,bron:true,mo:true},
+ {id:"g01",ko:"2026-10-16T00:15Z",inj:{"away": ["Zach Charbonnet (RB, Out) → depth piece", "Julian Neal (CB, IR) → depth piece", "Jaxon Smith-Njigba (WR, Q) → Tory Horton (WR, 2 yr)"], "home": ["Pat Bryant (WR, IR) → depth piece", "Pat Surtain II (CB, D) → Jahdae Barron (CB, 2 yr)", "Riley Moss (CB, Q) → Kris Abrams-Draine (CB, 3 yr)"]},win:"Thursday night",kick:"Thu Oct 15 · 5:15 PM PT",away:"Seahawks",home:"Broncos",base:-1.9,line:-2.4,mkt:2.5,ou:40.5,mou:"Over",su:"Broncos",p:57,ats:"Broncos",mu:{"rows":[{"k":"Passing","wa":"","wh":"Seahawks"},{"k":"Running","wa":"","wh":"Seahawks"},{"k":"Sacks","wa":"Broncos","wh":"Broncos"},{"k":"Third down","wa":"Broncos","wh":"Seahawks"},{"k":"Turnovers","wa":"Broncos","wh":"Seahawks"}],"aw":4,"hm":4,"g":5},ar:"3-2",hr:"3-2",qb:true,bron:true,px:{sk:5.5,tk:3.5,msk:"Under",mtk:"Over"}},
  {id:"g02",ko:"2026-10-18T13:30Z",inj:{"away": ["Jalen Pitre (S, D) → no healthy backup listed", "David Montgomery (RB, D) → Woody Marks (RB, 2 yr)"], "home": ["Anton Harrison (OT, IR) → depth piece", "Eric Murray (S, Q) → Rayuan Lane III (S, 2 yr)", "Montaric Brown (CB, Q) → Jarrian Jones (CB, 3 yr)"]},win:"Sunday early (international)",kick:"Sun Oct 18 · 6:30 AM PT",away:"Texans",home:"Jaguars",base:-2.7,line:-2.4,mkt:-2.5,ou:42.5,mou:"Under",su:"Jaguars",p:57,ats:"Texans",mu:{"rows":[{"k":"Passing","wa":"Texans","wh":"Jaguars"},{"k":"Running","wa":"Jaguars","wh":"Texans"},{"k":"Sacks","wa":"Jaguars","wh":"Texans"},{"k":"Third down","wa":"Jaguars","wh":"Jaguars"},{"k":"Turnovers","wa":"Texans","wh":"Jaguars"}],"aw":4,"hm":6,"g":5},ar:"1-4",hr:"4-1"},
  {id:"g03",ko:"2026-10-18T17:00Z",inj:{"away": ["Anthony Johnson Jr. (S, IR) → depth piece", "Kyler Gordon (CB, Out) → depth piece", "Kyle Monangai (RB, Q) → depth piece"], "home": ["Yasir Abdullah (LB, IR) → depth piece", "Za'Darius Smith (DE, Q) → Cameron Thomas (DE, 5 yr)", "C.J. Henderson (CB, Q) → Avieon Terrell (CB, rookie)"]},win:"Sunday 10 AM",kick:"Sun Oct 18 · 10:00 AM PT",away:"Bears",home:"Falcons",base:2.2,line:1.3,mkt:2.5,ou:49.5,mou:"Under",su:"Bears",p:54,ats:"Falcons",mu:{"rows":[{"k":"Passing","wa":"Falcons","wh":"Falcons"},{"k":"Running","wa":"","wh":"Falcons"},{"k":"Sacks","wa":"","wh":""},{"k":"Third down","wa":"Bears","wh":"Bears"},{"k":"Turnovers","wa":"Falcons","wh":"Bears"}],"aw":3,"hm":4,"g":5},ar:"3-2",hr:"2-3"},
  {id:"g04",ko:"2026-10-18T17:00Z",inj:{"away": ["Ja'Kobi Lane (WR, IR) → depth piece", "Durham Smythe (TE, IR) → depth piece", "Andrew Vorhees (G, Q) → depth piece"], "home": ["Raheim Sanders (RB, IR) → depth piece", "Dylan Sampson (RB, IR) → depth piece", "Kalia Davis (DT, IR) → depth piece"]},win:"Sunday 10 AM",kick:"Sun Oct 18 · 10:00 AM PT",away:"Ravens",home:"Browns",base:8.3,line:9.2,mkt:5.5,ou:42.5,mou:"Over",su:"Ravens",p:75,ats:"Ravens",mu:{"rows":[{"k":"Passing","wa":"Ravens","wh":"Ravens"},{"k":"Running","wa":"Ravens","wh":"Ravens"},{"k":"Sacks","wa":"Browns","wh":"Ravens"},{"k":"Third down","wa":"","wh":"Ravens"},{"k":"Turnovers","wa":"Ravens","wh":""}],"aw":7,"hm":1,"g":5},ar:"4-1",hr:"3-2"},
@@ -444,12 +446,16 @@ function grade(g, s){
   if (g.ats){ const cover = margin + g.mkt;    // home covers if margin + mkt > 0
     ats = cover === 0 ? "push" : ((cover > 0) === (g.ats === g.home) ? "ok" : "no"); }
   const cover = margin + g.mkt, ppl = {};
-  for (const p of PEOPLE){ const pk = g.mo ? {} : (s.picks||{})[p] || {};   // Mack-only game: nobody else scores
+  // props game (g.px): su = total sacks O/U, ats = total takeaways O/U; finals for both kept under store row g99 (as = sacks, hs = takeaways)
+  const X = state.g99 || {}, sk = g.px ? num(X.as) : null, tk = g.px ? num(X.hs) : null;
+  const ouv = (pick, val, line) => !pick || val === null ? null : val === line ? "push" : ((val > line) === (pick === "Over") ? "ok" : "no");
+  for (const p of PEOPLE){ const pk = (s.picks||{})[p] || {};
+    if (g.px){ ppl[p] = { su: ouv(pk.su, sk, g.px.sk), ats: ouv(pk.ats, tk, g.px.tk), ou: ouv(pk.ou, as+hs, g.ou) }; continue; }
     ppl[p] = { su: pk.su ? (winner==="Tie" ? "push" : (winner===pk.su ? "ok":"no")) : null,
                ats: pk.ats ? (cover===0 ? "push" : ((cover>0)===(pk.ats===g.home) ? "ok":"no")) : null,
                ou: pk.ou ? (as+hs===g.ou ? "push" : (((as+hs)>g.ou)===(pk.ou==="Over") ? "ok":"no")) : null }; }
   const mou = g.mou ? (as+hs===g.ou ? "push" : (((as+hs)>g.ou)===(g.mou==="Over") ? "ok":"no")) : null;   // Mack's over/under
-  return {margin, winner, su, ats, mou, ppl, total: as + hs};
+  return {margin, winner, su: g.px ? ouv(g.px.msk, sk, g.px.sk) : su, ats: g.px ? ouv(g.px.mtk, tk, g.px.tk) : ats, mou, ppl, total: as + hs};
 }
 
 const LIVE = {};   // live scores from ESPN, by game id (Scott 10/11: "put a live score on the picks page")
@@ -471,7 +477,7 @@ function leadText(g){
 }
 function slateInfo(w){
   const gs = GAMES.filter(g => g.win === w); const pts = {}; let started = 0, finals = 0;
-  for (const g of gs) { const li = leadInfo(g); if (!li || !li.r) continue; started++; if (li.final) finals++; if (g.mo) continue;
+  for (const g of gs) { const li = leadInfo(g); if (!li || !li.r) continue; started++; if (li.final) finals++;
     for (const p of PEOPLE) pts[p] = (pts[p]||0) + ["su","ats","ou"].filter(k => li.r.ppl[p][k] === "ok").length;
     pts.Mack = (pts.Mack||0) + [li.r.su, li.r.ats, li.r.mou].filter(x => x === "ok").length; }
   if (!started) return null;
@@ -495,10 +501,10 @@ function card(g){
   const s = state[g.id] || {}; const r = grade(g, s);
   const chip = (t, k) => `<span class="chip ${k||""}">${t}</span>`;
   const verdict = r ? [
-    g.mo ? "" : chip(`Mack SU ${r.su==="ok"?"✓":r.su==="no"?"✗":"push"}`, r.su),
-    r.ats && !g.mo ? chip(`ATS ${r.ats==="ok"?"✓":r.ats==="no"?"✗":"push"}`, r.ats) : "",
-    r.mou && !g.mo ? chip(`Mack O/U ${r.mou==="ok"?"✓":r.mou==="no"?"✗":"push"}`, r.mou) : "",
-    ...PEOPLE.map(p => ["su","ats","ou"].map(k => r.ppl[p][k] ? chip(`${p} ${k==="su"?"W":k.toUpperCase()} ${r.ppl[p][k]==="ok"?"✓":r.ppl[p][k]==="no"?"✗":"push"}`, r.ppl[p][k]) : "").join("")),
+    r.su ? chip(`Mack ${g.px?"Sacks":"SU"} ${r.su==="ok"?"✓":r.su==="no"?"✗":"push"}`, r.su) : "",
+    r.ats ? chip(`${g.px?"Mack TA":"ATS"} ${r.ats==="ok"?"✓":r.ats==="no"?"✗":"push"}`, r.ats) : "",
+    r.mou ? chip(`Mack O/U ${r.mou==="ok"?"✓":r.mou==="no"?"✗":"push"}`, r.mou) : "",
+    ...PEOPLE.map(p => ["su","ats","ou"].map(k => r.ppl[p][k] ? chip(`${p} ${g.px?{su:"Sacks",ats:"TA",ou:"O/U"}[k]:k==="su"?"W":k.toUpperCase()} ${r.ppl[p][k]==="ok"?"✓":r.ppl[p][k]==="no"?"✗":"push"}`, r.ppl[p][k]) : "").join("")),
     chip(`Total ${r.total} ${r.total>g.ou?"over":r.total<g.ou?"under":"push"}`, r.total===g.ou?"push":"")
   ].join("") : "";
   // card colour: Mack's pick before the game; once final, the team that won outright (Scott 10/1). A tie keeps the pick's colours.
@@ -524,39 +530,41 @@ function card(g){
     <div class="inj"><span class="lbl">Key injuries → who steps in</span>
       <div><b>${g.away}</b> ${g.inj.away.length?g.inj.away.join(" · "):"none listed"}</div>
       <div><b>${g.home}</b> ${g.inj.home.length?g.inj.home.join(" · "):"none listed"}</div></div>
-    <div class="pick">${chip(`Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
+    <div class="pick">${chip(g.px ? `Mack: sacks ${g.px.msk} · takeaways ${g.px.mtk} · total ${g.mou}` : `Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
+    ${g.px?`<div class="pxf"><span class="lbl">Finals</span> Sacks <input id="sk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).as??""}" aria-label="Total sacks" ${canWrite?"":"disabled"}> Takeaways <input id="tk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).hs??""}" aria-label="Total takeaways" ${canWrite?"":"disabled"}></div>`:""}
     <div class="you">
-      <span class="lbl"></span><span class="lbl">Winner</span><span class="lbl">Spread</span><span class="lbl">Total ${g.ou}</span>
-      ${g.mo ? `<div class="mo-note">Mack-only game, for the record only: Todd, Ryota and Scott sit this one out (no Broncos bias), and nobody scores it, Mack included.</div>` : ""}
-      ${(g.mo ? [] : PEOPLE).map(p => { const pk=(s.picks||{})[p]||{}; const sel=(v,x)=>v===x?"selected":"";
+      <span class="lbl"></span><span class="lbl">${g.px?`Sacks ${g.px.sk}`:"Winner"}</span><span class="lbl">${g.px?`Takeaways ${g.px.tk}`:"Spread"}</span><span class="lbl">Total ${g.ou}</span>
+      ${g.px ? `<div class="px-note">Broncos game: no winner or spread pick. Over/Under on total sacks, total takeaways (interceptions + fumbles recovered) and total points, both teams combined.</div>` : ""}
+      ${PEOPLE.map(p => { const pk=(s.picks||{})[p]||{}; const sel=(v,x)=>v===x?"selected":""; const ou2=v=>`<option ${sel(v,"Over")}>Over</option><option ${sel(v,"Under")}>Under</option>`;
         const sp = g.mkt<0 ? [[g.away, `${g.away} +${-g.mkt}`],[g.home, `${g.home} ${g.mkt}`]] : [[g.away, `${g.away} ${g.mkt===0?"PK":"-"+g.mkt}`],[g.home, `${g.home} ${g.mkt===0?"PK":"+"+g.mkt}`]];
         return `<label class="lbl">${p}</label>
-        <select id="su-${p}-${g.id}" aria-label="${p} winner" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option><option ${sel(pk.su,g.away)}>${g.away}</option><option ${sel(pk.su,g.home)}>${g.home}</option></select>
-        <select id="ats-${p}-${g.id}" aria-label="${p} spread" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option>${sp.map(([v,l])=>`<option value="${v}" ${sel(pk.ats,v)}>${l}</option>`).join("")}</select>
+        <select id="su-${p}-${g.id}" aria-label="${p} winner" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option>${g.px?ou2(pk.su):`<option ${sel(pk.su,g.away)}>${g.away}</option><option ${sel(pk.su,g.home)}>${g.home}</option>`}</select>
+        <select id="ats-${p}-${g.id}" aria-label="${p} spread" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option>${g.px?ou2(pk.ats):sp.map(([v,l])=>`<option value="${v}" ${sel(pk.ats,v)}>${l}</option>`).join("")}</select>
         <select id="ou-${p}-${g.id}" aria-label="${p} total" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option><option ${sel(pk.ou,"Over")}>Over</option><option ${sel(pk.ou,"Under")}>Under</option></select>`; }).join("")}
       ${(() => { const sp = g.mkt<0 ? {[g.away]:`${g.away} +${-g.mkt}`,[g.home]:`${g.home} ${g.mkt}`} : {[g.away]:`${g.away} ${g.mkt===0?"PK":"-"+g.mkt}`,[g.home]:`${g.home} ${g.mkt===0?"PK":"+"+g.mkt}`};
         const cell = (v, what) => `<select class="mk" disabled aria-label="Mack ${what}"><option>${v||"—"}</option></select>`;   // Mack's picks: fixed at publish, read-only
-        return `<label class="lbl">Mack</label>${cell(g.su,"winner")}${cell(g.ats?sp[g.ats]:"","spread")}${cell(g.mou,"total")}`; })()}
+        return `<label class="lbl">Mack</label>${g.px?cell(g.px.msk,"sacks")+cell(g.px.mtk,"takeaways"):cell(g.su,"winner")+cell(g.ats?sp[g.ats]:"","spread")}${cell(g.mou,"total")}`; })()}
     </div>
   </article>`;
 }
 function tiles(){
-  let finals=0, su=[0,0], ats=[0,0], mou=[0,0]; const rec={}; for(const p of PEOPLE) rec[p]={su:[0,0],ats:[0,0],ou:[0,0]};
-  for (const g of GAMES){ const r = grade(g, state[g.id]||{}); if(!r) continue; finals++; if(g.mo) continue;   // Mack-only game: shown, scores for no one
-    if(r.su!=="push"){su[1]++; if(r.su==="ok")su[0]++;}
-    if(r.ats&&r.ats!=="push"){ats[1]++; if(r.ats==="ok")ats[0]++;}
+  let finals=0, su=[0,0], ats=[0,0], mou=[0,0]; const rec={}; for(const p of PEOPLE) rec[p]={su:[0,0],ats:[0,0],ou:[0,0],x:[0,0]}; const mx=[0,0];
+  for (const g of GAMES){ const r = grade(g, state[g.id]||{}); if(!r) continue; finals++;
+    if(g.px){ for(const v of [r.su,r.ats]) if(v&&v!=="push"){mx[1]++; if(v==="ok")mx[0]++;} }   // props game: sacks + takeaways count as "Props"
+    else { if(r.su!=="push"){su[1]++; if(r.su==="ok")su[0]++;}
+    if(r.ats&&r.ats!=="push"){ats[1]++; if(r.ats==="ok")ats[0]++;} }
     if(r.mou&&r.mou!=="push"){mou[1]++; if(r.mou==="ok")mou[0]++;}
-    for(const p of PEOPLE) for(const k of ["su","ats","ou"]){ const v=r.ppl[p][k]; if(v&&v!=="push"){rec[p][k][1]++; if(v==="ok")rec[p][k][0]++;} } }
+    for(const p of PEOPLE) for(const k of ["su","ats","ou"]){ const v=r.ppl[p][k], kk=g.px&&k!=="ou"?"x":k; if(v&&v!=="push"){rec[p][kk][1]++; if(v==="ok")rec[p][kk][0]++;} } }
   const t = (l,v,s,c) => `<div class="tile${c?" champ":""}"${c?` title="${l} won last week"`:""}><div class="lbl">${l}</div><div class="v">${v}${s?`<small>${s}</small>`:""}</div></div>`;
-  const mpts = su[0] + ats[0] + mou[0];   // Mack: winner on every game, spread only where he leaned, totals from g.mou
-  $("#tiles").innerHTML = t("Finals in", finals, "/ " + GAMES.length) + PEOPLE.map(p => { const pts = rec[p].su[0] + rec[p].ats[0] + rec[p].ou[0];   // 1 point per correct pick (winner, spread, total)
-    return t(p, `${pts} pt${pts===1?"":"s"}`, `W ${rec[p].su[0]}-${rec[p].su[1]-rec[p].su[0]} · ATS ${rec[p].ats[0]}-${rec[p].ats[1]-rec[p].ats[0]} · O/U ${rec[p].ou[0]}-${rec[p].ou[1]-rec[p].ou[0]}`, p===CHAMP); }).join("")
-    + t("Mack", `${mpts} pt${mpts===1?"":"s"}`, `W ${su[0]}-${su[1]-su[0]} · ATS ${ats[0]}-${ats[1]-ats[0]} · O/U ${mou[0]}-${mou[1]-mou[0]}`, CHAMP==="Mack");
+  const mpts = su[0] + ats[0] + mou[0] + mx[0]; const px = a => a[1] ? ` · Props ${a[0]}-${a[1]-a[0]}` : "";   // Mack: winner on every game, spread only where he leaned, totals from g.mou
+  $("#tiles").innerHTML = t("Finals in", finals, "/ " + GAMES.length) + PEOPLE.map(p => { const pts = rec[p].su[0] + rec[p].ats[0] + rec[p].ou[0] + rec[p].x[0];   // 1 point per correct pick (winner, spread, total)
+    return t(p, `${pts} pt${pts===1?"":"s"}`, `W ${rec[p].su[0]}-${rec[p].su[1]-rec[p].su[0]} · ATS ${rec[p].ats[0]}-${rec[p].ats[1]-rec[p].ats[0]} · O/U ${rec[p].ou[0]}-${rec[p].ou[1]-rec[p].ou[0]}${px(rec[p].x)}`, p===CHAMP); }).join("")
+    + t("Mack", `${mpts} pt${mpts===1?"":"s"}`, `W ${su[0]}-${su[1]-su[0]} · ATS ${ats[0]}-${ats[1]-ats[0]} · O/U ${mou[0]}-${mou[1]-mou[0]}${px(mx)}`, CHAMP==="Mack");
 }
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v79";
+const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v80";
 const PEOPLE = ["Todd","Ryota","Scott"];
 const CHAMP = "Ryota";   // last week's winner wears the crown; set by nfl_site_week.py each Tuesday
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
@@ -567,6 +575,7 @@ function queueSave(id){
   const s = state[id] = state[id] || {};
   if (!(id in baseline)) baseline[id] = JSON.stringify(s);
   s.as = $("#as-"+id).value.trim(); s.hs = $("#hs-"+id).value.trim();
+  if ($("#sk-"+id)){ const X = state.g99 = state.g99 || {}; if (!("g99" in baseline)) baseline.g99 = JSON.stringify(X); X.as = $("#sk-"+id).value.trim(); X.hs = $("#tk-"+id).value.trim(); }   // props game finals
   s.picks = {}; for (const p of PEOPLE) if ($("#su-"+p+"-"+id)) s.picks[p] = { su: $("#su-"+p+"-"+id).value, ats: $("#ats-"+p+"-"+id).value, ou: $("#ou-"+p+"-"+id).value };
   saveCache(); tiles();
   clearTimeout(timers[id]); timers[id] = setTimeout(() => push(id), 500);
@@ -578,6 +587,7 @@ async function push(id){
   const G = GAMES.find(x => x.id === id);
   if (!started(G)) for (const p of PEOPLE){ const v = s.picks[p], o = (prev.picks||{})[p]||{}; if (v.su!==o.su || v.ats!==o.ats || v.ou!==o.ou) calls.push({week:WEEK, game:id, person:p, su:v.su, ats:v.ats, ou:v.ou}); }
   if (s.as !== (prev.as||"") || s.hs !== (prev.hs||"")) calls.push({week:WEEK, game:id, as:s.as, hs:s.hs});
+  if (G.px && "g99" in baseline){ const X = state.g99 || {}, P = JSON.parse(baseline.g99); delete baseline.g99; if ((X.as||"") !== (P.as||"") || (X.hs||"") !== (P.hs||"")) calls.push({week:WEEK, game:"g99", as:X.as||"", hs:X.hs||""}); }
   try {
     for (const body of calls){ const q = new URLSearchParams(body).toString(); const r = await fetch(STORE + "?" + q, {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error(j.error||"store refused"); }
     const el=$("#sv-"+id); el.classList.add("show"); setTimeout(()=>el.classList.remove("show"),1200);
