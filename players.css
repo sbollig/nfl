@@ -15,3 +15,4 @@ dialog.pcard::backdrop{background:rgba(0,10,25,.6)}
 .pcard .season{margin:0 14px;padding:8px 10px;border-radius:6px;background:#002244;font-size:13px} .pcard .season b{color:#FB4F14}
 .pcard .bio{padding:10px 14px 4px;font-size:13.5px;line-height:1.5;margin:0}
 .pcard .src{padding:6px 14px 12px;font-size:11px;color:#c9d3e0} .pcard .src a{color:#c9d3e0}
+.pcard h2{text-decoration:none}
