@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Week 6 Board</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../board.css?v=82">
+<link rel="stylesheet" href="../board.css?v=83">
 <style>
 :root{
   --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
@@ -33,6 +33,7 @@ h1 span{color:var(--orange)}
 .tile.champ::before{content:"👑";position:absolute;top:-16px;left:6px;font-size:24px;line-height:1;transform:rotate(-14deg)}
 .you .px-note{grid-column:1/-1;color:var(--muted);font-style:italic}
 .mpk{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;margin:8px 0;padding:6px 8px;border:1px dashed var(--line);border-radius:4px}
+.mpk a.pre{margin-left:auto;font-weight:600}
 .pxf{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;margin:8px 0}
 .pxf input{width:52px;font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink)}
 .tile .v small{font-size:13px;display:block;margin-left:0;margin-top:2px;color:var(--muted);font-weight:500;margin-left:4px}
@@ -357,7 +358,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 @media (prefers-reduced-motion:reduce){.saved{transition:none}}
 @media (max-width:420px){h1{font-size:36px}.team{font-size:22px}.numbers{grid-template-columns:repeat(2,1fr)}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=82"></head><body>
+<link rel="stylesheet" href="../theme.css?v=83"></head><body>
 
 <div class="layout"><main>
 <div class="wrap">
@@ -406,14 +407,14 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 </main>
 <aside id="board"></aside>
 </div>
-<script src="../board.js?v=82"></script>
-<script>Board.mount(document.getElementById("board"), {topic:"picks", week:6, ver:"v82", collapsible:true});</script>
+<script src="../board.js?v=83"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"picks", week:6, ver:"v83", collapsible:true});</script>
 
 <script>
 // Game data: from Week06_Intel.json + ratings after Week 5, built by nfl_picks_board.py (Mack, 2026-10-14).
 // line = Mack's line with injuries, mkt = market, both home-side book sign. p = Mack's SU win% for his pick.
 const GAMES = [
- {id:"g01",ko:"2026-10-16T00:15Z",inj:{"away": ["Zach Charbonnet (RB, Out) → depth piece", "Julian Neal (CB, IR) → depth piece", "Jaxon Smith-Njigba (WR, Q) → Tory Horton (WR, 2 yr)"], "home": ["Pat Bryant (WR, IR) → depth piece", "Pat Surtain II (CB, D) → Jahdae Barron (CB, 2 yr)", "Riley Moss (CB, Q) → Kris Abrams-Draine (CB, 3 yr)"]},win:"Thursday night",kick:"Thu Oct 15 · 5:15 PM PT",away:"Seahawks",home:"Broncos",base:-1.9,line:-2.4,mkt:2.5,ou:40.5,mou:"Over",su:"Broncos",p:57,ats:"Broncos",mu:{"rows":[{"k":"Passing","wa":"","wh":"Seahawks"},{"k":"Running","wa":"","wh":"Seahawks"},{"k":"Sacks","wa":"Broncos","wh":"Broncos"},{"k":"Third down","wa":"Broncos","wh":"Seahawks"},{"k":"Turnovers","wa":"Broncos","wh":"Seahawks"}],"aw":4,"hm":4,"g":5},ar:"3-2",hr:"3-2",qb:true,bron:true,px:{sk:5.5,tk:3.5,msk:"Under",mtk:"Over"}},
+ {id:"g01",ko:"2026-10-16T00:15Z",inj:{"away": ["Zach Charbonnet (RB, Out) → depth piece", "Julian Neal (CB, IR) → depth piece", "Jaxon Smith-Njigba (WR, Q) → Tory Horton (WR, 2 yr)"], "home": ["Pat Bryant (WR, IR) → depth piece", "Pat Surtain II (CB, D) → Jahdae Barron (CB, 2 yr)", "Riley Moss (CB, Q) → Kris Abrams-Draine (CB, 3 yr)"]},win:"Thursday night",kick:"Thu Oct 15 · 5:15 PM PT",away:"Seahawks",home:"Broncos",base:-1.9,line:-2.4,mkt:2.5,ou:40.5,mou:"Over",su:"Broncos",p:57,ats:"Broncos",mu:{"rows":[{"k":"Passing","wa":"","wh":"Seahawks"},{"k":"Running","wa":"","wh":"Seahawks"},{"k":"Sacks","wa":"Broncos","wh":"Broncos"},{"k":"Third down","wa":"Broncos","wh":"Seahawks"},{"k":"Turnovers","wa":"Broncos","wh":"Seahawks"}],"aw":4,"hm":4,"g":5},ar:"3-2",hr:"3-2",qb:true,bron:true,px:{sk:5.5,tk:3.5,msk:"Under",mtk:"Over"},pre:"../broncos/week6.html"},
  {id:"g02",ko:"2026-10-18T13:30Z",inj:{"away": ["Jalen Pitre (S, D) → no healthy backup listed", "David Montgomery (RB, D) → Woody Marks (RB, 2 yr)"], "home": ["Anton Harrison (OT, IR) → depth piece", "Eric Murray (S, Q) → Rayuan Lane III (S, 2 yr)", "Montaric Brown (CB, Q) → Jarrian Jones (CB, 3 yr)"]},win:"Sunday early (international)",kick:"Sun Oct 18 · 6:30 AM PT",away:"Texans",home:"Jaguars",base:-2.7,line:-2.4,mkt:-2.5,ou:42.5,mou:"Under",su:"Jaguars",p:57,ats:"Texans",mu:{"rows":[{"k":"Passing","wa":"Texans","wh":"Jaguars"},{"k":"Running","wa":"Jaguars","wh":"Texans"},{"k":"Sacks","wa":"Jaguars","wh":"Texans"},{"k":"Third down","wa":"Jaguars","wh":"Jaguars"},{"k":"Turnovers","wa":"Texans","wh":"Jaguars"}],"aw":4,"hm":6,"g":5},ar:"1-4",hr:"4-1"},
  {id:"g03",ko:"2026-10-18T17:00Z",inj:{"away": ["Anthony Johnson Jr. (S, IR) → depth piece", "Kyler Gordon (CB, Out) → depth piece", "Kyle Monangai (RB, Q) → depth piece"], "home": ["Yasir Abdullah (LB, IR) → depth piece", "Za'Darius Smith (DE, Q) → Cameron Thomas (DE, 5 yr)", "C.J. Henderson (CB, Q) → Avieon Terrell (CB, rookie)"]},win:"Sunday 10 AM",kick:"Sun Oct 18 · 10:00 AM PT",away:"Bears",home:"Falcons",base:2.2,line:1.3,mkt:2.5,ou:49.5,mou:"Under",su:"Bears",p:54,ats:"Falcons",mu:{"rows":[{"k":"Passing","wa":"Falcons","wh":"Falcons"},{"k":"Running","wa":"","wh":"Falcons"},{"k":"Sacks","wa":"","wh":""},{"k":"Third down","wa":"Bears","wh":"Bears"},{"k":"Turnovers","wa":"Falcons","wh":"Bears"}],"aw":3,"hm":4,"g":5},ar:"3-2",hr:"2-3"},
  {id:"g04",ko:"2026-10-18T17:00Z",inj:{"away": ["Ja'Kobi Lane (WR, IR) → depth piece", "Durham Smythe (TE, IR) → depth piece", "Andrew Vorhees (G, Q) → depth piece"], "home": ["Raheim Sanders (RB, IR) → depth piece", "Dylan Sampson (RB, IR) → depth piece", "Kalia Davis (DT, IR) → depth piece"]},win:"Sunday 10 AM",kick:"Sun Oct 18 · 10:00 AM PT",away:"Ravens",home:"Browns",base:8.3,line:9.2,mkt:5.5,ou:42.5,mou:"Over",su:"Ravens",p:75,ats:"Ravens",mu:{"rows":[{"k":"Passing","wa":"Ravens","wh":"Ravens"},{"k":"Running","wa":"Ravens","wh":"Ravens"},{"k":"Sacks","wa":"Browns","wh":"Ravens"},{"k":"Third down","wa":"","wh":"Ravens"},{"k":"Turnovers","wa":"Ravens","wh":""}],"aw":7,"hm":1,"g":5},ar:"4-1",hr:"3-2"},
@@ -528,7 +529,7 @@ function card(g){
     ${g.px ? (() => { const sp = g.ats===g.home ? `${g.home} ${fm(g.mkt)}` : `${g.away} ${fm(-g.mkt)}`;   // Mack's own game pick on the props game (Scott 10/14): shown for the record, scores no points
       const ok = r && r.winner !== "Tie" ? (r.winner === g.su ? " ✓" : " ✗") : "", c = r ? r.margin + g.mkt : null;
       const ac = r ? (c === 0 ? " push" : ((c > 0) === (g.ats === g.home) ? " ✓" : " ✗")) : "";
-      return `<div class="mpk"><span class="lbl">Mack's pick</span><b>${g.su} ${g.p}%${ok}</b><b>${sp}${ac}</b><small>for the record, no points</small></div>`; })() : ""}
+      return `<div class="mpk"><span class="lbl">Mack's pick</span><b>${g.su} ${g.p}%${ok}</b><b>${sp}${ac}</b><small>for the record, no points</small>${g.pre?`<a class="pre" href="${g.pre}">Broncos pre-game analysis →</a>`:""}</div>`; })() : ""}
     ${g.mu ? `<div class="mu"><table>
       <thead><tr><th><span class="lbl">Matchup</span></th><th class="col">${g.away}<small>offense</small></th><th class="col">${g.home}<small>offense</small></th></tr></thead>
       <tbody>${g.mu.rows.map(r => `<tr><th>${r.k}</th><td class="${r.wa?(r.wa===g.away?"win":"lose"):""}">${r.wa?(r.wa===g.away?"wins":"loses"):"even"}</td><td class="${r.wh?(r.wh===g.home?"win":"lose"):""}">${r.wh?(r.wh===g.home?"wins":"loses"):"even"}</td></tr>`).join("")}</tbody></table></div>` : ""}
@@ -569,7 +570,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v82";
+const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v83";
 const PEOPLE = ["Todd","Ryota","Scott"];
 const CHAMP = "Ryota";   // last week's winner wears the crown; set by nfl_site_week.py each Tuesday
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
