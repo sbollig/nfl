@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Week 6 Board</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../board.css?v=80">
+<link rel="stylesheet" href="../board.css?v=81">
 <style>
 :root{
   --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
@@ -356,7 +356,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 @media (prefers-reduced-motion:reduce){.saved{transition:none}}
 @media (max-width:420px){h1{font-size:36px}.team{font-size:22px}.numbers{grid-template-columns:repeat(2,1fr)}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=80"></head><body>
+<link rel="stylesheet" href="../theme.css?v=81"></head><body>
 
 <div class="layout"><main>
 <div class="wrap">
@@ -405,8 +405,8 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 </main>
 <aside id="board"></aside>
 </div>
-<script src="../board.js?v=80"></script>
-<script>Board.mount(document.getElementById("board"), {topic:"picks", week:6, ver:"v80", collapsible:true});</script>
+<script src="../board.js?v=81"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"picks", week:6, ver:"v81", collapsible:true});</script>
 
 <script>
 // Game data: from Week06_Intel.json + ratings after Week 5, built by nfl_picks_board.py (Mack, 2026-10-14).
@@ -533,8 +533,8 @@ function card(g){
     <div class="pick">${chip(g.px ? `Mack: sacks ${g.px.msk} · takeaways ${g.px.mtk} · total ${g.mou}` : `Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
     ${g.px?`<div class="pxf"><span class="lbl">Finals</span> Sacks <input id="sk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).as??""}" aria-label="Total sacks" ${canWrite?"":"disabled"}> Takeaways <input id="tk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).hs??""}" aria-label="Total takeaways" ${canWrite?"":"disabled"}></div>`:""}
     <div class="you">
-      <span class="lbl"></span><span class="lbl">${g.px?`Sacks ${g.px.sk}`:"Winner"}</span><span class="lbl">${g.px?`Takeaways ${g.px.tk}`:"Spread"}</span><span class="lbl">Total ${g.ou}</span>
       ${g.px ? `<div class="px-note">Broncos game: no winner or spread pick. Over/Under on total sacks, total takeaways (interceptions + fumbles recovered) and total points, both teams combined.</div>` : ""}
+      <span class="lbl"></span><span class="lbl">${g.px?`Sacks ${g.px.sk}`:"Winner"}</span><span class="lbl">${g.px?`Takeaways ${g.px.tk}`:"Spread"}</span><span class="lbl">Total ${g.ou}</span>
       ${PEOPLE.map(p => { const pk=(s.picks||{})[p]||{}; const sel=(v,x)=>v===x?"selected":""; const ou2=v=>`<option ${sel(v,"Over")}>Over</option><option ${sel(v,"Under")}>Under</option>`;
         const sp = g.mkt<0 ? [[g.away, `${g.away} +${-g.mkt}`],[g.home, `${g.home} ${g.mkt}`]] : [[g.away, `${g.away} ${g.mkt===0?"PK":"-"+g.mkt}`],[g.home, `${g.home} ${g.mkt===0?"PK":"+"+g.mkt}`]];
         return `<label class="lbl">${p}</label>
@@ -564,7 +564,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v80";
+const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v81";
 const PEOPLE = ["Todd","Ryota","Scott"];
 const CHAMP = "Ryota";   // last week's winner wears the crown; set by nfl_site_week.py each Tuesday
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
