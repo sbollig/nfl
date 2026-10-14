@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Week 6 Board</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../board.css?v=85">
+<link rel="stylesheet" href="../board.css?v=86">
 <style>
 :root{
   --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
@@ -38,9 +38,9 @@ h1 span{color:var(--orange)}
 .pmr{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:5px;margin-bottom:4px;border:1px solid var(--line);background:var(--paper)}
 .pmr img,.pmr i{width:32px;height:32px;border-radius:50%;object-fit:cover;object-position:top;background:#fff;border:2px solid var(--line);flex:none}
 .pmn{flex:1;min-width:0;font-size:12px;line-height:1.25;color:var(--ink)}.pmn small{color:var(--muted)}.pms{display:block}
-.pmv{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:3px;background:var(--line);color:var(--ink)}
-.pmr.wins{border-color:var(--good)}.pmr.wins .pmv{background:var(--good);color:#fff}.pmr.wins img{border-color:var(--good)}
-.pmr.loses .pmv{background:var(--bad);color:#fff}
+.pmv{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:3px;background:transparent;color:var(--muted);border:1px solid var(--muted)}
+.pmr.wins{border-color:var(--good)}.pmr.wins .pmv{background:var(--good-soft);color:var(--good);border-color:var(--good)}.pmr.wins img{border-color:var(--good)}
+.pmr.loses .pmv{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
 .nrk{font-weight:500;opacity:.8;white-space:nowrap}
 .mpk{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;margin:8px 0;padding:6px 8px;border:1px dashed var(--line);border-radius:4px}
 .mpk a.pre{margin-left:auto;font-weight:600}
@@ -368,7 +368,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 @media (prefers-reduced-motion:reduce){.saved{transition:none}}
 @media (max-width:420px){h1{font-size:36px}.team{font-size:22px}.numbers{grid-template-columns:repeat(2,1fr)}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=85"></head><body>
+<link rel="stylesheet" href="../theme.css?v=86"></head><body>
 
 <div class="layout"><main>
 <div class="wrap">
@@ -417,8 +417,8 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 </main>
 <aside id="board"></aside>
 </div>
-<script src="../board.js?v=85"></script>
-<script>Board.mount(document.getElementById("board"), {topic:"picks", week:6, ver:"v85", collapsible:true});</script>
+<script src="../board.js?v=86"></script>
+<script>Board.mount(document.getElementById("board"), {topic:"picks", week:6, ver:"v86", collapsible:true});</script>
 
 <script>
 // Game data: from Week06_Intel.json + ratings after Week 5, built by nfl_picks_board.py (Mack, 2026-10-14).
@@ -580,7 +580,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v85";
+const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v86";
 const PEOPLE = ["Todd","Ryota","Scott"];
 const CHAMP = "Ryota";   // last week's winner wears the crown; set by nfl_site_week.py each Tuesday
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
