@@ -1,0 +1,19 @@
+# Post NFL finals to the shared picks board from GitHub's servers, so nothing at home has to be awake.
+# Every 5 minutes (GitHub's minimum; may be delayed under load). Free on a public repo. Manual run: Actions tab → "Post finals" → Run workflow.
+name: Post finals
+on:
+  schedule:
+    - cron: "2-59/5 * * * *"   # off the top of the hour, GitHub's busiest minute
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: post-finals
+  cancel-in-progress: false
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/post_finals.py
