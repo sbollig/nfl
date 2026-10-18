@@ -370,8 +370,8 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 @media (prefers-reduced-motion:reduce){.saved{transition:none}}
 @media (max-width:420px){h1{font-size:36px}.team{font-size:22px}.numbers{grid-template-columns:repeat(2,1fr)}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=113"><link rel="stylesheet" href="../players.css?v=113"><script src="../players.js?v=113" defer></script>
-<script src="../faces.js?v=113" defer></script>
+<link rel="stylesheet" href="../theme.css?v=114"><link rel="stylesheet" href="../players.css?v=114"><script src="../players.js?v=114" defer></script>
+<script src="../faces.js?v=114" defer></script>
 </head><body>
 
 <div class="layout"><main>
@@ -585,7 +585,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v113";
+const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v114";
 const PEOPLE = ["Todd","Ryota","Scott"];
 const CHAMP = "Ryota";   // last week's winner wears the crown; set by nfl_site_week.py each Tuesday
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
@@ -625,16 +625,28 @@ async function pull(quiet){
     for (const [id,row] of Object.entries(j.data||{})){
       const cur = state[id] || {}; const nxt = {as: row.as||"", hs: row.hs||"", picks:{}};
       for (const p of PEOPLE){ const pk=(row.picks||{})[p]||{}; nxt.picks[p] = {su: pk.su||"", ats: pk.ats||"", ou: pk.ou||""}; }
-      if (JSON.stringify(cur.as||"")!==JSON.stringify(nxt.as) || JSON.stringify(cur.hs||"")!==JSON.stringify(nxt.hs) || JSON.stringify(cur.picks||{})!==JSON.stringify(nxt.picks)){ state[id]=nxt; changed=true; }
+      if (JSON.stringify(cur.as||"")!==JSON.stringify(nxt.as) || JSON.stringify(cur.hs||"")!==JSON.stringify(nxt.hs) || JSON.stringify(cur.picks||{})!==JSON.stringify(nxt.picks)){ state[id]=nxt; changed=true; dirty.add(id); }
     }
     saveCache();
-    if (changed && !document.activeElement?.closest?.(".g")) render(); else tiles();
+    if (changed) dirty.forEach(id => renderCard(id)); else tiles();
     if (!quiet) setDb("on","Connected to the shared board. Picks and scores are the same on every device. Board " + BOARD_VER + ".");
   } catch(e){ if(!quiet) setDb("off","Shared board not reachable right now; showing what this device last saw."); }
 }
 document.addEventListener("input", e => { const a = e.target.closest?.(".g"); if(a) queueSave(a.dataset.id); });
 document.addEventListener("change", e => { const a = e.target.closest?.(".g"); if(a) queueSave(a.dataset.id); });
-document.addEventListener("focusout", e => { const a = e.target.closest?.(".g"); if(a && document.activeElement && !a.contains(document.activeElement)) render(); });
+// Re-render ONE card, and never while a dropdown is in use (Scott 10/17: Safari flickered on every team pick, then
+// "A problem repeatedly occurred" — the whole board was rebuilt with innerHTML from focusout/pull while the native
+// <select> popup was open; WebKit crashed on the destroyed element, Firefox just closed the menu). A card whose
+// dropdown is open stays dirty and is redrawn after focus leaves it.
+const dirty = new Set();
+function renderCard(id){
+  const g = GAMES.find(x => x.id === id), el = document.querySelector(`.g[data-id="${id}"]`); if (!g || !el) { dirty.delete(id); return; }
+  const ae = document.activeElement; if (ae && el.contains(ae)) { dirty.add(id); return; }   // someone is typing/choosing in this card
+  el.outerHTML = card(g); dirty.delete(id); tiles();
+}
+document.addEventListener("focusout", e => { const a = e.target.closest?.(".g"); if (!a) return; const id = a.dataset.id;
+  if (e.target.tagName !== "SELECT") dirty.add(id);   // a typed score regrades the card; a pick change is already shown by the dropdown itself
+  setTimeout(() => { for (const d of [...dirty]) renderCard(d); }, 150); });
 loadCache(); render(); setDb("", "Connecting to the shared board…"); pull(false);
 // Tell the store which version/browser loaded (diagnostic), and self-refresh if a newer board is published.
 function ping(ev){ try{ fetch(STORE + "?ping=1&ver=" + BOARD_VER + "&ev=" + encodeURIComponent(ev) + "&ua=" + encodeURIComponent(navigator.userAgent.slice(0,160)), {cache:"no-store"}).catch(()=>{}); }catch(e){} }
