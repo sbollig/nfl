@@ -29,7 +29,8 @@ h1 span{color:var(--orange)}
 .tile{background:var(--card);border:1px solid var(--line);padding:12px 14px;border-radius:6px}
 .tile .v{font-family:"Barlow Condensed";font-size:30px;font-weight:700;line-height:1;margin-top:4px;color:var(--navy)}
 .tile.champ{position:relative;border-color:var(--push);box-shadow:inset 0 0 0 1px var(--push)}
-.tile.champ::before{content:"👑";position:absolute;top:-16px;left:6px;font-size:24px;line-height:1;transform:rotate(-14deg)}
+.tile.champ::before{content:"👑";position:absolute;top:-14px;left:6px;font-size:24px;line-height:1;transform:rotate(-14deg)}
+#tiles{padding-top:16px}   /* room for the crown: the card body clips overflow (Scott 10/19 "Ryota's crown got cut off") */
 .you .px-note{grid-column:1/-1;color:var(--muted);font-style:italic}
 .pm{margin:10px 0 4px}.pm .lbl small{text-transform:none;letter-spacing:0;font-weight:500}
 .pmg{display:grid;grid-template-columns:1fr;gap:8px;margin-top:6px}.mu{align-content:start}.mu table{align-self:start}
