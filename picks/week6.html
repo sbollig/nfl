@@ -446,7 +446,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 @media (min-width:640px){.bc .tiles{grid-template-columns:repeat(5,1fr)}}
 .hint{font-size:13px;color:var(--muted);margin:-8px 0 10px}
 </style>
-<link rel="stylesheet" href="../theme.css?v=117">
+<link rel="stylesheet" href="../theme.css?v=118"><link rel="stylesheet" href="../deck.css?v=118">
 <style>
 /* Retro Broncos (Scott 10/19): 1977 "Orange Crush" throwback — Legacy Blue + orange + white, the 1968 "D" on the helmet.
    The team publishes no hex values (denverbroncos.com/uniforms/throwback, read 2026-10-19); these are blue sampled from the
@@ -454,7 +454,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 :root:root:root{color-scheme:dark;--paper:#0a46a8;--card:#073a8c;--ink:#ffffff;--muted:#cfe0ff;--line:#2d63c7;--navy:#ffffff;
   --orange:#fe5200;--orange-soft:#7a3a0e;--field:#083b90;--bd-line:#2d63c7;--bd-orange:#fe5200;--bd-orange-soft:rgba(245,130,32,.18);--bd-muted:#cfe0ff}
 :root:root:root body{background:#0a46a8}
-.site-nav a{color:#fe5200}.site-nav a[aria-current="page"]{color:#cfe0ff}
+.site-nav a{color:var(--orange-text,#fe5200)}.site-nav a[aria-current="page"]{color:#cfe0ff}
 h1 span{color:#fe5200}.preview-banner{background:#fe5200;color:#0a2a66}
 header{display:grid;grid-template-columns:1fr auto;column-gap:14px;align-items:center}
 header .lbl,header h1,header .preview-banner,header .sub{grid-column:1}
@@ -469,8 +469,8 @@ header .mascot{grid-column:2;grid-row:1/span 2;width:96px;height:auto;filter:dro
 .dk.tally[data-id="about"]{background:#061d4a;border:1px solid #2d63c7;color:#fff}.dk.tally[data-id="about"]::before{background:#fff}
 .dk.tally[data-id="about"] .sub{color:#fff;margin:0 0 10px;font-size:14px}.dk.tally[data-id="about"] .foot{border-top:0;padding-top:0;color:#fff;font-size:14px}.dk.tally[data-id="about"] .foot p{margin:0 0 8px}
 .tb{color:#fe5200;border-color:#fe5200}
-</style><link rel="stylesheet" href="../players.css?v=117"><script src="../players.js?v=117" defer></script>
-<script src="../faces.js?v=117" defer></script>
+</style><link rel="stylesheet" href="../players.css?v=118"><script src="../players.js?v=118" defer></script>
+<script src="../faces.js?v=118" defer></script>
 </head><body>
 
 <div class="layout"><main>
@@ -481,7 +481,7 @@ header .mascot{grid-column:2;grid-row:1/span 2;width:96px;height:auto;filter:dro
     <img class="mascot" src="../img/broncos-d-logo.png" alt="Denver Broncos D logo, 1970–1996" loading="eager">
     <div class="sub">Mack's line, the DraftKings market (via ESPN, fetched Oct 14 9:13 AM PT), and his pick for every game. Enter Todd's, Ryota's and Scott's winner, spread and over/under, then the finals as the games go. Everything saves to a shared board, so all three of you see the same page.</div>
   </header>
-<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../broncos/week6.html">Broncos Pre-Game</a><a href="../picks/week6.html" aria-current="page">Week 6 Picks</a></nav>
+<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../picks/week6.html" aria-current="page">Picks</a><a href="../power-rankings/">Power Rankings</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../power-rankings/season.html">Season</a><a href="../broncos/week6.html">Broncos</a></nav>
 
 <!-- LASTWEEK -->
   <section class="rec">
@@ -507,7 +507,7 @@ header .mascot{grid-column:2;grid-row:1/span 2;width:96px;height:auto;filter:dro
   <p class="hint">Tap a card to open it. Press and hold a card, then slide it up or down to reorder. Order is saved on this device.</p>
 <div id="deck" class="deck" aria-label="Board cards"></div>
 
-<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../broncos/week6.html">Broncos Pre-Game</a><a href="../picks/week6.html" aria-current="page">Week 6 Picks</a></nav>
+<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../picks/week6.html" aria-current="page">Picks</a><a href="../power-rankings/">Power Rankings</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../power-rankings/season.html">Season</a><a href="../broncos/week6.html">Broncos</a></nav>
   <footer class="foot">
     <p><b>How to read a card.</b> Lines are home-side, book sign: a negative number means the home team is favored by that much. <b>Mack</b> is his line after this week's verified injury hits. <b>Edge</b> is his line minus the market; he takes the side his line favors, and the further the edge is from zero the stronger the opinion. The win % is his straight-up confidence.</p>
     <p><b>Key injuries</b> are the top three per team from the ESPN injury report (Out, IR, Doubtful, Questionable); the arrow shows the next healthy player at that spot on the ESPN depth chart. "Depth piece" means the injured player was not a starter. Players hurt in last week's games are included. Fetched Oct 19.</p>
@@ -736,7 +736,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v117";
+const WEEK = 6, KEY = "wk06-cache", BOARD_VER = "v118";
 const PEOPLE = ["Todd","Ryota","Scott"];
 const CHAMP = "Ryota";   // last week's winner wears the crown; set by nfl_site_week.py each Tuesday
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
