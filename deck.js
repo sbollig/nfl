@@ -34,8 +34,10 @@
   function normalize() {   // zones: tallies/about first, then each slate followed by its own g cards (relative order kept)
     const kids = [...dk.children], top = kids.filter(c => c.classList.contains("tally") || c.classList.contains("about")), slates = kids.filter(c => c.classList.contains("slate")), gs = kids.filter(c => c.classList.contains("g"));
     const frag = document.createDocumentFragment(); for (const t of top) frag.appendChild(t);
+    const slateIds = new Set(slates.map(sl => sl.dataset.id));
+    for (const g of gs) if (!slateIds.has(g.dataset.win)) frag.appendChild(g);   // free cards (no slate) sit right under the top zone (Scott 10/19: no "This week" header needed)
     for (const sl of slates) { frag.appendChild(sl); for (const g of gs) if (g.dataset.win === sl.dataset.id) frag.appendChild(g); }
-    for (const g of gs) if (!frag.contains(g)) frag.appendChild(g); dk.appendChild(frag); }
+    dk.appendChild(frag); }
   const readOrder = () => { deck.order = [...dk.children].map(c => c.dataset.id); save(); };
   applyOrder(); normalize(); readOrder();
   for (const k of dk.children) setOpen(k.dataset.id, k.dataset.id in deck.open ? deck.open[k.dataset.id] : defOpen(k), false);
@@ -43,7 +45,9 @@
   function groupOf(el) { const nodes = [el]; if (el.classList.contains("slate")) for (let n = el.nextElementSibling; n && n.classList.contains("g"); n = n.nextElementSibling) nodes.push(n); return nodes; }
   function slateOf(el) { for (let n = el.previousElementSibling; n; n = n.previousElementSibling) if (n.classList.contains("slate")) return n; return null; }
   function allowedBefore(nodes) { const kids = [...dk.children].filter(c => !nodes.includes(c)), head = nodes[0];
-    if (head.classList.contains("g")) { const S = slateOf(head); const out = []; let n = S ? S.nextElementSibling : null; for (; n && n.classList.contains("g"); n = n.nextElementSibling) if (!nodes.includes(n)) out.push(n); out.push(n || null); return out; }
+    if (head.classList.contains("g")) { const S = slateOf(head); const out = []; let n = S ? S.nextElementSibling : (kids.find(c => c.classList.contains("g")) || null);
+      if (!S) { const firstSlate = kids.find(c => c.classList.contains("slate")) || null; for (const c of kids) { if (c === firstSlate) break; if (c.classList.contains("g")) out.push(c); } out.push(firstSlate); return out; }   // free card: among the free cards, above the first slate
+      for (; n && n.classList.contains("g"); n = n.nextElementSibling) if (!nodes.includes(n)) out.push(n); out.push(n || null); return out; }
     if (head.classList.contains("slate")) return [...kids.filter(c => c.classList.contains("slate")), null];
     const firstSlate = kids.find(c => c.classList.contains("slate")) || null; return [...kids.filter(c => c.classList.contains("tally") || c.classList.contains("about")), firstSlate]; }
   function clampBefore(nodes, before) { const kids = [...dk.children].filter(c => !nodes.includes(c)), allowed = allowedBefore(nodes);
