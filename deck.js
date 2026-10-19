@@ -28,7 +28,9 @@
   try { deck = Object.assign(deck, JSON.parse(localStorage.getItem(KEY) || "{}")); } catch (e) {}
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(deck)); } catch (e) {} };
   const defOpen = el => el.dataset.open === "1";
-  function setOpen(id, v, s = true) { const el = dk.querySelector(`.dk[data-id="${CSS.escape(id)}"]`); if (!el) return; el.classList.toggle("open", v); el.querySelector(".strip").setAttribute("aria-expanded", String(v)); deck.open[id] = v; if (s) save(); }
+  function setOpen(id, v, s = true) { const el = dk.querySelector(`.dk[data-id="${CSS.escape(id)}"]`); if (!el) return; el.classList.toggle("open", v); el.querySelector(".strip").setAttribute("aria-expanded", String(v)); deck.open[id] = v; if (s) save(); fold(el); }
+  // a "folder" slate keeps its cards tucked away until it is opened (compare.html consensus, Scott 10/19: rolled up by default so the columns show)
+  function fold(el) { if (!el.classList.contains("folder")) return; const show = el.classList.contains("open"); for (const g of dk.querySelectorAll(`.dk.g[data-win="${CSS.escape(el.dataset.id)}"]`)) g.hidden = !show; }
   function applyOrder() { const known = new Set(DEF); let order = [...new Set(deck.order.filter(id => known.has(id)))];
     for (let i = 0; i < DEF.length; i++) { const id = DEF[i]; if (order.includes(id)) continue; const p = i ? order.indexOf(DEF[i - 1]) : -1; order.splice(p + 1, 0, id); }
     deck.order = order; for (const id of order) { const el = dk.querySelector(`.dk[data-id="${CSS.escape(id)}"]`); if (el) dk.appendChild(el); } }
@@ -84,6 +86,6 @@
   dk.addEventListener("pointerup", e => { if (drag && e.pointerId === drag.pid) end(); }); dk.addEventListener("pointercancel", e => { if (drag && e.pointerId === drag.pid) end(); });
   dk.addEventListener("dragstart", e => { if (e.target.closest(".handle,.strip")) e.preventDefault(); });
   // refresh(): dress cards a page added after load (compare.html rebuilds its consensus cards), keep zones, apply saved open state
-  function refresh() { for (const a of dk.querySelectorAll(".dk")) dress(a); normalize(); for (const k of dk.children) if (!(k.dataset.id in deck.open)) setOpen(k.dataset.id, defOpen(k), false); }
+  function refresh() { for (const a of dk.querySelectorAll(".dk")) dress(a); normalize(); for (const k of dk.children) if (!(k.dataset.id in deck.open)) setOpen(k.dataset.id, defOpen(k), false); for (const k of dk.querySelectorAll(".dk.slate.folder")) fold(k); }
   window.Deck = { act, setOpen, refresh };
 })();

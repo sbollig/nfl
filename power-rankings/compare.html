@@ -2,10 +2,10 @@
 <html lang="en" class="ed"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Power Rankings, Side by Side — After Week 5</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../theme.css?v=120">
-<link rel="stylesheet" href="../deck.css?v=120">
-<script src="../deck.js?v=120" defer></script>
-<script src="../faces.js?v=120" defer></script>
+<link rel="stylesheet" href="../theme.css?v=121">
+<link rel="stylesheet" href="../deck.css?v=121">
+<script src="../deck.js?v=121" defer></script>
+<script src="../faces.js?v=121" defer></script>
 <style>
 *{box-sizing:border-box}
 body{font-family:Barlow,system-ui,sans-serif;font-size:15px;line-height:1.4;padding-inline:16px;padding-block:28px 48px;max-width:none;font-variant-numeric:tabular-nums}
@@ -83,7 +83,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
 <div class="status"><span class="dot" id="dbdot"></span><span id="dbmsg">Connecting to the shared board…</span><button id="who" type="button"></button><span id="pickme"></span><span class="badge" id="unsaved" hidden>unsaved changes</span></div>
 <div class="deck" id="deck" data-key="compare-deck" aria-label="About">
 <div class="deck-bar"><span class="lbl">Consensus · About</span><button class="tb" type="button" id="reset-order" hidden>Reset</button></div>
-<article class="dk slate" data-id="consensus" data-title="Consensus top 10" data-sub="average rank across everyone who has ranked"><section class="cons" id="cons" aria-label="Consensus"></section></article>
+<article class="dk slate folder" data-id="consensus" data-title="Consensus top 10" data-sub="tap to see the room's top ten · rank your column below"><section class="cons" id="cons" aria-label="Consensus"></section></article>
 <article class="dk about" data-id="about" data-title="About this page" data-sub="who can edit what · when a week rolls · how the difference is measured">
 <p><b>Four columns, one week.</b> Mack's column is the rank order from the rankings page and cannot be dragged. Todd, Ryota and Scott each own one column: everyone sees all four, and you can move teams only in your own. Sign in once with your board key (the same key as the picks board); it is remembered on this device.</p>
 <p><b>Your column starts from Mack's order</b> the first time you open a week. If you ranked the week before, that order carries forward instead. Nothing is saved until you drop a team; after that every drop saves to the shared board and the other columns refresh every 20 seconds.</p>
@@ -96,7 +96,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
 <div class="picker" id="picker" aria-label="Jump to a column"></div>
 <section class="cols" id="cols" aria-label="Rankings side by side"></section>
 <nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../picks/week6.html">Picks</a><a href="../power-rankings/">Power Rankings</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../power-rankings/season.html">Season</a><a href="../broncos/week7.html">Broncos</a></nav>
-<footer>Prepared by Mack. Ratings are Todd's, re-run from the season's finals; the three other columns are personal opinion. Built Oct 19, 2026 3:51 PM PT. For entertainment only; not betting advice. © 2026 · code PolyForm-NC 1.0 · writing CC BY-NC 4.0 · not affiliated with the NFL or ESPN · <a href="../NOTICE">notice</a>
+<footer>Prepared by Mack. Ratings are Todd's, re-run from the season's finals; the three other columns are personal opinion. Built Oct 19, 2026 3:56 PM PT. For entertainment only; not betting advice. © 2026 · code PolyForm-NC 1.0 · writing CC BY-NC 4.0 · not affiliated with the NFL or ESPN · <a href="../NOTICE">notice</a>
 </div>
 <script>
 // ---- the week, the teams, Mack's order ----
@@ -115,7 +115,7 @@ const MACK_RANK = Object.fromEntries(MACK_ORDER.map((t, i) => [t, i + 1]));
 
 // ---- identity: same as tune.html (board key on this device, person verified by the store) ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const BOARD_VER = "v120";
+const BOARD_VER = "v121";
 const $ = (s, r=document) => r.querySelector(s);
 const store = { get(k){ try{ return localStorage.getItem(k)||""; }catch(e){ return ""; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }, del(k){ try{ localStorage.removeItem(k); }catch(e){} } };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -193,7 +193,7 @@ const ordinal = n => n + (n % 100 >= 11 && n % 100 <= 13 ? "th" : ["th","st","nd
 function renderConsensus(){
   const who = PEOPLE.filter(p => hasRanked(p) || p === me);
   const avg = TEAMS.map(t => [t, who.reduce((s, p) => s + orders[p].indexOf(t) + 1, 0) / who.length]).sort((a, b) => a[1] - b[1]);
-  const strip = $('.dk[data-id="consensus"] .s2'); if (strip) strip.textContent = `average rank across ${who.length} of 4 columns · ${who.join(", ")}`;
+  const strip = $('.dk[data-id="consensus"] .s2'); if (strip) strip.textContent = `tap to see the room's top ten · ${who.length} of 4 ranked (${who.join(", ")}) · rank your column below`;
   $("#cons").innerHTML = `<p class="sub">Average rank across ${who.length} of 4 columns (${who.join(", ")}). One card per team below, the room's top ten; tap a card for each person's rank.</p>`;
   // top ten as cards under the Consensus slate (Scott 10/19), team-coloured like the leaders page; rebuilt in place, never while a card has focus
   const dk = document.getElementById("deck"), slate = dk.querySelector('.dk[data-id="consensus"]');

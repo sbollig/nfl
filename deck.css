@@ -55,6 +55,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .dk.about{background:#061d4a;border:1px solid #2d63c7;border-left:8px solid #fff}
 .dk.slate{--card:#ffffff;--paper:#f3f0e8;--ink:#1b2431;--muted:#5f6a7a;--line:#d3cec1;color:#1b2431;border-radius:6px;border:1px solid #c9c3b4;border-left:8px solid #fe5200;background:linear-gradient(180deg,#fdfcf9,#efece4)}
 .dk.slate .s2{opacity:.75}
+.dk[hidden]{display:none}
 .dk.bron{background:#0a46a8;border:2px solid #fe5200;border-left-width:8px}
 /* invitation card (Power Rankings → make your own): orange, big, one button */
 .dk.cta{background:linear-gradient(135deg,#fe5200,#ff7a2e);color:#0a2a66;border:0;border-left:8px solid #fff}
