@@ -2,10 +2,10 @@
 <html lang="en" class="ed"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Power Rankings, Side by Side — After Week 5</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="../theme.css?v=119">
-<link rel="stylesheet" href="../deck.css?v=119">
-<script src="../deck.js?v=119" defer></script>
-<script src="../faces.js?v=119" defer></script>
+<link rel="stylesheet" href="../theme.css?v=120">
+<link rel="stylesheet" href="../deck.css?v=120">
+<script src="../deck.js?v=120" defer></script>
+<script src="../faces.js?v=120" defer></script>
 <style>
 *{box-sizing:border-box}
 body{font-family:Barlow,system-ui,sans-serif;font-size:15px;line-height:1.4;padding-inline:16px;padding-block:28px 48px;max-width:none;font-variant-numeric:tabular-nums}
@@ -115,7 +115,7 @@ const MACK_RANK = Object.fromEntries(MACK_ORDER.map((t, i) => [t, i + 1]));
 
 // ---- identity: same as tune.html (board key on this device, person verified by the store) ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const BOARD_VER = "v119";
+const BOARD_VER = "v120";
 const $ = (s, r=document) => r.querySelector(s);
 const store = { get(k){ try{ return localStorage.getItem(k)||""; }catch(e){ return ""; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }, del(k){ try{ localStorage.removeItem(k); }catch(e){} } };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
