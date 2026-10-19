@@ -381,17 +381,15 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .dk.lift{transform:scale(1.02);box-shadow:0 16px 34px rgba(0,0,0,.5);z-index:50;transition:none}
 body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 /* non-game cards are a different material (Scott 10/19): ledger paper with a dashed edge and square corners, no team colors */
-/* tally cards (week, last week, Mack's record) are paper: dark ink on light (Scott 10/19 "dark on light so it looks of different quality") */
-.dk.tally{--card:#ffffff;--paper:#f3f0e8;--ink:#1b2431;--muted:#5f6a7a;--line:#d3cec1;--navy:#0b2340;--orange:#d9480f;--orange-soft:#fbe9e0;--good:#2f7a4a;--good-soft:#e3f1e7;--bad:#b23a2e;--bad-soft:#f7e3e0;--push:#8a7a2a;--field:#eceae2;
+/* slate cards are paper: dark ink on light (Scott 10/19 "slate cards to be dark on light"); tally cards keep the dark ledger look */
+.dk.slate{--card:#ffffff;--paper:#f3f0e8;--ink:#1b2431;--muted:#5f6a7a;--line:#d3cec1;--navy:#0b2340;--orange:#d9480f;--orange-soft:#fbe9e0;--good:#2f7a4a;--good-soft:#e3f1e7;--bad:#b23a2e;--bad-soft:#f7e3e0;--push:#8a7a2a;--field:#eceae2;
   color:var(--ink);border-radius:6px;border:1px solid #c9c3b4;background:linear-gradient(180deg,#fdfcf9,#efece4);box-shadow:0 -6px 16px rgba(0,0,0,.30)}
-.dk.tally .tile{background:#fff;border-color:var(--line)}.dk.tally .tile .v{color:var(--navy)}.dk.tally .lbl{color:var(--muted)}
-.dk.tally .rec{border-top-color:var(--navy);border-bottom-color:var(--line)}.dk.tally a{color:#1d4ed8}
-.dk.slate{border-radius:6px;border:1px dashed var(--muted);background:repeating-linear-gradient(135deg,transparent 0 10px,rgba(255,255,255,.025) 10px 11px),linear-gradient(180deg,color-mix(in srgb,var(--card) 90%,var(--muted)),var(--card));box-shadow:0 -6px 16px rgba(0,0,0,.30)}
+.dk.slate .lbl{color:var(--muted)}.dk.slate table th,.dk.slate table td{border-color:var(--line)}
+.dk.tally{border-radius:6px;border:1px dashed var(--orange);background:repeating-linear-gradient(135deg,transparent 0 10px,rgba(255,255,255,.025) 10px 11px),linear-gradient(180deg,color-mix(in srgb,var(--card) 90%,var(--muted)),var(--card));box-shadow:0 -6px 16px rgba(0,0,0,.30)}
 .dk.tally .strip,.dk.slate .strip{border-radius:5px 0 0 5px}
 .dk.tally .tt,.dk.slate .tt{font-family:"Barlow Condensed";letter-spacing:.04em;text-transform:uppercase;font-size:17px}
 .dk.tally::before,.dk.slate::before{content:"";position:absolute;left:-1px;top:14px;bottom:14px;width:4px;border-radius:0 3px 3px 0;background:var(--orange)}
-.dk.tally::before{background:#d9480f}
-.dk.slate::before{background:var(--muted)}
+.dk.slate::before{background:#d9480f}
 .deck .g{padding:0;display:block;border-radius:14px;box-shadow:inset 6px 0 0 var(--line),0 -6px 16px rgba(0,0,0,.30)}
 .deck .g.final{background:var(--card)}
 .hd{display:flex;align-items:stretch;min-height:58px}
@@ -457,7 +455,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   <header>
     <div class="lbl">NFL 2026 · Week 6 · ratings after Week 5 (all 15 final)</div>
     <h1>Week 6 <span>Board</span></h1>
-<div class="preview-banner">PREVIEW · test board · picks here go to a sandbox, not the real week · build 2026-10-19 11:03</div>
+<div class="preview-banner">PREVIEW · test board · picks here go to a sandbox, not the real week · build 2026-10-19 11:04</div>
     <div class="sub">Mack's line, the DraftKings market (via ESPN, fetched Oct 14 9:13 AM PT), and his pick for every game. Enter Todd's, Ryota's and Scott's winner, spread and over/under, then the finals as the games go. Everything saves to a shared board, so all three of you see the same page.</div>
   </header>
 <nav class="site-nav" aria-label="Site"><a href="../../">Hub</a><a href="../../power-rankings/">Power Rankings</a><a href="../../power-rankings/season.html">Season</a><a href="../../standings.html">Standings</a><a href="../../injuries.html">Injuries</a><a href="../../leaders.html">Leaders</a><a href="../../broncos/week6.html">Broncos Pre-Game</a><a href="../../picks/week6.html" aria-current="page">Week 6 Picks</a></nav>
@@ -875,7 +873,7 @@ loadCache(); render(); setDb("", "Connecting to the shared board…"); pull(fals
 function ping(ev){ try{ fetch(STORE + "?ping=1&ver=" + BOARD_VER + "&ev=" + encodeURIComponent(ev) + "&ua=" + encodeURIComponent(navigator.userAgent.slice(0,160)), {cache:"no-store"}).catch(()=>{}); }catch(e){} }
 ping("load");
 // preview only: reload when a newer copy of this page is served (GitHub Pages caches 10 min; the iPhone kept the first copy, Scott 10/19)
-const PREVIEW_BUILD = "2026-10-19 11:03";
+const PREVIEW_BUILD = "2026-10-19 11:04";
 (async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "([^"]+)"/); if (m && m[1] !== PREVIEW_BUILD) location.reload(); } catch(e){} })();
 setInterval(async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "([^"]+)"/); if (m && m[1] !== PREVIEW_BUILD && !document.activeElement?.closest?.(".g")) location.reload(); } catch(e){} }, 60000);
 (async () => { try { const r = await fetch("../../version.txt?t=" + Date.now(), {cache:"no-store"}); const v = (await r.text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) location.replace(location.pathname + "?v=" + v); } catch(e){} })();
