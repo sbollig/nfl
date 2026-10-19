@@ -8,8 +8,8 @@
   const KEY = dk.dataset.key || (location.pathname.replace(/[^A-Za-z0-9]/g, "") + "-deck");
   const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
   // ---- chrome ----
-  for (const a of dk.querySelectorAll(".dk")) {
-    if (a.querySelector(":scope > .hd")) continue;
+  function dress(a) {
+    if (a.querySelector(":scope > .hd")) return;
     const id = a.dataset.id, body = document.createElement("div"); body.className = "body"; body.id = "bd-" + id;
     const bc = document.createElement("div"); bc.className = "bc"; while (a.firstChild) bc.appendChild(a.firstChild); body.appendChild(bc);
     const hd = document.createElement("div"); hd.className = "hd";
@@ -18,6 +18,7 @@
       `<div class="mn"><button type="button" data-act="top">Move to top</button><button type="button" data-act="up">Move up</button><button type="button" data-act="down">Move down</button><hr><button type="button" data-act="collapse">Collapse all</button><button type="button" data-act="expand">Expand all</button></div></details><span class="ib handle" aria-hidden="true">≡</span></div>`;
     a.appendChild(hd); a.appendChild(body);
   }
+  for (const a of dk.querySelectorAll(".dk")) dress(a);
   if (!$(".deck-bar")) { const bar = document.createElement("div"); bar.className = "deck-bar";
     bar.innerHTML = `<span class="lbl">${esc(dk.dataset.label || "Cards")}</span><button class="tb" type="button" id="reset-order">Reset order</button>`;
     const hint = document.createElement("p"); hint.className = "deck-hint"; hint.textContent = "Tap a card to open it. Press and hold a card, then slide it up or down to reorder. Order is saved on this device.";
@@ -82,5 +83,7 @@
   dk.addEventListener("pointermove", e => { if (!drag || e.pointerId !== drag.pid) return; drag.cy = e.clientY; if (!drag.active) { const dy = Math.abs(e.clientY - drag.y0); if (e.pointerType === "mouse") { if (dy > 6) lift(); } else if (dy > 8) end(); return; } e.preventDefault(); place(e.clientY); });
   dk.addEventListener("pointerup", e => { if (drag && e.pointerId === drag.pid) end(); }); dk.addEventListener("pointercancel", e => { if (drag && e.pointerId === drag.pid) end(); });
   dk.addEventListener("dragstart", e => { if (e.target.closest(".handle,.strip")) e.preventDefault(); });
-  window.Deck = { act, setOpen };
+  // refresh(): dress cards a page added after load (compare.html rebuilds its consensus cards), keep zones, apply saved open state
+  function refresh() { for (const a of dk.querySelectorAll(".dk")) dress(a); normalize(); for (const k of dk.children) if (!(k.dataset.id in deck.open)) setOpen(k.dataset.id, defOpen(k), false); }
+  window.Deck = { act, setOpen, refresh };
 })();
