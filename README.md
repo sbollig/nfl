@@ -1,4 +1,4 @@
-# Mack's NFL Desk
+# Mack's NFL Desk · v0.9.121
 
 A four-person NFL picks board, power rankings, injury report, standings, season leaders and Broncos pre-game reads, published at https://sbollig.github.io/nfl/. Pages are generated weekly from ESPN data; the shared picks board saves to a small store so everyone sees the same page.
 
