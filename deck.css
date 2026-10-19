@@ -36,6 +36,13 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .dk.slate{--card:#ffffff;--paper:#f3f0e8;--ink:#1b2431;--muted:#5f6a7a;--line:#d3cec1;color:#1b2431;border-radius:6px;border:1px solid #c9c3b4;border-left:8px solid #fe5200;background:linear-gradient(180deg,#fdfcf9,#efece4)}
 .dk.slate .s2{opacity:.75}
 .dk.bron{background:#0a46a8;border:2px solid #fe5200;border-left-width:8px}
+/* invitation card (Power Rankings → make your own): orange, big, one button */
+.dk.cta{background:linear-gradient(135deg,#fe5200,#ff7a2e);color:#0a2a66;border:0;border-left:8px solid #fff}
+.dk.cta .s1,.dk.cta .s2,.dk.cta .ib{color:#0a2a66;opacity:1} .dk.cta .s1{font-size:24px;text-transform:none;letter-spacing:0}
+.dk.cta .cta .big{font-family:"Barlow Condensed",Barlow,system-ui,sans-serif;font-size:30px;font-weight:700;line-height:1.05;margin:4px 0 8px}
+.dk.cta .cta p{font-size:15px;line-height:1.45;margin:0 0 10px} .dk.cta .cta b{font-weight:700}
+.dk.cta .go{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:24px;background:#0a2a66;color:#fff;font-family:"Barlow Condensed";font-size:20px;font-weight:700;text-decoration:none;letter-spacing:.02em;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.dk.cta .go:hover,.dk.cta .go:focus-visible{background:#0a46a8;outline:none}
 .dk.g{border-left-width:8px}   /* team-colour rules set border:2px solid X; the deck keeps its 8px left edge */
 .hd{display:flex;align-items:stretch;min-height:60px}
 .strip{all:unset;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;flex:1;min-width:0;display:grid;align-content:center;gap:3px;padding:9px 6px 15px 14px;cursor:pointer;font:inherit;color:inherit;text-align:left;border-radius:14px 0 0 14px;-webkit-tap-highlight-color:transparent}
