@@ -378,7 +378,9 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .deck{display:flex;flex-direction:column;max-width:720px;margin:0 auto;width:100%;padding-top:6px;min-width:0}
 .dk{position:relative;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 -6px 16px rgba(0,0,0,.30);min-width:0;transition:transform .15s ease,box-shadow .15s ease}
 .dk+.dk{margin-top:-10px}
-.dk.lift{transform:scale(1.02);box-shadow:0 16px 34px rgba(0,0,0,.5);z-index:50;transition:none}
+.dk.lift{box-shadow:0 16px 34px rgba(0,0,0,.5);z-index:50;transition:box-shadow .15s ease;will-change:transform}
+.dk.settle{z-index:50;transition:transform .24s cubic-bezier(.2,.8,.2,1),box-shadow .24s ease}
+.dk{transition:transform .18s cubic-bezier(.2,.8,.2,1),box-shadow .15s ease}
 body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 /* non-game cards are a different material (Scott 10/19): ledger paper with a dashed edge and square corners, no team colors */
 /* slate cards are paper: dark ink on light (Scott 10/19 "slate cards to be dark on light"); tally cards keep the dark ledger look */
@@ -455,7 +457,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   <header>
     <div class="lbl">NFL 2026 · Week 6 · ratings after Week 5 (all 15 final)</div>
     <h1>Week 6 <span>Board</span></h1>
-<div class="preview-banner">PREVIEW · test board · picks here go to a sandbox, not the real week · build 2026-10-19 11:04</div>
+<div class="preview-banner">PREVIEW · test board · picks here go to a sandbox, not the real week · build 2026-10-19 11:16</div>
     <div class="sub">Mack's line, the DraftKings market (via ESPN, fetched Oct 14 9:13 AM PT), and his pick for every game. Enter Todd's, Ryota's and Scott's winner, spread and over/under, then the finals as the games go. Everything saves to a shared board, so all three of you see the same page.</div>
   </header>
 <nav class="site-nav" aria-label="Site"><a href="../../">Hub</a><a href="../../power-rankings/">Power Rankings</a><a href="../../power-rankings/season.html">Season</a><a href="../../standings.html">Standings</a><a href="../../injuries.html">Injuries</a><a href="../../leaders.html">Leaders</a><a href="../../broncos/week6.html">Broncos Pre-Game</a><a href="../../picks/week6.html" aria-current="page">Week 6 Picks</a></nav>
@@ -835,19 +837,31 @@ function act(what, id){
   document.addEventListener("click", e => { if (!e.target.closest("details.menu")) for (const d of dk.querySelectorAll("details.menu[open]")) d.open = false; });
   $("#reset-order").addEventListener("click", () => { deck.order = []; deck.open = {}; try{ localStorage.removeItem(DECK_KEY()); }catch(e){} applyOrder(); normalizeDeck(); for (const k of dk.children) setOpen(k.dataset.id, defaultOpen(k.dataset.id), false); deck.open = {}; });
   // drag to reorder: pointer events (iOS Safari's native drag-and-drop is unreliable). Mouse lifts at once; touch/pen after a 250 ms hold.
+  // Wallet feel (Scott 10/19 "not as smooth as Apple Wallet"): the lifted card rides under the finger (translateY), the other cards slide
+  // into their new slots (FLIP: measure, move in the DOM, play from the old spot), and on release the card settles into its slot.
   let drag = null, raf = 0;
+  const top = n => n.getBoundingClientRect().top + scrollY;
+  const follow = () => { if (!drag || !drag.active) return; const want = drag.liftTop + (drag.cy + scrollY - drag.pageY0);   // where the first lifted card should sit on the page
+    const dy = want - top(drag.nodes[0]) + (drag.shift || 0); for (const n of drag.nodes) n.style.transform = `translateY(${dy}px) scale(1.02)`; };
   const place = y => { if (!drag || !drag.active) return;
     const kids = [...dk.children].filter(c => !drag.nodes.includes(c)); let before = null;
-    for (const c of kids) { const r = c.getBoundingClientRect(); if (y < r.top + r.height / 2) { before = c; break; } }
+    const mid = drag.liftTop + (y + scrollY - drag.pageY0) + drag.h0 / 2;   // the lifted card's visual midpoint on the page
+    for (const c of kids) { const r = c.getBoundingClientRect(); if (mid < r.top + scrollY + r.height / 2) { before = c; break; } }
     const cur = drag.nodes[drag.nodes.length - 1].nextElementSibling; if ((before || null) === (cur || null)) return;
     before = clampBefore(drag.nodes, before); if ((cur || null) === before) return;   // outside this card's zone: nearest slot inside it
-    for (const n of drag.nodes) dk.insertBefore(n, before); };
+    const was = new Map(kids.map(c => [c, top(c)]));
+    for (const n of drag.nodes) dk.insertBefore(n, before);
+    for (const c of kids) { const d = was.get(c) - top(c); if (!d) continue;   // FLIP: start where it was, glide to where it is
+      c.style.transition = "none"; c.style.transform = `translateY(${d}px)`; void c.offsetHeight; c.style.transition = ""; c.style.transform = ""; }
+    follow(); };
   const loop = () => { if (!drag || !drag.active) { raf = 0; return; }
-    const y = drag.cy, m = 70; if (y < m) scrollBy(0, -Math.ceil((m - y) / 4)); else if (y > innerHeight - m) scrollBy(0, Math.ceil((y - innerHeight + m) / 4));
-    place(y); raf = requestAnimationFrame(loop); };
-  const lift = () => { if (!drag) return; drag.active = true; drag.nodes.forEach(n => n.classList.add("lift")); document.body.classList.add("dragging"); if (!raf) raf = requestAnimationFrame(loop); };
+    const y = drag.cy, m = 80; if (y < m) scrollBy(0, -Math.ceil((m - y) / 5)); else if (y > innerHeight - m) scrollBy(0, Math.ceil((y - innerHeight + m) / 5));
+    place(y); follow(); raf = requestAnimationFrame(loop); };
+  const lift = () => { if (!drag) return; drag.active = true; drag.liftTop = top(drag.nodes[0]); drag.pageY0 = drag.cy + scrollY; drag.h0 = drag.nodes[0].getBoundingClientRect().height;
+    drag.nodes.forEach(n => n.classList.add("lift")); document.body.classList.add("dragging"); follow(); if (navigator.vibrate) try{ navigator.vibrate(10); }catch(e){} if (!raf) raf = requestAnimationFrame(loop); };
   const end = () => { if (!drag) return; clearTimeout(drag.hold); try{ drag.h.releasePointerCapture(drag.pid); }catch(e){}
-    if (drag.active) { drag.nodes.forEach(n => n.classList.remove("lift")); document.body.classList.remove("dragging"); readOrder(); dragged = Date.now(); } drag = null; };
+    if (drag.active) { const nodes = drag.nodes; nodes.forEach(n => { n.classList.remove("lift"); n.classList.add("settle"); n.style.transform = ""; });   // settle: glide from under the finger into the slot
+      setTimeout(() => nodes.forEach(n => n.classList.remove("settle")), 260); document.body.classList.remove("dragging"); readOrder(); dragged = Date.now(); } drag = null; };
   let dragged = 0;
   dk.addEventListener("click", e => { if (Date.now() - dragged < 400 && e.target.closest(".strip")) { e.stopPropagation(); e.preventDefault(); } }, true);
   // iOS keeps scrolling the page unless touchmove is cancelled from a non-passive listener while a card is lifted
@@ -859,7 +873,7 @@ function act(what, id){
     const a = h.closest(".dk"); end(); const onHandle = h.classList.contains("handle");
     drag = { h, pid: e.pointerId, nodes: groupOf(a.dataset.id), y0: e.clientY, cy: e.clientY, active: false, hold: 0, onHandle };
     try{ h.setPointerCapture(e.pointerId); }catch(e){}
-    if (e.pointerType === "mouse") { if (onHandle) lift(); } else drag.hold = setTimeout(lift, onHandle ? 250 : 300);
+    if (e.pointerType === "mouse") { if (onHandle) lift(); } else drag.hold = setTimeout(lift, onHandle ? 200 : 260);
     if (onHandle) e.preventDefault();
   });
   dk.addEventListener("pointermove", e => { if (!drag || e.pointerId !== drag.pid) return; drag.cy = e.clientY;
@@ -873,7 +887,7 @@ loadCache(); render(); setDb("", "Connecting to the shared board…"); pull(fals
 function ping(ev){ try{ fetch(STORE + "?ping=1&ver=" + BOARD_VER + "&ev=" + encodeURIComponent(ev) + "&ua=" + encodeURIComponent(navigator.userAgent.slice(0,160)), {cache:"no-store"}).catch(()=>{}); }catch(e){} }
 ping("load");
 // preview only: reload when a newer copy of this page is served (GitHub Pages caches 10 min; the iPhone kept the first copy, Scott 10/19)
-const PREVIEW_BUILD = "2026-10-19 11:04";
+const PREVIEW_BUILD = "2026-10-19 11:16";
 (async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "([^"]+)"/); if (m && m[1] !== PREVIEW_BUILD) location.reload(); } catch(e){} })();
 setInterval(async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "([^"]+)"/); if (m && m[1] !== PREVIEW_BUILD && !document.activeElement?.closest?.(".g")) location.reload(); } catch(e){} }, 60000);
 (async () => { try { const r = await fetch("../../version.txt?t=" + Date.now(), {cache:"no-store"}); const v = (await r.text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) location.replace(location.pathname + "?v=" + v); } catch(e){} })();
