@@ -385,7 +385,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .deck .g{padding:0;display:block;border-radius:14px;box-shadow:inset 6px 0 0 var(--line),0 -6px 16px rgba(0,0,0,.30)}
 .deck .g.final{background:var(--card)}
 .hd{display:flex;align-items:stretch;min-height:58px}
-.strip{all:unset;flex:1;min-width:0;display:grid;align-content:center;gap:3px;padding:9px 6px 15px 16px;cursor:pointer;font:inherit;color:inherit;text-align:left;border-radius:14px 0 0 14px;-webkit-tap-highlight-color:transparent}
+.strip{all:unset;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;flex:1;min-width:0;display:grid;align-content:center;gap:3px;padding:9px 6px 15px 16px;cursor:pointer;font:inherit;color:inherit;text-align:left;border-radius:14px 0 0 14px;-webkit-tap-highlight-color:transparent}
 .strip:focus-visible{outline:2px solid var(--orange);outline-offset:-3px}
 .s1{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;min-width:0}
 .s1 .side{display:flex;align-items:center;gap:5px;min-width:0}
@@ -436,6 +436,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 @media (prefers-reduced-motion:reduce){.body,.dk{transition:none}}
 @media (max-width:480px){.s1 .dd{display:none}.s1 .tn{font-size:19px}.s1 .tn small{font-size:10px;margin-left:2px}.s1 .logo{width:22px;height:22px}.s1 .at{min-width:20px;font-size:11px}.strip{padding-left:14px}.ctl button[data-act="top"]{display:inline-flex}.ctl .ib{width:26px}.ctl .ib{width:30px}.s1 .side:has(.sc:not(:empty)) .logo{display:none}}
 @media (min-width:640px){.bc .tiles{grid-template-columns:repeat(5,1fr)}}
+.hint{font-size:13px;color:var(--muted);margin:-8px 0 10px}
 </style>
 <link rel="stylesheet" href="../../theme.css?v=116"><link rel="stylesheet" href="../../players.css?v=116"><script src="../../players.js?v=116" defer></script>
 <script src="../../faces.js?v=116" defer></script>
@@ -472,7 +473,8 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 
   <div class="toolbar"><div class="status"><span class="dot" id="dbdot"></span><span id="dbmsg">Connecting to the shared board…</span></div><button class="tb" type="button" id="reset-order" title="Default order and open cards on this device">Reset order</button></div>
 
-  <div id="deck" class="deck" aria-label="Board cards"></div>
+  <p class="hint">Tap a card to open it. Press and hold a card, then slide it up or down to reorder. Order is saved on this device.</p>
+<div id="deck" class="deck" aria-label="Board cards"></div>
 
 <nav class="site-nav" aria-label="Site"><a href="../../">Hub</a><a href="../../power-rankings/">Power Rankings</a><a href="../../power-rankings/season.html">Season</a><a href="../../standings.html">Standings</a><a href="../../injuries.html">Injuries</a><a href="../../leaders.html">Leaders</a><a href="../../broncos/week6.html">Broncos Pre-Game</a><a href="../../picks/week6.html" aria-current="page">Week 6 Picks</a></nav>
   <footer class="foot">
@@ -575,7 +577,7 @@ function leadClass(g){ const li = leadInfo(g); return "lead" + (li && li.final ?
 const deck = { order: [], open: {} };   // per-device arrangement, filled by deckLoad() before render(); never touches the store
 const defaultOpen = id => id === "week";
 const isOpen = id => id in deck.open ? !!deck.open[id] : defaultOpen(id);
-const ctlHTML = id => `<div class="ctl"><button class="ib" type="button" data-act="top" aria-label="Move to top">⤒</button><details class="menu"><summary class="ib" aria-label="More options" role="button">⋯</summary><div class="mn" role="menu"><button type="button" role="menuitem" data-act="top">Move to top</button><button type="button" role="menuitem" data-act="up">Move up</button><button type="button" role="menuitem" data-act="down">Move down</button><hr><button type="button" role="menuitem" data-act="collapse">Collapse all</button><button type="button" role="menuitem" data-act="expand">Expand all</button></div></details><span class="ib handle" role="button" aria-label="Drag to reorder" tabindex="-1">≡</span></div>`;
+const ctlHTML = id => `<div class="ctl"><button class="ib" type="button" data-act="top" aria-label="Move to top" title="Move to top">⤒</button><details class="menu"><summary class="ib" aria-label="More options" role="button">⋯</summary><div class="mn" role="menu"><button type="button" role="menuitem" data-act="top">Move to top</button><button type="button" role="menuitem" data-act="up">Move up</button><button type="button" role="menuitem" data-act="down">Move down</button><hr><button type="button" role="menuitem" data-act="collapse">Collapse all</button><button type="button" role="menuitem" data-act="expand">Expand all</button></div></details><span class="ib handle" role="button" aria-label="Drag to reorder" tabindex="-1">≡</span></div>`;
 const hdHTML = (id, s1, s2) => `<div class="hd"><button class="strip" type="button" id="st-${id}" aria-expanded="${isOpen(id)}" aria-controls="bd-${id}"><span class="s1">${s1}</span><span class="s2">${s2}</span></button>${ctlHTML(id)}</div>`;
 const bodyHTML = (id, inner) => `<div class="body" id="bd-${id}"><div class="bi"><div class="bc">${inner}</div></div></div>`;
 function tally(){   // the one place points are counted; tiles() and the strips both read it
@@ -810,17 +812,23 @@ function act(what, id){
     place(y); raf = requestAnimationFrame(loop); };
   const lift = () => { if (!drag) return; drag.active = true; drag.nodes.forEach(n => n.classList.add("lift")); document.body.classList.add("dragging"); if (!raf) raf = requestAnimationFrame(loop); };
   const end = () => { if (!drag) return; clearTimeout(drag.hold); try{ drag.h.releasePointerCapture(drag.pid); }catch(e){}
-    if (drag.active) { drag.nodes.forEach(n => n.classList.remove("lift")); document.body.classList.remove("dragging"); readOrder(); } drag = null; };
+    if (drag.active) { drag.nodes.forEach(n => n.classList.remove("lift")); document.body.classList.remove("dragging"); readOrder(); dragged = Date.now(); } drag = null; };
+  let dragged = 0;
+  dk.addEventListener("click", e => { if (Date.now() - dragged < 400 && e.target.closest(".strip")) { e.stopPropagation(); e.preventDefault(); } }, true);
+  // iOS keeps scrolling the page unless touchmove is cancelled from a non-passive listener while a card is lifted
+  dk.addEventListener("touchmove", e => { if (drag && drag.active) e.preventDefault(); }, {passive:false});
   dk.addEventListener("pointerdown", e => {
-    const h = e.target.closest(".handle"); if (!h || (e.pointerType === "mouse" && e.button !== 0)) return;
-    const a = h.closest(".dk"); end();
-    drag = { h, pid: e.pointerId, nodes: groupOf(a.dataset.id), y0: e.clientY, cy: e.clientY, active: false, hold: 0 };
+    // Scott 10/19 "each box can be dragged up and down": any strip drags, not just the ≡ handle. Touch: press and hold ~350 ms, then slide
+    // (a plain tap still expands the card; a finger that moves before the hold is a scroll). Mouse: press and move 6 px on a strip, or press the handle.
+    const h = e.target.closest(".handle, .strip"); if (!h || (e.pointerType === "mouse" && e.button !== 0)) return;
+    const a = h.closest(".dk"); end(); const onHandle = h.classList.contains("handle");
+    drag = { h, pid: e.pointerId, nodes: groupOf(a.dataset.id), y0: e.clientY, cy: e.clientY, active: false, hold: 0, onHandle };
     try{ h.setPointerCapture(e.pointerId); }catch(e){}
-    if (e.pointerType === "mouse") lift(); else drag.hold = setTimeout(lift, 250);
-    e.preventDefault();
+    if (e.pointerType === "mouse") { if (onHandle) lift(); } else drag.hold = setTimeout(lift, onHandle ? 250 : 350);
+    if (onHandle) e.preventDefault();
   });
   dk.addEventListener("pointermove", e => { if (!drag || e.pointerId !== drag.pid) return; drag.cy = e.clientY;
-    if (!drag.active) { if (Math.abs(e.clientY - drag.y0) > 8) end(); return; } e.preventDefault(); place(e.clientY); });
+    if (!drag.active) { const dy = Math.abs(e.clientY - drag.y0); if (e.pointerType === "mouse") { if (dy > 6) lift(); } else if (dy > 8) end(); return; } e.preventDefault(); place(e.clientY); });
   dk.addEventListener("pointerup", e => { if (drag && e.pointerId === drag.pid) end(); });
   dk.addEventListener("pointercancel", e => { if (drag && e.pointerId === drag.pid) end(); });
   dk.addEventListener("dragstart", e => { if (e.target.closest(".handle,.strip")) e.preventDefault(); });   // no native DnD ghost
