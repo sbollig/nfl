@@ -30,6 +30,10 @@ header>.mascot,header>img.mascot{grid-column:2;grid-row:1/span 3;width:88px;heig
 header>*:not(.lbl):not(h1):not(.sub):not(.byline):not(.stamp):not(.mascot){grid-column:1;grid-row:3}
 header+.site-nav,.site-nav{margin:0!important}
 @media (min-width:700px){body>.wrap>header,body>.layout>main>header,body>.page>header,.wrap>header,.page>header,header.deck-head{height:170px!important}header>h1{font-size:44px!important}header>.mascot,header>img.mascot{width:120px}header>.sub{font-size:14px;-webkit-line-clamp:2}}
+/* uniform links: body links orange everywhere; on paper cards navy; player names keep the dotted underline (players.css) */
+.wrap a:not(.site-nav a):not(.go):not(.tb):not(.ib):not(.ni):not(.card),.page a:not(.site-nav a):not(.go):not(.tb):not(.ib):not(.ni):not(.card),.layout a:not(.site-nav a):not(.go):not(.tb):not(.ib):not(.ni):not(.card){color:#fe5200}
+.dk.slate a:not(.go){color:#0a2a66}
+footer,.foot{font-size:13px}
 /* header: title + D logo */
 .deck-head{display:grid;grid-template-columns:1fr auto;column-gap:14px;align-items:center;margin-bottom:6px}
 .deck-head>*{grid-column:1}

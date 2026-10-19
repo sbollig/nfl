@@ -50,12 +50,13 @@
     dlg.innerHTML = html(c); dlg.showModal(); news(c);
   }
   document.addEventListener("click", async e => {
-    if (e.target.closest("a,select,input,button,dialog")) return;
+    const onStrip = e.target.closest && e.target.closest("b.pn") && e.target.closest("button.strip");   // a name on a card strip opens the player, not the card (10/19)
+    if (!onStrip && e.target.closest("a,select,input,button,dialog")) return;
     const f = find(e.target); if (!f) return;
-    e.preventDefault();
+    e.preventDefault(); if (onStrip) e.stopPropagation();
     try {
       const db = await load(); const id = f.id || db.by_name[f.key]; const c = id && db.by_id[id];
       if (c) open(c);
     } catch (err) { /* players.json unreachable: do nothing */ }
-  });
+  }, true);   // capture: runs before the deck's own click handler
 })();
