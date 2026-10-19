@@ -93,7 +93,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
 <section class="cols" id="cols" aria-label="Rankings side by side"></section>
 <section class="cons" id="cons" aria-label="Consensus"></section>
 <nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../picks/week6.html">Week 6 Picks</a></nav>
-<footer>Prepared by Mack. Ratings are Todd's, re-run from the season's finals; the three other columns are personal opinion. Built Oct 19, 2026 1:24 PM PT. For entertainment only; not betting advice.</footer>
+<footer>Prepared by Mack. Ratings are Todd's, re-run from the season's finals; the three other columns are personal opinion. Built Oct 19, 2026 1:30 PM PT. For entertainment only; not betting advice.</footer>
 </div>
 <script>
 // ---- the week, the teams, Mack's order ----
@@ -168,7 +168,7 @@ const dl = d => d > 0 ? `<span class="dl up">▲${d}</span>` : d < 0 ? `<span cl
 function columnOrder(){ return me && EDITORS.includes(me) ? ["Mack", me, ...EDITORS.filter(p => p !== me)] : PEOPLE.slice(); }
 function rowHtml(person, team, i, mine){
   const kb = mine ? `<span class="kb"><button class="ib" type="button" data-mv="-1" aria-label="Move ${esc(team)} up" ${i === 0 ? "disabled" : ""}>▲</button><button class="ib" type="button" data-mv="1" aria-label="Move ${esc(team)} down" ${i === 31 ? "disabled" : ""}>▼</button></span><span class="ib handle" aria-hidden="true">≡</span>` : `<span class="kb"></span><span></span>`;
-  const rk = mine ? `<input class="rkin" type="number" inputmode="numeric" min="1" max="32" value="${i + 1}" aria-label="Rank for ${esc(team)}" data-rank="${i + 1}">` : `<span class="rk">${i + 1}</span>`;   // type a number to move the team there (Scott 10/19)
+  const rk = `<span class="rk">${i + 1}</span>`;   // typed-rank box tried and cancelled (Scott 10/19 "Numbering cancel")
   return `<div class="row ${TCLS[team] || ""}${team === "Broncos" ? " bron" : ""}" data-team="${esc(team)}">${rk}<img class="logo" src="${esc(LOGO[team])}" alt="" loading="lazy"><span class="tn">${esc(team)}</span><span class="rt">${RATING[team].toFixed(1)}</span>${person === "Mack" ? `<span class="dl same">·</span>` : dl(delta(person, team))}${kb}</div>`;
 }
 function renderColumn(person){
