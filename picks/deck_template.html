@@ -465,6 +465,9 @@ header .mascot{grid-column:2;grid-row:1/span 2;width:96px;height:auto;filter:dro
 .g.bron .score,.g.bron select{background:#1255c0;color:#fff;border-color:#fe5200}.g.bron.final{background:#0a46a8}
 .logo.retro{object-fit:contain;background:none}
 .dk.tally{border-color:#fe5200}.dk.tally::before{background:#fe5200}.dk.slate::before{background:#fe5200}
+/* About card: white on dark, no team or ledger styling (Scott 10/19) */
+.dk.tally[data-id="about"]{background:#061d4a;border:1px solid #2d63c7;color:#fff}.dk.tally[data-id="about"]::before{background:#fff}
+.dk.tally[data-id="about"] .sub{color:#fff;margin:0 0 10px;font-size:14px}.dk.tally[data-id="about"] .foot{border-top:0;padding-top:0;color:#fff;font-size:14px}.dk.tally[data-id="about"] .foot p{margin:0 0 8px}
 .tb{color:#fe5200;border-color:#fe5200}
 </style><link rel="stylesheet" href="../players.css?v=116"><script src="../players.js?v=116" defer></script>
 <script src="../faces.js?v=116" defer></script>
@@ -644,7 +647,8 @@ function render(){   // runs once; afterwards cards are patched (renderCard, tex
       `<span class="${slateClass(w)}" id="${id}">${slateText(w)}</span><span class="st0">nobody leads yet · first kick ${gs[0].kick}</span>`)}${bodyHTML(id, `<div id="sb-${id}">${slateBody(w)}</div>`)}</article>`; };
   $("#deck").innerHTML = tallyCard("week", `${wl} tally`, `<span id="wk-strip">${weekStripText()}</span>`, `<div class="tiles" id="tiles"></div>`)
     + tallyCard("last", "Last week", `<span id="last-strip"></span>`, "")
-    + tallyCard("mack", "Mack's record", `<span id="mack-strip"></span>`, "")
+    + tallyCard("mack", "Mack's record so far", `<span id="mack-strip"></span>`, "")
+    + tallyCard("about", "About this board", "how to read a card · picks lock · points", "")
     + wins.map(w => slateCard(w) + GAMES.filter(g => g.win === w).map(card).join("")).join("");
   // the two static sections keep their place in the HTML for the Tuesday scripts' regexes; at runtime they live inside their cards
   const recs = document.querySelectorAll(".wrap > section.rec"), last = recs[0], mack = recs[1];
@@ -653,6 +657,8 @@ function render(){   // runs once; afterwards cards are patched (renderCard, tex
     $("#last-strip").textContent = m ? `${m[3]} took ${m[1]}${pts ? ` · ${pts} pts` : ""}` : "last week's board"; }
   if (mack) { $("#bd-mack .bc").appendChild(mack); const m = mack.textContent.match(/Season\s+([\d-]+) straight up · ([\d-]+) against the spread/);
     $("#mack-strip").textContent = m ? `${m[1]} SU · ${m[2]} ATS` : "Mack's record so far"; }
+  // the header paragraph and the footer notes keep their place in the HTML for the Tuesday scripts' regexes; at runtime they live in the About card (Scott 10/19)
+  const sub = $("header .sub"), foot = $("footer.foot"); if (sub) $("#bd-about .bc").appendChild(sub); if (foot) $("#bd-about .bc").appendChild(foot);
   applyOrder(); normalizeDeck(); readOrder();
   tiles();
 }
@@ -796,7 +802,7 @@ document.addEventListener("focusout", e => { const a = e.target.closest?.(".g");
 const DECK_KEY = () => KEY.replace("-cache", "-deck");
 function deckLoad(){ try{ const d = JSON.parse(localStorage.getItem(DECK_KEY())||"{}"); if (Array.isArray(d.order)) deck.order = d.order.filter(x => typeof x === "string"); if (d.open && typeof d.open === "object") deck.open = d.open; }catch(e){ deck.order = []; deck.open = {}; } }
 function deckSave(){ try{ localStorage.setItem(DECK_KEY(), JSON.stringify({ order: deck.order, open: deck.open, v: 1 })); }catch(e){} }
-function defaultOrder(){ const wins = [...new Set(GAMES.map(g => g.win))]; return ["week","last","mack", ...wins.flatMap(w => [slateId(w), ...GAMES.filter(g => g.win === w).map(g => g.id)])]; }
+function defaultOrder(){ const wins = [...new Set(GAMES.map(g => g.win))]; return ["week","last","mack","about", ...wins.flatMap(w => [slateId(w), ...GAMES.filter(g => g.win === w).map(g => g.id)])]; }
 function applyOrder(){   // saved order; unknown ids dropped, missing ids slotted after their default-order predecessor
   const def = defaultOrder(), known = new Set(def); let order = [...new Set(deck.order.filter(id => known.has(id)))];
   for (let i = 0; i < def.length; i++) { const id = def[i]; if (order.includes(id)) continue; const p = i ? order.indexOf(def[i-1]) : -1; order.splice(p + 1, 0, id); }
