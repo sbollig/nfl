@@ -799,10 +799,11 @@ document.addEventListener("focusout", e => { const a = e.target.closest?.(".g");
   if (e.target.tagName === "INPUT") dirty.add(id);   // a typed score regrades the card; a pick change is already shown by the dropdown itself; a strip/menu button is not a regrade
   setTimeout(() => { for (const d of [...dirty]) renderCard(d); }, 150); });
 // ---- deck arrangement (Mack 2026-10-19): order + open state per device in localStorage; nodes are MOVED, never rebuilt ----
-// Slate order flips on Monday (Scott 10/19): Thursday–Sunday the slates run in kickoff order; Monday and Tuesday morning (until the new
-// week's board replaces this one) they run in reverse so the Monday night game is on top, then Sunday night, and so on. Each mode keeps
-// its own saved arrangement on this device.
-const REV = /^(Mon|Tue)/.test(new Date().toLocaleString("en-US", {timeZone: "America/Los_Angeles", weekday: "short"}));
+// Slate order flips an hour before the Sunday night kickoff (Scott 10/19, "do it before the Sunday night game"): until then the slates run
+// in kickoff order; from then on they run in reverse so the Monday night game is on top, then Sunday night, and so on down to Thursday.
+// Each mode keeps its own saved arrangement on this device. No Sunday night slate → flips on Monday.
+const REV = (() => { const sn = GAMES.filter(g => /sunday night/i.test(g.win)).map(g => Date.parse(g.ko)); if (sn.length) return Date.now() >= Math.min(...sn) - 3600000;
+  return /^(Mon|Tue)/.test(new Date().toLocaleString("en-US", {timeZone: "America/Los_Angeles", weekday: "short"})); })();
 const DECK_KEY = () => KEY.replace("-cache", "-deck") + (REV ? "-rev" : "");
 function deckLoad(){ try{ const d = JSON.parse(localStorage.getItem(DECK_KEY())||"{}"); if (Array.isArray(d.order)) deck.order = d.order.filter(x => typeof x === "string"); if (d.open && typeof d.open === "object") deck.open = d.open; }catch(e){ deck.order = []; deck.open = {}; } }
 function deckSave(){ try{ localStorage.setItem(DECK_KEY(), JSON.stringify({ order: deck.order, open: deck.open, v: 1 })); }catch(e){} }

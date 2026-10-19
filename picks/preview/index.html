@@ -479,7 +479,7 @@ header .mascot{grid-column:2;grid-row:1/span 2;width:96px;height:auto;filter:dro
     <div class="lbl">NFL 2026 · Week 6 · ratings after Week 5 (all 15 final)</div>
     <h1>Week 6 <span>Board</span></h1>
     <img class="mascot" src="../../img/broncos-d-logo.png" alt="Denver Broncos D logo, 1970–1996" loading="eager">
-<div class="preview-banner">PREVIEW · test board · picks here go to a sandbox, not the real week · build 2026-10-19 12:26</div>
+<div class="preview-banner">PREVIEW · test board · picks here go to a sandbox, not the real week · build 2026-10-19 12:27</div>
     <div class="sub">Mack's line, the DraftKings market (via ESPN, fetched Oct 14 9:13 AM PT), and his pick for every game. Enter Todd's, Ryota's and Scott's winner, spread and over/under, then the finals as the games go. Everything saves to a shared board, so all three of you see the same page.</div>
   </header>
 <nav class="site-nav" aria-label="Site"><a href="../../">Hub</a><a href="../../power-rankings/">Power Rankings</a><a href="../../power-rankings/season.html">Season</a><a href="../../standings.html">Standings</a><a href="../../injuries.html">Injuries</a><a href="../../leaders.html">Leaders</a><a href="../../broncos/week6.html">Broncos Pre-Game</a><a href="../../picks/week6.html" aria-current="page">Week 6 Picks</a></nav>
@@ -800,10 +800,11 @@ document.addEventListener("focusout", e => { const a = e.target.closest?.(".g");
   if (e.target.tagName === "INPUT") dirty.add(id);   // a typed score regrades the card; a pick change is already shown by the dropdown itself; a strip/menu button is not a regrade
   setTimeout(() => { for (const d of [...dirty]) renderCard(d); }, 150); });
 // ---- deck arrangement (Mack 2026-10-19): order + open state per device in localStorage; nodes are MOVED, never rebuilt ----
-// Slate order flips on Monday (Scott 10/19): Thursday–Sunday the slates run in kickoff order; Monday and Tuesday morning (until the new
-// week's board replaces this one) they run in reverse so the Monday night game is on top, then Sunday night, and so on. Each mode keeps
-// its own saved arrangement on this device.
-const REV = /^(Mon|Tue)/.test(new Date().toLocaleString("en-US", {timeZone: "America/Los_Angeles", weekday: "short"}));
+// Slate order flips an hour before the Sunday night kickoff (Scott 10/19, "do it before the Sunday night game"): until then the slates run
+// in kickoff order; from then on they run in reverse so the Monday night game is on top, then Sunday night, and so on down to Thursday.
+// Each mode keeps its own saved arrangement on this device. No Sunday night slate → flips on Monday.
+const REV = (() => { const sn = GAMES.filter(g => /sunday night/i.test(g.win)).map(g => Date.parse(g.ko)); if (sn.length) return Date.now() >= Math.min(...sn) - 3600000;
+  return /^(Mon|Tue)/.test(new Date().toLocaleString("en-US", {timeZone: "America/Los_Angeles", weekday: "short"})); })();
 const DECK_KEY = () => KEY.replace("-cache", "-deck") + (REV ? "-rev" : "");
 function deckLoad(){ try{ const d = JSON.parse(localStorage.getItem(DECK_KEY())||"{}"); if (Array.isArray(d.order)) deck.order = d.order.filter(x => typeof x === "string"); if (d.open && typeof d.open === "object") deck.open = d.open; }catch(e){ deck.order = []; deck.open = {}; } }
 function deckSave(){ try{ localStorage.setItem(DECK_KEY(), JSON.stringify({ order: deck.order, open: deck.open, v: 1 })); }catch(e){} }
@@ -906,7 +907,7 @@ loadCache(); render(); setDb("", "Connecting to the shared board…"); pull(fals
 function ping(ev){ try{ fetch(STORE + "?ping=1&ver=" + BOARD_VER + "&ev=" + encodeURIComponent(ev) + "&ua=" + encodeURIComponent(navigator.userAgent.slice(0,160)), {cache:"no-store"}).catch(()=>{}); }catch(e){} }
 ping("load");
 // preview only: reload when a newer copy of this page is served (GitHub Pages caches 10 min; the iPhone kept the first copy, Scott 10/19)
-const PREVIEW_BUILD = "2026-10-19 12:26";
+const PREVIEW_BUILD = "2026-10-19 12:27";
 (async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "([^"]+)"/); if (m && m[1] !== PREVIEW_BUILD) location.reload(); } catch(e){} })();
 setInterval(async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "([^"]+)"/); if (m && m[1] !== PREVIEW_BUILD && !document.activeElement?.closest?.(".g")) location.reload(); } catch(e){} }, 60000);
 (async () => { try { const r = await fetch("../../version.txt?t=" + Date.now(), {cache:"no-store"}); const v = (await r.text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) location.replace(location.pathname + "?v=" + v); } catch(e){} })();
