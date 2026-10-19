@@ -24,7 +24,8 @@ h1{font-family:"Barlow Condensed";font-size:44px;font-weight:700;line-height:.95
 .dot{width:9px;height:9px;border-radius:50%;background:var(--muted);display:inline-block;flex:none}
 .badge{background:#ffd766;color:#1b2431;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px} .col .note.unsaved{color:#ffd766}
 .dot.on{background:#6fcf8c} .dot.off{background:#f28b7d} .dot.warn{background:#ffd766}
-#who{all:unset;color:#fe5200;cursor:pointer;font-weight:600;margin-left:6px}
+#who{all:unset;color:var(--orange-text,#fe5200);cursor:pointer;font-weight:600;margin-left:6px}
+#pickme{margin-left:8px} #pickme .pm{all:unset;cursor:pointer;display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:18px;background:#fe5200;color:#0a2a66;font-weight:700;margin-left:6px} #pickme .pm:hover{background:#ff7a2e}
 /* person picker (phone) */
 .picker{display:none;position:sticky;top:0;z-index:20;background:#0a46a8;padding:8px 0;gap:6px;border-bottom:1px solid var(--line)}
 .picker button{all:unset;cursor:pointer;flex:1;text-align:center;min-height:44px;line-height:44px;border-radius:8px;border:1px solid #fe5200;color:#fe5200;font-weight:600;font-size:14px}
@@ -77,7 +78,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
   <div class="sub">Mack's order from the rankings page, then Todd, Ryota and Scott in their own words — drag your column, see where you differ.</div>
   <img class="mascot" src="../img/broncos-d-logo.png" alt="Denver Broncos D logo, 1970–1996" loading="eager"></header>
 <nav class="site-nav" aria-label="Site"><a href="../preview.html">Hub</a><a href="../picks/preview/index.html">Picks</a><a href="preview.html">Power Rankings</a><a href="../standings-preview.html">Standings</a><a href="../injuries-preview.html">Injuries</a><a href="../leaders-preview.html">Leaders</a><a href="season-preview.html">Season</a><a href="../broncos/week6-preview.html">Broncos</a></nav>
-<div class="status"><span class="dot" id="dbdot"></span><span id="dbmsg">Connecting to the shared board…</span><button id="who" type="button"></button><span class="badge" id="unsaved" hidden>unsaved changes</span></div>
+<div class="status"><span class="dot" id="dbdot"></span><span id="dbmsg">Connecting to the shared board…</span><button id="who" type="button"></button><span id="pickme"></span><span class="badge" id="unsaved" hidden>unsaved changes</span></div>
 <div class="deck" id="deck" data-key="compare-deck" aria-label="About">
 <div class="deck-bar"><span class="lbl">About</span><button class="tb" type="button" id="reset-order" hidden>Reset</button></div>
 <article class="dk about" data-id="about" data-title="About this page" data-sub="who can edit what · when a week rolls · how the difference is measured">
@@ -93,13 +94,15 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
 <section class="cols" id="cols" aria-label="Rankings side by side"></section>
 <section class="cons" id="cons" aria-label="Consensus"></section>
 <nav class="site-nav" aria-label="Site"><a href="../preview.html">Hub</a><a href="../picks/preview/index.html">Picks</a><a href="preview.html">Power Rankings</a><a href="../standings-preview.html">Standings</a><a href="../injuries-preview.html">Injuries</a><a href="../leaders-preview.html">Leaders</a><a href="season-preview.html">Season</a><a href="../broncos/week6-preview.html">Broncos</a></nav>
-<footer>Prepared by Mack. Ratings are Todd's, re-run from the season's finals; the three other columns are personal opinion. Built Oct 19, 2026 1:40 PM PT. For entertainment only; not betting advice.</footer>
+<footer>Prepared by Mack. Ratings are Todd's, re-run from the season's finals; the three other columns are personal opinion. Built Oct 19, 2026 2:09 PM PT. For entertainment only; not betting advice.</footer>
 </div>
 <script>
 // ---- the week, the teams, Mack's order ----
 const BUILT_WEEK = 5;
 const WEEK = (() => { const w = parseInt(new URLSearchParams(location.search).get("week") || "", 10); return w >= 1 && w <= 22 ? w : BUILT_WEEK; })();
-const pollId = w => "pr-w" + String(w).padStart(2, "0");         // one poll id per week; the key decides the person, so no name in the id
+const pollId = w => "pr-w" + String(w).padStart(2, "0");         // local key per week (also the in-memory shape: votes[pollId][person] = {v,t})
+const STORE_WEEK = w => 90 + w;                                     // the rankings for week N live in store week 90+N (the picks weeks are 1–18); one row per person
+const ROW = {Todd: "g01", Ryota: "g02", Scott: "g03"};
 const TEAMS = ["49ers", "Bears", "Bengals", "Bills", "Broncos", "Browns", "Buccaneers", "Cardinals", "Chargers", "Chiefs", "Colts", "Commanders", "Cowboys", "Dolphins", "Eagles", "Falcons", "Giants", "Jaguars", "Jets", "Lions", "Packers", "Panthers", "Patriots", "Raiders", "Rams", "Ravens", "Saints", "Seahawks", "Steelers", "Texans", "Titans", "Vikings"];
 const LOGO = {"Cardinals": "https://a.espncdn.com/i/teamlogos/nfl/500/ari.png", "Falcons": "https://a.espncdn.com/i/teamlogos/nfl/500/atl.png", "Ravens": "https://a.espncdn.com/i/teamlogos/nfl/500/bal.png", "Bills": "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png", "Panthers": "https://a.espncdn.com/i/teamlogos/nfl/500/car.png", "Bears": "https://a.espncdn.com/i/teamlogos/nfl/500/chi.png", "Bengals": "https://a.espncdn.com/i/teamlogos/nfl/500/cin.png", "Browns": "https://a.espncdn.com/i/teamlogos/nfl/500/cle.png", "Cowboys": "https://a.espncdn.com/i/teamlogos/nfl/500/dal.png", "Broncos": "https://a.espncdn.com/i/teamlogos/nfl/500/den.png", "Lions": "https://a.espncdn.com/i/teamlogos/nfl/500/det.png", "Packers": "https://a.espncdn.com/i/teamlogos/nfl/500/gb.png", "Texans": "https://a.espncdn.com/i/teamlogos/nfl/500/hou.png", "Colts": "https://a.espncdn.com/i/teamlogos/nfl/500/ind.png", "Jaguars": "https://a.espncdn.com/i/teamlogos/nfl/500/jax.png", "Chiefs": "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png", "Raiders": "https://a.espncdn.com/i/teamlogos/nfl/500/lv.png", "Chargers": "https://a.espncdn.com/i/teamlogos/nfl/500/lac.png", "Rams": "https://a.espncdn.com/i/teamlogos/nfl/500/lar.png", "Dolphins": "https://a.espncdn.com/i/teamlogos/nfl/500/mia.png", "Vikings": "https://a.espncdn.com/i/teamlogos/nfl/500/min.png", "Patriots": "https://a.espncdn.com/i/teamlogos/nfl/500/ne.png", "Saints": "https://a.espncdn.com/i/teamlogos/nfl/500/no.png", "Giants": "https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png", "Jets": "https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png", "Eagles": "https://a.espncdn.com/i/teamlogos/nfl/500/phi.png", "Steelers": "https://a.espncdn.com/i/teamlogos/nfl/500/pit.png", "49ers": "https://a.espncdn.com/i/teamlogos/nfl/500/sf.png", "Seahawks": "https://a.espncdn.com/i/teamlogos/nfl/500/sea.png", "Buccaneers": "https://a.espncdn.com/i/teamlogos/nfl/500/tb.png", "Titans": "https://a.espncdn.com/i/teamlogos/nfl/500/ten.png", "Commanders": "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"};
 const TCLS = {"49ers": "t-49ers", "Bears": "t-Bears", "Bengals": "t-Bengals", "Bills": "t-Bills", "Broncos": "t-Broncos", "Browns": "t-Browns", "Buccaneers": "t-Buccaneers", "Cardinals": "t-Cardinals", "Chargers": "t-Chargers", "Chiefs": "t-Chiefs", "Colts": "t-Colts", "Commanders": "t-Commanders", "Cowboys": "t-Cowboys", "Dolphins": "t-Dolphins", "Eagles": "t-Eagles", "Falcons": "t-Falcons", "Giants": "t-Giants", "Jaguars": "t-Jaguars", "Jets": "t-Jets", "Lions": "t-Lions", "Packers": "t-Packers", "Panthers": "t-Panthers", "Patriots": "t-Patriots", "Raiders": "t-Raiders", "Rams": "t-Rams", "Ravens": "t-Ravens", "Saints": "t-Saints", "Seahawks": "t-Seahawks", "Steelers": "t-Steelers", "Texans": "t-Texans", "Titans": "t-Titans", "Vikings": "t-Vikings"};
@@ -116,10 +119,12 @@ const store = { get(k){ try{ return localStorage.getItem(k)||""; }catch(e){ retu
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let me = store.get("board-who");
 function setDb(k,msg){ $("#dbdot").className = "dot " + k; $("#dbmsg").textContent = msg; }
-function showMe(){ $("#who").textContent = me ? "signed in as " + me + " · change key" : "sign in with your board key"; }
-async function whoami(key){ const r = await fetch(STORE + "?board=1&whoami=1&key=" + encodeURIComponent(key) + "&t=" + Date.now(), {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error("that board key was not accepted"); me = j.person; store.set("board-who", me); showMe(); renderAll(); return me; }
-async function askKey(){ const key = (prompt("Your board key (from Scott or Mack; remembered on this device):") || "").trim(); if (!key) return ""; store.set("board-key", key); try { await whoami(key); return key; } catch(e){ store.del("board-key"); me = ""; showMe(); renderAll(); setDb("off", e.message + "."); return ""; } }
-$("#who").addEventListener("click", () => { store.del("board-key"); store.del("board-who"); me = ""; showMe(); renderAll(); askKey(); });
+// Who are you? Same trust model as the picks board: pick your name once, remembered on this device (Scott 10/19: no sign-in code).
+if (!EDITORS.includes(me)) me = "";
+function showMe(){ $("#who").textContent = me ? "I am " + me + " · not you?" : "";
+  $("#pickme").innerHTML = me ? "" : `<span class="lbl">Who are you?</span> ` + EDITORS.map(p => `<button type="button" class="pm" data-me="${p}">${p}</button>`).join(" "); }
+$("#who").addEventListener("click", () => { store.del("board-who"); me = ""; showMe(); renderAll(); });
+$("#pickme").addEventListener("click", e => { const b = e.target.closest("button[data-me]"); if (!b) return; me = b.dataset.me; store.set("board-who", me); showMe(); applyVotes(); renderAll(); setDb("on", "Shared board connected · drag your column."); });
 
 // ---- codec v1: v = "1" + 32 chars, each the base-36 index of a team in the frozen TEAMS list ----
 const CODEC = "1";
@@ -223,11 +228,11 @@ async function send(v){
   save.inflight = true; setDb("", "Saving…");
   let ok = false, why = "";
   try {
-    const key = store.get("board-key"); if (!key) throw new Error("not signed in");
-    const q = new URLSearchParams({poll:1, key, id:pollId(WEEK), v, note:"", t:Date.now()}).toString();      // note empty on purpose: the store keeps its own time
+    if (!ROW[me]) throw new Error("pick your name first");
+    const q = new URLSearchParams({week: STORE_WEEK(WEEK), game: ROW[me], person: me, su: v.slice(0, 20), ats: v.slice(20), ou: "", t: Date.now()}).toString();
     const r = await fetch(STORE + "?" + q, {cache:"no-store"}); const j = await r.json();
-    if (j.ok) { ok = true; confirmed = v; const mine = (j.votes || {})[me]; confirmedT = mine && mine.t ? mine.t : new Date().toISOString(); votes[pollId(WEEK)] = Object.assign(votes[pollId(WEEK)] || {}, j.votes || {}); }
-    else { why = j.error || "store refused"; if (why === "bad key") { store.del("board-key"); me = ""; showMe(); } }
+    if (j.ok) { ok = true; confirmed = v; confirmedT = (j.row && j.row.updated) || new Date().toISOString(); votes[pollId(WEEK)] = votes[pollId(WEEK)] || {}; votes[pollId(WEEK)][me] = {v, t: confirmedT}; }
+    else { why = j.error || "store refused"; }
   } catch(e){ why = e.message || String(e); }
   save.inflight = false;
   if (ok) {
@@ -291,13 +296,15 @@ $("#cols").addEventListener("dragstart", e => { if (e.target.closest(".row")) e.
 
 // ---- the shared board: one GET reads every column ----
 async function pull(){
-  try { const r = await fetch(STORE + "?poll=1&t=" + Date.now(), {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error(j.error || "store error");
-    votes = j.votes || {}; applyVotes(); renderAll(); if (!save.inflight && !save.retry) setDb("on", "Shared board connected" + (me ? "" : " · read-only until you sign in") + ".");
+  try {
+    const read = async w => { const r = await fetch(STORE + "?week=" + STORE_WEEK(w) + "&t=" + Date.now(), {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error(j.error || "store error");
+      const out = {}; for (const p of EDITORS) { const row = (j.data || {})[ROW[p]]; const pk = row && row.picks && row.picks[p]; const v = pk ? (pk.su || "") + (pk.ats || "") : ""; if (v) out[p] = {v, t: row.updated || ""}; } return out; };
+    const cur = await read(WEEK); votes[pollId(WEEK)] = cur; if (WEEK > 1) { try { votes[pollId(WEEK - 1)] = await read(WEEK - 1); } catch(e){} }
+    applyVotes(); renderAll(); if (!save.inflight && !save.retry) setDb("on", "Shared board connected" + (me ? " · drag your column." : " · pick your name to rank."));
   } catch(e){ applyVotes(); renderAll(); setDb("off", "Could not reach the shared board (" + (e.message || e) + ")."); }
 }
 (async () => {
   showMe(); renderAll();
-  if (store.get("board-key")) whoami(store.get("board-key")).catch(() => {});
   await pull(); setInterval(pull, 20000);
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") pull(); });
   try { const v = (await (await fetch("../version.txt?t=" + Date.now(), {cache:"no-store"})).text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) { const u = new URL(location.href); u.searchParams.set("v", v); location.replace(u.pathname + u.search); } } catch(e){}
