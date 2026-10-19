@@ -454,7 +454,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   <header>
     <div class="lbl">NFL 2026 · Week 6 · ratings after Week 5 (all 15 final)</div>
     <h1>Week 6 <span>Board</span></h1>
-<div class="preview-banner">PREVIEW · test board · picks here go to a sandbox, not the real week · build 2026-10-19 10:53</div>
+<div class="preview-banner">PREVIEW · test board · picks here go to a sandbox, not the real week · build 2026-10-19 10:56</div>
     <div class="sub">Mack's line, the DraftKings market (via ESPN, fetched Oct 14 9:13 AM PT), and his pick for every game. Enter Todd's, Ryota's and Scott's winner, spread and over/under, then the finals as the games go. Everything saves to a shared board, so all three of you see the same page.</div>
   </header>
 <nav class="site-nav" aria-label="Site"><a href="../../">Hub</a><a href="../../power-rankings/">Power Rankings</a><a href="../../power-rankings/season.html">Season</a><a href="../../standings.html">Standings</a><a href="../../injuries.html">Injuries</a><a href="../../leaders.html">Leaders</a><a href="../../broncos/week6.html">Broncos Pre-Game</a><a href="../../picks/week6.html" aria-current="page">Week 6 Picks</a></nav>
@@ -872,9 +872,9 @@ loadCache(); render(); setDb("", "Connecting to the shared board…"); pull(fals
 function ping(ev){ try{ fetch(STORE + "?ping=1&ver=" + BOARD_VER + "&ev=" + encodeURIComponent(ev) + "&ua=" + encodeURIComponent(navigator.userAgent.slice(0,160)), {cache:"no-store"}).catch(()=>{}); }catch(e){} }
 ping("load");
 // preview only: reload when a newer copy of this page is served (GitHub Pages caches 10 min; the iPhone kept the first copy, Scott 10/19)
-const PREVIEW_BUILD = "2026-10-19 10:53";
-(async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "2026-10-19 10:53"]+)"/); if (m && m[1] !== PREVIEW_BUILD) location.reload(); } catch(e){} })();
-setInterval(async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "2026-10-19 10:53"]+)"/); if (m && m[1] !== PREVIEW_BUILD && !document.activeElement?.closest?.(".g")) location.reload(); } catch(e){} }, 60000);
+const PREVIEW_BUILD = "2026-10-19 10:56";
+(async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "([^"]+)"/); if (m && m[1] !== PREVIEW_BUILD) location.reload(); } catch(e){} })();
+setInterval(async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "([^"]+)"/); if (m && m[1] !== PREVIEW_BUILD && !document.activeElement?.closest?.(".g")) location.reload(); } catch(e){} }, 60000);
 (async () => { try { const r = await fetch("../../version.txt?t=" + Date.now(), {cache:"no-store"}); const v = (await r.text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) location.replace(location.pathname + "?v=" + v); } catch(e){} })();
 setInterval(() => { if (!document.activeElement?.closest?.(".g")) pull(true); }, 20000);
 // lock a game's pick dropdowns the moment it kicks off, even on a page left open
