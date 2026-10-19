@@ -380,8 +380,15 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .dk+.dk{margin-top:-10px}
 .dk.lift{transform:scale(1.02);box-shadow:0 16px 34px rgba(0,0,0,.5);z-index:50;transition:none}
 body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
-.dk.tally{box-shadow:inset 6px 0 0 var(--orange),0 -6px 16px rgba(0,0,0,.30)}
-.dk.slate{box-shadow:inset 6px 0 0 var(--muted),0 -6px 16px rgba(0,0,0,.30)}
+/* non-game cards are a different material (Scott 10/19): ledger paper with a dashed edge and square corners, no team colors */
+.dk.tally,.dk.slate{border-radius:6px;border:1px dashed var(--orange);background:
+  repeating-linear-gradient(135deg,transparent 0 10px,rgba(255,255,255,.025) 10px 11px),linear-gradient(180deg,color-mix(in srgb,var(--card) 88%,var(--orange)),var(--card));
+  box-shadow:0 -6px 16px rgba(0,0,0,.30)}
+.dk.slate{border-color:var(--muted);background:repeating-linear-gradient(135deg,transparent 0 10px,rgba(255,255,255,.025) 10px 11px),linear-gradient(180deg,color-mix(in srgb,var(--card) 90%,var(--muted)),var(--card))}
+.dk.tally .strip,.dk.slate .strip{border-radius:5px 0 0 5px}
+.dk.tally .tt,.dk.slate .tt{font-family:"Barlow Condensed";letter-spacing:.04em;text-transform:uppercase;font-size:17px}
+.dk.tally::before,.dk.slate::before{content:"";position:absolute;left:-1px;top:14px;bottom:14px;width:4px;border-radius:0 3px 3px 0;background:var(--orange)}
+.dk.slate::before{background:var(--muted)}
 .deck .g{padding:0;display:block;border-radius:14px;box-shadow:inset 6px 0 0 var(--line),0 -6px 16px rgba(0,0,0,.30)}
 .deck .g.final{background:var(--card)}
 .hd{display:flex;align-items:stretch;min-height:58px}
@@ -447,7 +454,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
   <header>
     <div class="lbl">NFL 2026 · Week 6 · ratings after Week 5 (all 15 final)</div>
     <h1>Week 6 <span>Board</span></h1>
-<div class="preview-banner">PREVIEW · test board · picks here go to a sandbox, not the real week · build 2026-10-19 10:45</div>
+<div class="preview-banner">PREVIEW · test board · picks here go to a sandbox, not the real week · build 2026-10-19 10:53</div>
     <div class="sub">Mack's line, the DraftKings market (via ESPN, fetched Oct 14 9:13 AM PT), and his pick for every game. Enter Todd's, Ryota's and Scott's winner, spread and over/under, then the finals as the games go. Everything saves to a shared board, so all three of you see the same page.</div>
   </header>
 <nav class="site-nav" aria-label="Site"><a href="../../">Hub</a><a href="../../power-rankings/">Power Rankings</a><a href="../../power-rankings/season.html">Season</a><a href="../../standings.html">Standings</a><a href="../../injuries.html">Injuries</a><a href="../../leaders.html">Leaders</a><a href="../../broncos/week6.html">Broncos Pre-Game</a><a href="../../picks/week6.html" aria-current="page">Week 6 Picks</a></nav>
@@ -610,7 +617,7 @@ function render(){   // runs once; afterwards cards are patched (renderCard, tex
   deckLoad();
   const tallyCard = (id, s1, s2, inner) => `<article class="dk tally ${isOpen(id)?"open":""}" data-id="${id}">${hdHTML(id, `<span class="tt">${s1}</span>`, s2)}${bodyHTML(id, inner)}</article>`;
   const slateCard = w => { const gs = GAMES.filter(g => g.win === w), id = slateId(w);
-    return `<article class="dk slate ${isOpen(id)?"open":""}" data-id="${id}">${hdHTML(id, `<span class="tt">${w}<small>${gs.length} game${gs.length>1?"s":""}</small></span>`,
+    return `<article data-win="${w.replace(/"/g,"&quot;")}" class="dk slate ${isOpen(id)?"open":""}" data-id="${id}">${hdHTML(id, `<span class="tt">${w}<small>${gs.length} game${gs.length>1?"s":""}</small></span>`,
       `<span class="${slateClass(w)}" id="${id}">${slateText(w)}</span><span class="st0">nobody leads yet · first kick ${gs[0].kick}</span>`)}${bodyHTML(id, `<div id="sb-${id}">${slateBody(w)}</div>`)}</article>`; };
   $("#deck").innerHTML = tallyCard("week", `${wl} tally`, `<span id="wk-strip">${weekStripText()}</span>`, `<div class="tiles" id="tiles"></div>`)
     + tallyCard("last", "Last week", `<span id="last-strip"></span>`, "")
@@ -623,7 +630,7 @@ function render(){   // runs once; afterwards cards are patched (renderCard, tex
     $("#last-strip").textContent = m ? `${m[3]} took ${m[1]}${pts ? ` · ${pts} pts` : ""}` : "last week's board"; }
   if (mack) { $("#bd-mack .bc").appendChild(mack); const m = mack.textContent.match(/Season\s+([\d-]+) straight up · ([\d-]+) against the spread/);
     $("#mack-strip").textContent = m ? `${m[1]} SU · ${m[2]} ATS` : "Mack's record so far"; }
-  applyOrder();
+  applyOrder(); normalizeDeck(); readOrder();
   tiles();
 }
 function card(g){
@@ -780,15 +787,41 @@ function groupOf(id){   // a slate card carries the game cards that follow it (u
   if (el.classList.contains("slate")) for (let n = el.nextElementSibling; n && n.classList.contains("g"); n = n.nextElementSibling) nodes.push(n);
   return nodes;
 }
-function moveBefore(nodes, before){ const dk = $("#deck"); for (const n of nodes) dk.insertBefore(n, before); readOrder(); }
+// Zones (Scott 10/19 "only let the games be organized per slate"): tally cards stay at the top among themselves, slate cards (with their
+// games) reorder among slates, and a game card can only move within its own slate. allowedBefore(nodes) = the siblings a drop may land in front of.
+function slateOf(el){ for (let n = el.previousElementSibling; n; n = n.previousElementSibling) if (n.classList.contains("slate")) return n; return null; }
+function allowedBefore(nodes){
+  const dk = $("#deck"), kids = [...dk.children].filter(c => !nodes.includes(c)), head = nodes[0];
+  if (head.classList.contains("g")) { const S = slateOf(head); const out = []; let n = S ? S.nextElementSibling : null;
+    for (; n && n.classList.contains("g"); n = n.nextElementSibling) if (!nodes.includes(n)) out.push(n); out.push(n || null); return out; }   // games of this slate, then the slot after the last one
+  if (head.classList.contains("slate")) return [...kids.filter(c => c.classList.contains("slate")), null];
+  const firstSlate = kids.find(c => c.classList.contains("slate")) || null; return [...kids.filter(c => c.classList.contains("tally")), firstSlate];
+}
+function normalizeDeck(){   // make any saved order obey the zones: tallies first, then each slate followed by its own games (relative order kept)
+  const dk = $("#deck"), kids = [...dk.children]; const tallies = kids.filter(c => c.classList.contains("tally")), slates = kids.filter(c => c.classList.contains("slate"));
+  const games = kids.filter(c => c.classList.contains("g")); const frag = document.createDocumentFragment();
+  for (const t of tallies) frag.appendChild(t);
+  for (const sl of slates) { frag.appendChild(sl); const w = sl.dataset.win; for (const g of games) if ((GAMES.find(x => x.id === g.dataset.id) || {}).win === w) frag.appendChild(g); }
+  for (const g of games) if (!frag.contains(g)) frag.appendChild(g);
+  dk.appendChild(frag);
+}
+function clampBefore(nodes, before){   // a drop outside the card's zone lands at the nearest slot inside it
+  const dk = $("#deck"), kids = [...dk.children].filter(c => !nodes.includes(c)), allowed = allowedBefore(nodes);
+  const ix = x => x === null ? kids.length : kids.indexOf(x); const want = ix(before);
+  const sorted = allowed.slice().sort((a, b) => ix(a) - ix(b)); return sorted.find(x => ix(x) >= want) ?? sorted[sorted.length - 1];
+}
+function moveBefore(nodes, before){ before = clampBefore(nodes, before); const dk = $("#deck");
+  if ((nodes[nodes.length - 1].nextElementSibling || null) === before) return; for (const n of nodes) dk.insertBefore(n, before); readOrder(); }
 function act(what, id){
   const dk = $("#deck"), kids = [...dk.children];
   if (what === "collapse") { for (const k of kids) if (!k.contains(document.activeElement) || document.activeElement === document.body) setOpen(k.dataset.id, false, false); deckSave(); return; }   // a card with a focused input never collapses by itself
   if (what === "expand") { for (const k of kids) setOpen(k.dataset.id, true, false); deckSave(); return; }
   const nodes = groupOf(id); if (!nodes.length) return; const pos = kids.indexOf(nodes[0]);
-  if (what === "top") moveBefore(nodes, dk.firstElementChild);
-  else if (what === "up") { const prev = kids[pos - 1]; if (prev) moveBefore(nodes, prev); }
-  else if (what === "down") { const next = nodes[nodes.length - 1].nextElementSibling; if (next) moveBefore(nodes, next.nextElementSibling); }
+  const rest = kids.filter(c => !nodes.includes(c)), ix = x => x === null ? rest.length : rest.indexOf(x);
+  const slots = allowedBefore(nodes).slice().sort((a, b) => ix(a) - ix(b)), here = slots.indexOf(nodes[nodes.length - 1].nextElementSibling || null);
+  if (what === "top") moveBefore(nodes, slots[0]);
+  else if (what === "up") { if (here > 0) moveBefore(nodes, slots[here - 1]); }
+  else if (what === "down") { if (here >= 0 && here < slots.length - 1) moveBefore(nodes, slots[here + 1]); }
   if (what === "top" || what === "up") nodes[0].scrollIntoView({ block: "nearest", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
 }
 (() => {
@@ -799,13 +832,14 @@ function act(what, id){
   });
   dk.addEventListener("toggle", e => { if (e.target.open) for (const d of dk.querySelectorAll("details.menu[open]")) if (d !== e.target) d.open = false; }, true);
   document.addEventListener("click", e => { if (!e.target.closest("details.menu")) for (const d of dk.querySelectorAll("details.menu[open]")) d.open = false; });
-  $("#reset-order").addEventListener("click", () => { deck.order = []; deck.open = {}; try{ localStorage.removeItem(DECK_KEY()); }catch(e){} applyOrder(); for (const k of dk.children) setOpen(k.dataset.id, defaultOpen(k.dataset.id), false); deck.open = {}; });
+  $("#reset-order").addEventListener("click", () => { deck.order = []; deck.open = {}; try{ localStorage.removeItem(DECK_KEY()); }catch(e){} applyOrder(); normalizeDeck(); for (const k of dk.children) setOpen(k.dataset.id, defaultOpen(k.dataset.id), false); deck.open = {}; });
   // drag to reorder: pointer events (iOS Safari's native drag-and-drop is unreliable). Mouse lifts at once; touch/pen after a 250 ms hold.
   let drag = null, raf = 0;
   const place = y => { if (!drag || !drag.active) return;
     const kids = [...dk.children].filter(c => !drag.nodes.includes(c)); let before = null;
     for (const c of kids) { const r = c.getBoundingClientRect(); if (y < r.top + r.height / 2) { before = c; break; } }
     const cur = drag.nodes[drag.nodes.length - 1].nextElementSibling; if ((before || null) === (cur || null)) return;
+    before = clampBefore(drag.nodes, before); if ((cur || null) === before) return;   // outside this card's zone: nearest slot inside it
     for (const n of drag.nodes) dk.insertBefore(n, before); };
   const loop = () => { if (!drag || !drag.active) { raf = 0; return; }
     const y = drag.cy, m = 70; if (y < m) scrollBy(0, -Math.ceil((m - y) / 4)); else if (y > innerHeight - m) scrollBy(0, Math.ceil((y - innerHeight + m) / 4));
@@ -838,9 +872,9 @@ loadCache(); render(); setDb("", "Connecting to the shared board…"); pull(fals
 function ping(ev){ try{ fetch(STORE + "?ping=1&ver=" + BOARD_VER + "&ev=" + encodeURIComponent(ev) + "&ua=" + encodeURIComponent(navigator.userAgent.slice(0,160)), {cache:"no-store"}).catch(()=>{}); }catch(e){} }
 ping("load");
 // preview only: reload when a newer copy of this page is served (GitHub Pages caches 10 min; the iPhone kept the first copy, Scott 10/19)
-const PREVIEW_BUILD = "2026-10-19 10:45";
-(async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "([^"]+)"/); if (m && m[1] !== PREVIEW_BUILD) location.reload(); } catch(e){} })();
-setInterval(async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "([^"]+)"/); if (m && m[1] !== PREVIEW_BUILD && !document.activeElement?.closest?.(".g")) location.reload(); } catch(e){} }, 60000);
+const PREVIEW_BUILD = "2026-10-19 10:53";
+(async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "2026-10-19 10:53"]+)"/); if (m && m[1] !== PREVIEW_BUILD) location.reload(); } catch(e){} })();
+setInterval(async () => { try { const r = await fetch("./index.html?t=" + Date.now(), {cache:"no-store"}); const m = (await r.text()).match(/PREVIEW_BUILD = "2026-10-19 10:53"]+)"/); if (m && m[1] !== PREVIEW_BUILD && !document.activeElement?.closest?.(".g")) location.reload(); } catch(e){} }, 60000);
 (async () => { try { const r = await fetch("../../version.txt?t=" + Date.now(), {cache:"no-store"}); const v = (await r.text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) location.replace(location.pathname + "?v=" + v); } catch(e){} })();
 setInterval(() => { if (!document.activeElement?.closest?.(".g")) pull(true); }, 20000);
 // lock a game's pick dropdowns the moment it kicks off, even on a page left open
