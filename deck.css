@@ -14,6 +14,22 @@
 .site-nav a{color:var(--orange-text)}.site-nav a[aria-current="page"]{color:#cfe0ff}
 .tune-cta{border-left-color:#fe5200!important;background:#073a8c!important}
 h1 span,h1 .pre{color:var(--orange-head)}
+/* UNIFORM FRAME (Scott 10/19 "the top should not jump around and the size of the page should be uniform across all pages"):
+   same body padding, same content width, a fixed-height header band, nav at the same offset on every page. Measured before: nav top
+   ranged 155–338 px on a phone and content width 760–1248 px on a desktop. */
+:root:root:root body{padding-block:24px 48px;padding-inline:16px;margin:0}
+.page>header:first-child,.wrap>header:first-child{margin-top:0!important}
+.wrap,.page,.layout,.layout>main{max-width:1040px!important;margin-left:auto!important;margin-right:auto!important;width:100%}
+.wrap,.page{row-gap:16px!important}
+.deck{max-width:none!important}
+body>.wrap>header,body>.layout>main>header,body>.page>header,.wrap>header,.page>header,header.deck-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto auto;column-gap:14px;align-items:start;height:150px;overflow:hidden;margin:0 0 4px;padding:0 0 10px;border-bottom:4px solid #fe5200;box-sizing:border-box}
+header>.lbl{grid-column:1;grid-row:1;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0}
+header>h1{grid-column:1;grid-row:2;font-family:"Barlow Condensed",Barlow,system-ui,sans-serif;font-size:32px!important;font-weight:700;line-height:1;margin:4px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-wrap:balance}
+header>.sub,header>.byline,header>.stamp{grid-column:1;grid-row:3;font-size:13px;color:var(--muted);margin:6px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+header>.mascot,header>img.mascot{grid-column:2;grid-row:1/span 3;width:88px;height:auto;align-self:center;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+header>*:not(.lbl):not(h1):not(.sub):not(.byline):not(.stamp):not(.mascot){grid-column:1;grid-row:3}
+header+.site-nav,.site-nav{margin:0!important}
+@media (min-width:700px){body>.wrap>header,body>.layout>main>header,body>.page>header,.wrap>header,.page>header,header.deck-head{height:170px!important}header>h1{font-size:44px!important}header>.mascot,header>img.mascot{width:120px}header>.sub{font-size:14px;-webkit-line-clamp:2}}
 /* header: title + D logo */
 .deck-head{display:grid;grid-template-columns:1fr auto;column-gap:14px;align-items:center;margin-bottom:6px}
 .deck-head>*{grid-column:1}
