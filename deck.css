@@ -1,0 +1,62 @@
+/* deck.css — shared Wallet-style card deck for the site pages (Mack, 2026-10-19; Scott: "each section should be able to hold those cards like the slate").
+   Retro 1977 Broncos palette: Legacy Blue sampled from the team's throwback helmet photos (#0040a0–#0048b0, rounded), orange #fe5200 =
+   the field of the team's own D-logo graphic on denverbroncos.com/uniforms/history. Linked AFTER theme.css; the triple :root outranks it.
+   Markup contract (deck.js builds the chrome):
+     <div class="deck" id="deck" data-key="standings-deck">
+       <article class="dk tally|about|slate|g" data-id="afc-east" [data-win="afc-east" on a g] [data-open="1"] data-title="AFC East" data-sub="4 teams">…body…</article>
+   Zones: tally/about cards stay at the top among themselves; slate cards reorder among slates and carry their g cards; a g card moves only within its slate. */
+:root:root:root,:root:root:root.ed{color-scheme:dark;
+  --bg:#0a46a8;--fg:#ffffff;--muted:#cfe0ff;--rule:#2d63c7;--card:#073a8c;--navy:#073a8c;--navy2:#061d4a;--vc:#fe5200;--vc-dark:#fe5200;
+  --paper:#0a46a8;--ink:#ffffff;--line:#2d63c7;--orange:#fe5200;--orange-soft:#7a3a0e;--field:#083b90;--bd-line:#2d63c7;--bd-orange:#fe5200;--bd-muted:#cfe0ff}
+:root:root:root body{background:#0a46a8;color:#fff}
+.site-nav a{color:#fe5200}.site-nav a[aria-current="page"]{color:#cfe0ff}
+.tune-cta{border-left-color:#fe5200!important;background:#073a8c!important}
+h1 span,h1 .pre{color:#fe5200}
+/* header: title + D logo */
+.deck-head{display:grid;grid-template-columns:1fr auto;column-gap:14px;align-items:center;margin-bottom:6px}
+.deck-head>*{grid-column:1}
+.deck-head .mascot{grid-column:2;grid-row:1/span 2;width:96px;height:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+@media (min-width:700px){.deck-head .mascot{width:140px;grid-row:1/span 3}}
+/* toolbar (injected by deck.js) */
+.deck-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:14px 0 4px}
+.deck-bar .lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.tb{all:unset;cursor:pointer;color:#fe5200;border:1px solid #fe5200;border-radius:20px;padding:8px 14px;font-weight:600;font-size:13px;min-height:28px}
+.deck-hint{font-size:13px;color:var(--muted);margin:0 0 10px}
+/* the deck */
+.deck{display:grid;grid-template-columns:1fr;align-items:start;margin-bottom:22px;max-width:760px}
+.dk{position:relative;background:#073a8c;color:#fff;border:1px solid #2d63c7;border-left:8px solid #2d63c7;border-radius:14px;box-shadow:0 -6px 16px rgba(0,0,0,.30);min-width:0;transition:transform .15s ease,box-shadow .15s ease}
+.dk+.dk{margin-top:-10px}
+.dk.lift{transform:scale(1.02);box-shadow:0 16px 34px rgba(0,0,0,.5);z-index:50;transition:none}
+body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
+/* card kinds */
+.dk.tally{border-radius:6px;border:1px dashed #fe5200;border-left:8px solid #fe5200;background:repeating-linear-gradient(135deg,transparent 0 10px,rgba(255,255,255,.025) 10px 11px),linear-gradient(180deg,#0e418f,#073a8c)}
+.dk.about{background:#061d4a;border:1px solid #2d63c7;border-left:8px solid #fff}
+.dk.slate{--card:#ffffff;--paper:#f3f0e8;--ink:#1b2431;--muted:#5f6a7a;--line:#d3cec1;color:#1b2431;border-radius:6px;border:1px solid #c9c3b4;border-left:8px solid #fe5200;background:linear-gradient(180deg,#fdfcf9,#efece4)}
+.dk.slate .s2{opacity:.75}
+.dk.bron{background:#0a46a8;border:2px solid #fe5200;border-left-width:8px}
+.hd{display:flex;align-items:stretch;min-height:60px}
+.strip{all:unset;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;flex:1;min-width:0;display:grid;align-content:center;gap:3px;padding:9px 6px 15px 14px;cursor:pointer;font:inherit;color:inherit;text-align:left;border-radius:14px 0 0 14px;-webkit-tap-highlight-color:transparent}
+.s1{display:flex;align-items:center;gap:8px;min-width:0;font-family:"Barlow Condensed",Barlow,system-ui,sans-serif;font-size:22px;font-weight:700;line-height:1.05}
+.s1 .logo{width:28px;height:28px;object-fit:contain;flex:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+.s1 .tn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s1 .num{margin-left:auto;padding-right:4px;font-variant-numeric:tabular-nums}
+.dk.slate .s1,.dk.tally .s1,.dk.about .s1{text-transform:uppercase;letter-spacing:.04em;font-size:18px}
+.s2{font-size:12px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ctl{display:flex;align-items:center;gap:2px;padding-right:6px;flex:none}
+.ib{all:unset;cursor:pointer;width:28px;height:44px;display:inline-flex;align-items:center;justify-content:center;font-size:17px;color:inherit;opacity:.85;border-radius:8px;-webkit-tap-highlight-color:transparent}
+.handle{touch-action:none;cursor:grab;font-size:21px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;width:32px}
+details.menu{position:relative} details.menu summary{list-style:none} details.menu summary::-webkit-details-marker{display:none}
+.mn{position:absolute;right:0;top:44px;z-index:60;background:#fff;color:#1b2431;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.4);padding:6px;min-width:160px;display:grid}
+.mn button{all:unset;cursor:pointer;padding:10px 12px;border-radius:6px;font:inherit} .mn button:hover{background:#eef0f4} .mn hr{border:0;border-top:1px solid #e1e4ea;margin:4px 0}
+.body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .2s ease} .dk.open .body{grid-template-rows:1fr}
+.bc{overflow:hidden;min-height:0} .dk.open .bc{padding:0 14px 14px}
+.bc>h2:first-child,.bc>h3:first-child{display:none}
+.bc .viz,.bc .panel,.bc .bpanel,.bc .card,.bc section{background:transparent;border:0;padding:0;margin:0;box-shadow:none}
+.bc table{width:100%;border-collapse:collapse;font-size:14px} .bc th,.bc td{padding:4px 6px;border-bottom:1px solid rgba(255,255,255,.15);text-align:left} .dk.slate .bc th,.dk.slate .bc td{border-bottom-color:#d3cec1}
+.bc .stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.bc .stat>div{background:rgba(255,255,255,.07);border-radius:8px;padding:10px} .bc .stat b{display:block;font-family:"Barlow Condensed";font-size:28px;line-height:1}
+.bc footer{border-top:1px solid #2d63c7;margin-top:10px;padding-top:10px;color:var(--muted);font-size:13px}
+.bc p{margin:0 0 8px} .bc p:last-child{margin-bottom:0}
+.bc ul{margin:0;padding-left:1.1em} .bc li{margin:2px 0}
+@media (prefers-reduced-motion:reduce){.body,.dk{transition:none}}
+@media (max-width:480px){.s1{font-size:19px}.dk.slate .s1,.dk.tally .s1,.dk.about .s1{font-size:16px}.ib{width:26px}.s1 .logo{width:24px;height:24px}}
