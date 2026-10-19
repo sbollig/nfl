@@ -50,7 +50,8 @@ details.menu{position:relative} details.menu summary{list-style:none} details.me
 .mn{position:absolute;right:0;top:44px;z-index:60;background:#fff;color:#1b2431;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.4);padding:6px;min-width:160px;display:grid}
 .mn button{all:unset;cursor:pointer;padding:10px 12px;border-radius:6px;font:inherit} .mn button:hover{background:#eef0f4} .mn hr{border:0;border-top:1px solid #e1e4ea;margin:4px 0}
 .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .2s ease} .dk.open .body{grid-template-rows:1fr}
-.bc{overflow:hidden;min-height:0} .dk.open .bc{padding:0 14px 14px}
+.body,.bc{min-width:0} .bc{overflow:hidden;min-height:0} .dk.open .bc{padding:0 14px 14px}
+.bc svg{max-width:100%;height:auto}
 .bc>h2:first-child,.bc>h3:first-child{display:none}
 .bc .viz,.bc .panel,.bc .bpanel,.bc .card,.bc section{background:transparent;border:0;padding:0;margin:0;box-shadow:none}
 .bc table{width:100%;border-collapse:collapse;font-size:14px} .bc th,.bc td{padding:4px 6px;border-bottom:1px solid rgba(255,255,255,.15);text-align:left} .dk.slate .bc th,.dk.slate .bc td{border-bottom-color:#d3cec1}

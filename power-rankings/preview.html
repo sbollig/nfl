@@ -183,6 +183,7 @@ h1{font-family:"Barlow Condensed";font-size:44px;font-weight:700;line-height:.95
 .dk .viz{padding:0;margin:0;background:transparent} .dk .viz .vd{margin:0 0 10px;font-size:13px} .dk .viz .vl{font-size:12px} .dk .viz .src{font-size:12px}
 .dk .rk{font-size:14px;grid-template-columns:2em 8.5em 1fr 3.2em 3.4em} .dk .slope{overflow-x:auto} .dk .slope svg{min-width:640px}
 .dk .pg{flex-wrap:wrap}
+.dk .slope .lab{font-size:17px} .dk .slope .num{font-size:15px} .dk .slope .d{font-size:15px} .dk .slope .col{font-size:12px} .dk .slope .ln{stroke-width:3} .dk .slope{overflow:visible;min-width:0} .dk .slope svg{width:100%;max-width:640px;min-width:0}
 table.tcard{width:100%;border-collapse:collapse;font-size:14px} table.tcard th{text-align:left;font-weight:600;white-space:nowrap;padding:3px 10px 3px 0;width:7em;color:inherit;text-transform:none;letter-spacing:0;font-size:inherit;border-bottom:1px solid rgba(255,255,255,.15)} table.tcard td{text-align:left;padding:3px 0;white-space:normal;border-bottom:1px solid rgba(255,255,255,.15)}
 footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
 </style>
@@ -191,7 +192,6 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
 <header class="deck-head"><div class="lbl">NFL 2026 · after Week 5</div><h1><span class="pre">Ranked:</span> Power Rankings</h1>
   <img class="mascot" src="../img/broncos-d-logo.png" alt="Denver Broncos D logo, 1970–1996" loading="eager"></header>
 <nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/" aria-current="page">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../picks/week6.html">Week 6 Picks</a></nav>
-<a class="tune-cta" href="../power-rankings/tune.html"><b>Tune the Power Rankings?</b><span>Set the dials behind this index, see what the top 10 becomes, and propose your setting. Todd's yes makes it official.</span><span class="go">Open →</span></a>
 <div class="deck" id="deck" data-key="rankings-deck" data-label="Tiers, Broncos first" aria-label="Power rankings cards">
 <article class="dk about" data-id="about" data-title='About this page' data-sub="who, when, how the ratings move, legend, sources"><p class="byline">By <b>Mack</b> (Analysis); <b>ΖΓ636</b> (Adjustments) &nbsp;·&nbsp; October 19, 2026, after all 15 Week 5 games &nbsp;·&nbsp; next: <a href="season.html">how the season projects by division</a></p><p class="stamp">Published <b>Sep 14, 2026, 12:13 PM PT</b> &nbsp;·&nbsp; Updated <b>Oct 14, 2026, 9:13 AM PT</b></p><h2>How are the ratings updated?</h2><p>Todd's ratings never move on their own. After each week I shift both teams by one tenth of the surprise, the actual home margin minus the projected margin, clamped to ±21 points. The home team gains that amount and the away team loses it, so the league total never drifts. Results after Week 5: Chiefs, Bills, Rams, Jaguars, Ravens are the top five; Raiders fell 7 places, Patriots rose 5.</p><section class="panel" aria-label="Legend">
   <h2 style="margin-top:0">Legend</h2>
@@ -361,7 +361,7 @@ render();
   leg.innerHTML=TIER.map(t=>`<span><i class="dot" style="--c:${t[2]}"></i>${t[1]}</span>`).join('');
   const before=[...DATA].sort((a,b)=>b.old-a.old);
   const after=[...DATA].sort((a,b)=>a.rk-b.rk);
-  const RH=22, TOP=34, W=1100, LX=250, RX=850, PAD=6;
+  const RH=30, TOP=40, W=600, LX=250, RX=310, PAD=6;
   const H=TOP+RH*DATA.length+12;
   const yB={}, yA={};
   before.forEach((d,i)=>yB[d.team]=TOP+i*RH+RH/2);
@@ -370,12 +370,12 @@ render();
   g+=`<rect class="bg" x="0" y="0" width="${W}" height="${H}" rx="8"/>`;
   g+=`<text class="col" x="${LX-PAD}" y="16" text-anchor="end">After Week 4 · Mack</text><text class="col" x="${RX+PAD}" y="16">After Week 5 · Mack</text><text class="col" x="${W-30}" y="16" text-anchor="end">Δ</text>`;
   DATA.forEach(d=>{ const t=tier(d.v); const y1=yB[d.team], y2=yA[d.team];
-    g+=`<path class="ln" stroke="${t[2]}" d="M${LX+PAD*2} ${y1} C ${LX+300} ${y1}, ${RX-300} ${y2}, ${RX-PAD*2} ${y2}"/>`; });
+    g+=`<path class="ln" stroke="${t[2]}" d="M${LX+PAD*2} ${y1} C ${LX+30} ${y1}, ${RX-30} ${y2}, ${RX-PAD*2} ${y2}"/>`; });
   before.forEach((d,i)=>{ const y=yB[d.team]; const t=tier(d.v);
-    g+=`<text class="num" x="${LX-190}" y="${y+4}" text-anchor="end">${i+1}</text><text class="lab" x="${LX-180}" y="${y+4}"${d.team==='Broncos'?' fill="#ffb84d"':''}>${d.team}</text><text class="num" x="${LX-PAD}" y="${y+4}" text-anchor="end">${d.old>0?'+':''}${d.old.toFixed(1)}</text><circle cx="${LX+PAD*2}" cy="${y}" r="3.5" fill="${t[2]}"/>`; });
+    g+=`<text class="num" x="${LX-215}" y="${y+4}" text-anchor="end">${i+1}</text><text class="lab" x="${LX-205}" y="${y+4}"${d.team==='Broncos'?' fill="#ffb84d"':''}>${d.team}</text><text class="num" x="${LX-PAD}" y="${y+4}" text-anchor="end">${d.old>0?'+':''}${d.old.toFixed(1)}</text><circle cx="${LX+PAD*2}" cy="${y}" r="3.5" fill="${t[2]}"/>`; });
   after.forEach((d,i)=>{ const y=yA[d.team]; const t=tier(d.v); const dv=d.v-d.old;
     const mv=d.mv===0?'—':(d.mv>0?'▲'+d.mv:'▼'+(-d.mv)); const mc=d.mv===0?'#b9c3d6':(d.mv>0?'#9be27a':'#ff9c9c');
-    g+=`<circle cx="${RX-PAD*2}" cy="${y}" r="3.5" fill="${t[2]}"/><text class="num" x="${RX+PAD}" y="${y+4}">${i+1}</text><text class="lab" x="${RX+PAD+22}" y="${y+4}"${d.team==='Broncos'?' fill="#ffb84d"':''}>${d.team}${d.tonight?' ·':''}</text><text class="num" x="${RX+150}" y="${y+4}" text-anchor="end">${d.v>0?'+':''}${d.v.toFixed(1)}</text><text class="d" fill="${mc}" x="${W-30}" y="${y+4}" text-anchor="end">${mv}</text>`; });
+    g+=`<circle cx="${RX-PAD*2}" cy="${y}" r="3.5" fill="${t[2]}"/><text class="num" x="${RX+PAD}" y="${y+4}">${i+1}</text><text class="lab" x="${RX+PAD+22}" y="${y+4}"${d.team==='Broncos'?' fill="#ffb84d"':''}>${d.team}${d.tonight?' ·':''}</text><text class="num" x="${RX+190}" y="${y+4}" text-anchor="end">${d.v>0?'+':''}${d.v.toFixed(1)}</text><text class="d" fill="${mc}" x="${W-30}" y="${y+4}" text-anchor="end">${mv}</text>`; });
   g+='</svg>';
   document.getElementById('slope').innerHTML=g;
 })();
