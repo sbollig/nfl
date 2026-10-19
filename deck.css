@@ -11,7 +11,7 @@
   /* text-only oranges (contrast on the blues, measured 10/19): small text 4.7:1, large headings 3.6:1; fills and edges keep #fe5200 */
   --orange-text:#ffad75;--orange-head:#ff9a5a}
 :root:root:root body{background:#0a46a8;color:#fff}
-.site-nav a{color:var(--orange-text)}.site-nav a[aria-current="page"]{color:#cfe0ff}
+.site-nav a{color:#fe5200}.site-nav a[aria-current="page"]{color:#cfe0ff}   /* Scott 10/19: the saturated orange on every page (he preferred the injuries page); contrast 2.6:1, his call */
 .tune-cta{border-left-color:#fe5200!important;background:#073a8c!important}
 h1 span,h1 .pre{color:var(--orange-head)}
 /* UNIFORM FRAME (Scott 10/19 "the top should not jump around and the size of the page should be uniform across all pages"):
