@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en" class="ed"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Power Rankings, Side by Side — After Week 5</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="../theme.css?v=117">
+<link rel="stylesheet" href="../deck.css?v=117">
+<script src="../deck.js?v=117" defer></script>
+<script src="../faces.js?v=117" data-only="Todd" defer></script>
+<style>
+*{box-sizing:border-box}
+body{font-family:Barlow,system-ui,sans-serif;font-size:15px;line-height:1.4;padding-inline:16px;padding-block:28px 48px;max-width:none;font-variant-numeric:tabular-nums}
+.page{max-width:1240px;margin:0 auto;display:grid;gap:14px}
+.deck-head{border-bottom:4px solid #fe5200;padding-bottom:14px}
+.lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-family:"Barlow Condensed";font-size:44px;font-weight:700;line-height:.95;margin:0}
+.sub{color:var(--muted);margin-top:6px;font-size:14px}
+.site-nav{display:flex;flex-wrap:wrap;gap:6px 4px;margin:0;padding:6px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.site-nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;border-radius:6px;font-weight:600;text-decoration:none}
+.site-nav a:hover,.site-nav a:focus-visible{background:rgba(254,82,0,.18);outline:none}
+.deck{max-width:none} .deck-bar{margin:0} .deck-bar .tb[hidden]{display:none}
+.dk.about .bc p{font-size:14px;line-height:1.5}
+/* status line, as on the board */
+.status{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted);display:inline-block;flex:none}
+.badge{background:#ffd766;color:#1b2431;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px} .col .note.unsaved{color:#ffd766}
+.dot.on{background:#6fcf8c} .dot.off{background:#f28b7d} .dot.warn{background:#ffd766}
+#who{all:unset;color:#fe5200;cursor:pointer;font-weight:600;margin-left:6px}
+/* person picker (phone) */
+.picker{display:none;position:sticky;top:0;z-index:20;background:#0a46a8;padding:8px 0;gap:6px;border-bottom:1px solid var(--line)}
+.picker button{all:unset;cursor:pointer;flex:1;text-align:center;min-height:44px;line-height:44px;border-radius:8px;border:1px solid #fe5200;color:#fe5200;font-weight:600;font-size:14px}
+.picker button[aria-pressed="true"]{background:#fe5200;color:#fff}
+/* the four columns */
+.cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:start}
+.col{background:#073a8c;border:1px solid #2d63c7;border-radius:12px;overflow:hidden;min-width:0}
+.col.mine{border-color:#fe5200;box-shadow:0 0 0 1px #fe5200}
+.col .ch{padding:10px 12px 8px;border-bottom:1px solid #2d63c7;display:grid;gap:2px}
+.col .ch .nm{font-family:"Barlow Condensed";font-size:22px;font-weight:700;line-height:1}
+.col .ch .nm small{font-family:Barlow;font-size:12px;font-weight:500;color:var(--muted);margin-left:6px}
+.col .ch .sc{font-size:13px;color:var(--muted)} .col .ch .sc b{color:#fff;font-family:"Barlow Condensed";font-size:18px}
+.rows{position:relative}
+.row{display:grid;grid-template-columns:1.6em 22px minmax(0,1fr) 2.6em 2.6em auto;align-items:center;gap:6px;height:40px;padding:0 6px 0 8px;border-bottom:1px solid rgba(255,255,255,.12);background:#073a8c;position:relative;-webkit-tap-highlight-color:transparent}
+.row:last-child{border-bottom:0}
+.row .rk{color:var(--muted);text-align:right;font-size:13px}
+.row .logo{width:22px;height:22px;object-fit:contain;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+.row .tn{font-family:"Barlow Condensed";font-size:17px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .rt{text-align:right;font-size:13px;color:var(--muted)}
+.row .dl{text-align:right;font-size:13px;font-weight:700} .dl.up{color:#6fcf8c} .dl.dn{color:#f28b7d} .dl.same{color:var(--muted);font-weight:400}
+.row .kb{display:flex;align-items:center} .row .kb:empty{display:none}
+.row .ib{all:unset;cursor:pointer;width:30px;height:44px;display:inline-flex;align-items:center;justify-content:center;font-size:15px;color:#fff;opacity:.85;border-radius:6px;-webkit-tap-highlight-color:transparent}
+.row .ib:disabled{opacity:.25;cursor:default}
+.row .handle{touch-action:none;cursor:grab;font-size:19px;width:28px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;color:var(--muted)}
+.row.bron{background:#0a46a8;box-shadow:inset 4px 0 0 #fe5200} .row.bron .tn{color:#fe5200}
+.col.mine .row{touch-action:pan-y;cursor:grab}
+.row.lift{z-index:30;box-shadow:0 10px 26px rgba(0,0,0,.55);border-radius:8px;border:1px solid #fe5200;opacity:.97}
+body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
+.col .note{padding:8px 12px;font-size:12px;color:var(--muted);border-bottom:1px solid #2d63c7}
+/* consensus strip */
+.cons{background:#061d4a;border:1px solid #2d63c7;border-left:8px solid #fff;border-radius:12px;padding:10px 12px}
+.cons h2{font-family:"Barlow Condensed";font-size:22px;margin:0 0 2px;font-weight:700}
+.cons .sub{margin:0 0 8px}
+.cons ol{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:4px 12px;font-size:14px}
+.cons li{display:flex;align-items:center;gap:6px;height:30px} .cons li .rk{color:var(--muted);width:1.6em;text-align:right} .cons li img{width:20px;height:20px;object-fit:contain} .cons li .av{margin-left:auto;color:var(--muted);font-size:12px}
+.cons li.bron .tn{color:#fe5200;font-weight:700}
+footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
+@media (max-width:899px){
+  .picker{display:flex}
+  .cols{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin-inline:-16px;padding-inline:16px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .cols::-webkit-scrollbar{display:none}
+  .col{flex:0 0 86vw;scroll-snap-align:center}
+}
+@media (prefers-reduced-motion:reduce){.row{transition:none}}
+</style></head><body>
+<div class="page">
+<header class="deck-head"><div class="lbl">NFL 2026 · <span id="wk">after Week 5</span></div><h1>Power Rankings, <span>Side by Side</span></h1>
+  <div class="sub">Mack's order from the rankings page, then Todd, Ryota and Scott in their own words — drag your column, see where you differ.</div>
+  <img class="mascot" src="../img/broncos-d-logo.png" alt="Denver Broncos D logo, 1970–1996" loading="eager"></header>
+<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../picks/week6.html">Week 6 Picks</a></nav>
+<div class="status"><span class="dot" id="dbdot"></span><span id="dbmsg">Connecting to the shared board…</span><button id="who" type="button"></button><span class="badge" id="unsaved" hidden>unsaved changes</span></div>
+<div class="deck" id="deck" data-key="compare-deck" aria-label="About">
+<div class="deck-bar"><span class="lbl">About</span><button class="tb" type="button" id="reset-order" hidden>Reset</button></div>
+<article class="dk about" data-id="about" data-title="About this page" data-sub="who can edit what · when a week rolls · how the difference is measured">
+<p><b>Four columns, one week.</b> Mack's column is the rank order from the rankings page and cannot be dragged. Todd, Ryota and Scott each own one column: everyone sees all four, and you can move teams only in your own. Sign in once with your board key (the same key as the picks board); it is remembered on this device.</p>
+<p><b>Your column starts from Mack's order</b> the first time you open a week. If you ranked the week before, that order carries forward instead. Nothing is saved until you drop a team; after that every drop saves to the shared board and the other columns refresh every 20 seconds.</p>
+<p><b>Moving a team:</b> on a phone, press and hold a row, then slide it; a plain tap does nothing. On a computer, drag with the mouse. The ▲ ▼ buttons move a team one place and work everywhere.</p>
+<p><b>The difference:</b> each row shows the team's rating and how many places it sits above (▲, green) or below (▼, red) Mack's rank. The number at the top of a column is the average of those gaps, so "3.1" means that person's order differs from Mack's by about three places per team. Consensus at the bottom averages the ranks across the columns that have been ranked.</p>
+<p><b>One device per person:</b> your order is saved under your key, so the last save wins. If you rank on your phone and then on a laptop, the laptop's order replaces the phone's; the page picks up the newer copy when it next refreshes.</p>
+<p><b>When the week rolls:</b> the Tuesday ratings rebuild this page for the new week with a fresh slate; earlier weeks stay readable from the week link in the address (<code>?week=5</code>).</p>
+</article>
+</div>
+<div class="picker" id="picker" aria-label="Jump to a column"></div>
+<section class="cols" id="cols" aria-label="Rankings side by side"></section>
+<section class="cons" id="cons" aria-label="Consensus"></section>
+<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../power-rankings/">Power Rankings</a><a href="../power-rankings/season.html">Season</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../picks/week6.html">Week 6 Picks</a></nav>
+<footer>Prepared by Mack. Ratings are Todd's, re-run from the season's finals; the three other columns are personal opinion. Built Oct 19, 2026 12:52 PM PT. For entertainment only; not betting advice.</footer>
+</div>
+<script>
+// ---- the week, the teams, Mack's order ----
+const BUILT_WEEK = 5;
+const WEEK = (() => { const w = parseInt(new URLSearchParams(location.search).get("week") || "", 10); return w >= 1 && w <= 22 ? w : BUILT_WEEK; })();
+const pollId = w => "pr-w" + String(w).padStart(2, "0");         // one poll id per week; the key decides the person, so no name in the id
+const TEAMS = ["49ers", "Bears", "Bengals", "Bills", "Broncos", "Browns", "Buccaneers", "Cardinals", "Chargers", "Chiefs", "Colts", "Commanders", "Cowboys", "Dolphins", "Eagles", "Falcons", "Giants", "Jaguars", "Jets", "Lions", "Packers", "Panthers", "Patriots", "Raiders", "Rams", "Ravens", "Saints", "Seahawks", "Steelers", "Texans", "Titans", "Vikings"];
+const LOGO = {"Cardinals": "https://a.espncdn.com/i/teamlogos/nfl/500/ari.png", "Falcons": "https://a.espncdn.com/i/teamlogos/nfl/500/atl.png", "Ravens": "https://a.espncdn.com/i/teamlogos/nfl/500/bal.png", "Bills": "https://a.espncdn.com/i/teamlogos/nfl/500/buf.png", "Panthers": "https://a.espncdn.com/i/teamlogos/nfl/500/car.png", "Bears": "https://a.espncdn.com/i/teamlogos/nfl/500/chi.png", "Bengals": "https://a.espncdn.com/i/teamlogos/nfl/500/cin.png", "Browns": "https://a.espncdn.com/i/teamlogos/nfl/500/cle.png", "Cowboys": "https://a.espncdn.com/i/teamlogos/nfl/500/dal.png", "Broncos": "https://a.espncdn.com/i/teamlogos/nfl/500/den.png", "Lions": "https://a.espncdn.com/i/teamlogos/nfl/500/det.png", "Packers": "https://a.espncdn.com/i/teamlogos/nfl/500/gb.png", "Texans": "https://a.espncdn.com/i/teamlogos/nfl/500/hou.png", "Colts": "https://a.espncdn.com/i/teamlogos/nfl/500/ind.png", "Jaguars": "https://a.espncdn.com/i/teamlogos/nfl/500/jax.png", "Chiefs": "https://a.espncdn.com/i/teamlogos/nfl/500/kc.png", "Raiders": "https://a.espncdn.com/i/teamlogos/nfl/500/lv.png", "Chargers": "https://a.espncdn.com/i/teamlogos/nfl/500/lac.png", "Rams": "https://a.espncdn.com/i/teamlogos/nfl/500/lar.png", "Dolphins": "https://a.espncdn.com/i/teamlogos/nfl/500/mia.png", "Vikings": "https://a.espncdn.com/i/teamlogos/nfl/500/min.png", "Patriots": "https://a.espncdn.com/i/teamlogos/nfl/500/ne.png", "Saints": "https://a.espncdn.com/i/teamlogos/nfl/500/no.png", "Giants": "https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png", "Jets": "https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png", "Eagles": "https://a.espncdn.com/i/teamlogos/nfl/500/phi.png", "Steelers": "https://a.espncdn.com/i/teamlogos/nfl/500/pit.png", "49ers": "https://a.espncdn.com/i/teamlogos/nfl/500/sf.png", "Seahawks": "https://a.espncdn.com/i/teamlogos/nfl/500/sea.png", "Buccaneers": "https://a.espncdn.com/i/teamlogos/nfl/500/tb.png", "Titans": "https://a.espncdn.com/i/teamlogos/nfl/500/ten.png", "Commanders": "https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"};
+const DATA = [{"rk": 1, "team": "Chiefs", "v": 6.0, "old": 6.0, "mv": 0}, {"rk": 2, "team": "Bills", "v": 5.8, "old": 5.4, "mv": 2}, {"rk": 3, "team": "Rams", "v": 5.1, "old": 5.5, "mv": 0}, {"rk": 4, "team": "Jaguars", "v": 4.7, "old": 4.8, "mv": 1}, {"rk": 5, "team": "Ravens", "v": 4.7, "old": 4.2, "mv": 1}, {"rk": 6, "team": "49ers", "v": 4.5, "old": 4.0, "mv": 2}, {"rk": 7, "team": "Patriots", "v": 4.1, "old": 2.0, "mv": 5}, {"rk": 8, "team": "Bears", "v": 3.7, "old": 5.8, "mv": -6}, {"rk": 9, "team": "Seahawks", "v": 3.6, "old": 4.1, "mv": -2}, {"rk": 10, "team": "Lions", "v": 3.3, "old": 1.4, "mv": 4}, {"rk": 11, "team": "Bengals", "v": 3.1, "old": 3.1, "mv": -2}, {"rk": 12, "team": "Broncos", "v": 3.1, "old": 2.7, "mv": -2}, {"rk": 13, "team": "Eagles", "v": 2.3, "old": 2.2, "mv": -2}, {"rk": 14, "team": "Vikings", "v": 2.3, "old": 1.8, "mv": -1}, {"rk": 15, "team": "Texans", "v": 2.2, "old": 0.2, "mv": 4}, {"rk": 16, "team": "Packers", "v": 2.1, "old": 0.0, "mv": 4}, {"rk": 17, "team": "Steelers", "v": 0.5, "old": -0.7, "mv": 4}, {"rk": 18, "team": "Cowboys", "v": 0.1, "old": 1.4, "mv": -3}, {"rk": 19, "team": "Falcons", "v": 0.1, "old": 0.6, "mv": -1}, {"rk": 20, "team": "Colts", "v": -0.3, "old": 0.9, "mv": -4}, {"rk": 21, "team": "Buccaneers", "v": -0.8, "old": -2.1, "mv": 5}, {"rk": 22, "team": "Commanders", "v": -1.2, "old": -1.0, "mv": 0}, {"rk": 23, "team": "Chargers", "v": -1.4, "old": -1.0, "mv": 0}, {"rk": 24, "team": "Raiders", "v": -1.5, "old": 0.6, "mv": -7}, {"rk": 25, "team": "Panthers", "v": -1.6, "old": -1.6, "mv": -1}, {"rk": 26, "team": "Giants", "v": -1.8, "old": -2.0, "mv": -1}, {"rk": 27, "team": "Jets", "v": -3.5, "old": -3.7, "mv": 0}, {"rk": 28, "team": "Saints", "v": -5.0, "old": -4.5, "mv": 1}, {"rk": 29, "team": "Browns", "v": -5.2, "old": -5.0, "mv": 1}, {"rk": 30, "team": "Dolphins", "v": -5.5, "old": -5.5, "mv": 2}, {"rk": 31, "team": "Titans", "v": -6.4, "old": -4.4, "mv": -3}, {"rk": 32, "team": "Cardinals", "v": -7.3, "old": -5.4, "mv": -1}];                                  // Mack's column: rk/team/v (rating)/old/mv from the rankings page
+const PEOPLE = ["Mack", "Todd", "Ryota", "Scott"], EDITORS = ["Todd", "Ryota", "Scott"];
+const MACK_ORDER = DATA.map(d => d.team), RATING = Object.fromEntries(DATA.map(d => [d.team, d.v]));
+const MACK_RANK = Object.fromEntries(MACK_ORDER.map((t, i) => [t, i + 1]));
+
+// ---- identity: same as tune.html (board key on this device, person verified by the store) ----
+const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
+const BOARD_VER = "v117";
+const $ = (s, r=document) => r.querySelector(s);
+const store = { get(k){ try{ return localStorage.getItem(k)||""; }catch(e){ return ""; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }, del(k){ try{ localStorage.removeItem(k); }catch(e){} } };
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let me = store.get("board-who");
+function setDb(k,msg){ $("#dbdot").className = "dot " + k; $("#dbmsg").textContent = msg; }
+function showMe(){ $("#who").textContent = me ? "signed in as " + me + " · change key" : "sign in with your board key"; }
+async function whoami(key){ const r = await fetch(STORE + "?board=1&whoami=1&key=" + encodeURIComponent(key) + "&t=" + Date.now(), {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error("that board key was not accepted"); me = j.person; store.set("board-who", me); showMe(); renderAll(); return me; }
+async function askKey(){ const key = (prompt("Your board key (from Scott or Mack; remembered on this device):") || "").trim(); if (!key) return ""; store.set("board-key", key); try { await whoami(key); return key; } catch(e){ store.del("board-key"); me = ""; showMe(); renderAll(); setDb("off", e.message + "."); return ""; } }
+$("#who").addEventListener("click", () => { store.del("board-key"); store.del("board-who"); me = ""; showMe(); renderAll(); askKey(); });
+
+// ---- codec v1: v = "1" + 32 chars, each the base-36 index of a team in the frozen TEAMS list ----
+const CODEC = "1";
+const encode = order => CODEC + order.map(t => TEAMS.indexOf(t).toString(36)).join("");
+function decode(v){                                               // the 32-team order, or null if v is not a readable v1 order (never throws)
+  if (typeof v !== "string" || v.length !== 33 || v[0] !== CODEC) return null;
+  const idx = [...v.slice(1)].map(c => /^[0-9a-v]$/.test(c) ? parseInt(c, 36) : -1); if (idx.some(i => i < 0 || i > 31)) return null;
+  if (new Set(idx).size !== 32) return null; return idx.map(i => TEAMS[i]);
+}
+const validV = v => decode(v) !== null;
+
+// ---- state ----
+let votes = {};                                                   // the store's polls: {pollId:{person:{v,note,t}}}
+let orders = Object.fromEntries(PEOPLE.map(p => [p, MACK_ORDER.slice()]));   // what each column shows right now (Mack's order until the store answers)
+let confirmed = "", confirmedT = "";                                // my last server-confirmed v and its store time ("" = nothing saved this week)
+let loadedMe = "";                                                  // which person's own column has been seeded locally (local-authoritative after that)
+let drag = null;                                                    // active drag, if any (never re-render that column)
+let save = { inflight: false, pending: "", retry: 0, tries: 0, timer: 0, unsaved: "" };   // one write at a time; the newest order wins
+const BACKOFF = [1000, 5000, 30000];
+
+function entry(person, week){ return (votes[pollId(week)] || {})[person] || null; }
+function serverOrder(person, week){ const e = entry(person, week); return e ? decode(e.v) : null; }
+function unreadable(person){ const e = entry(person, WEEK); return !!e && !decode(e.v); }
+function hasRanked(person){ return person === "Mack" || !!serverOrder(person, WEEK); }
+function startingOrder(person){                                    // my column: this week's save, else last week's carry-forward, else Mack
+  return serverOrder(person, WEEK) || (WEEK > 1 ? serverOrder(person, WEEK - 1) : null) || MACK_ORDER.slice();
+}
+function applyVotes(){
+  for (const p of EDITORS) {
+    if (drag && drag.person === p) continue;
+    if (p !== me) { orders[p] = serverOrder(p, WEEK) || MACK_ORDER.slice(); continue; }
+    // my own column is local-authoritative once seeded; adopt the server copy only when it is newer than my last confirmed save and nothing is pending
+    const e = entry(p, WEEK), srv = e ? decode(e.v) : null;
+    if (loadedMe !== p) { loadedMe = p; confirmed = srv ? e.v : ""; confirmedT = srv ? e.t : ""; orders[p] = startingOrder(p); continue; }
+    if (save.inflight || save.pending || save.retry || save.unsaved) continue;
+    if (srv && e.t > confirmedT) { confirmed = e.v; confirmedT = e.t; orders[p] = srv; }
+  }
+}
+
+// ---- the difference ----
+const delta = (person, team) => MACK_RANK[team] - (orders[person].indexOf(team) + 1);     // + = sits above Mack's rank
+const disagreement = person => (orders[person].reduce((s, t) => s + Math.abs(delta(person, t)), 0) / 32).toFixed(1);
+const dl = d => d > 0 ? `<span class="dl up">▲${d}</span>` : d < 0 ? `<span class="dl dn">▼${-d}</span>` : `<span class="dl same">—</span>`;
+
+// ---- render ----
+function columnOrder(){ return me && EDITORS.includes(me) ? ["Mack", me, ...EDITORS.filter(p => p !== me)] : PEOPLE.slice(); }
+function rowHtml(person, team, i, mine){
+  const kb = mine ? `<span class="kb"><button class="ib" type="button" data-mv="-1" aria-label="Move ${esc(team)} up" ${i === 0 ? "disabled" : ""}>▲</button><button class="ib" type="button" data-mv="1" aria-label="Move ${esc(team)} down" ${i === 31 ? "disabled" : ""}>▼</button></span><span class="ib handle" aria-hidden="true">≡</span>` : `<span class="kb"></span><span></span>`;
+  return `<div class="row${team === "Broncos" ? " bron" : ""}" data-team="${esc(team)}"><span class="rk">${i + 1}</span><img class="logo" src="${esc(LOGO[team])}" alt="" loading="lazy"><span class="tn">${esc(team)}</span><span class="rt">${RATING[team].toFixed(1)}</span>${person === "Mack" ? `<span class="dl same">·</span>` : dl(delta(person, team))}${kb}</div>`;
+}
+function renderColumn(person){
+  const col = $(`.col[data-person="${person}"]`); if (!col || (drag && drag.person === person)) return;
+  const mine = person === me && person !== "Mack";
+  const score = person === "Mack" ? `<span class="sc">the reference order</span>` : `<span class="sc">differs from Mack by <b>${disagreement(person)}</b> places on average</span>`;
+  const tag = person === "Mack" ? `<small>ratings</small>` : mine ? `<small>you · drag to rank</small>` : unreadable(person) ? `<small>(could not read saved order)</small>` : hasRanked(person) ? "" : `<small>not ranked yet</small>`;
+  col.classList.toggle("mine", mine);
+  col.innerHTML = `<div class="ch"><span class="nm">${person}${tag}</span>${score}</div>` +
+    (person !== "Mack" && !hasRanked(person) && !mine ? `<div class="note">${unreadable(person) ? "Saved order could not be read; showing Mack's order." : "Showing Mack's order until " + person + " ranks this week."}</div>` : "") +
+    (mine && save.unsaved ? `<div class="note unsaved">Unsaved changes — saving to the live board store…</div>` : "") +
+    `<div class="rows">${orders[person].map((t, i) => rowHtml(person, t, i, mine)).join("")}</div>`;
+}
+function renderConsensus(){
+  const who = PEOPLE.filter(p => hasRanked(p) || p === me);
+  const avg = TEAMS.map(t => [t, who.reduce((s, p) => s + orders[p].indexOf(t) + 1, 0) / who.length]).sort((a, b) => a[1] - b[1]);
+  $("#cons").innerHTML = `<h2>Consensus</h2><p class="sub">Average rank across ${who.length} of 4 columns (${who.join(", ")}).</p><ol>` +
+    avg.map(([t, r], i) => `<li${t === "Broncos" ? ' class="bron"' : ""}><span class="rk">${i + 1}</span><img src="${esc(LOGO[t])}" alt=""><span class="tn">${esc(t)}</span><span class="av">${r.toFixed(1)}</span></li>`).join("") + "</ol>";
+}
+function renderAll(){
+  const cols = $("#cols"), want = columnOrder();
+  if ([...cols.children].map(c => c.dataset.person).join() !== want.join())
+    cols.innerHTML = want.map(p => `<article class="col" data-person="${p}" aria-label="${p}'s ranking"></article>`).join("");
+  $("#picker").innerHTML = want.map(p => `<button type="button" data-go="${p}" aria-pressed="false">${p}</button>`).join("");
+  for (const p of want) renderColumn(p);
+  renderConsensus();
+  $("#wk").textContent = "after Week " + WEEK + (WEEK !== BUILT_WEEK ? " (ratings shown are after Week " + BUILT_WEEK + ")" : "");
+}
+$("#picker").addEventListener("click", e => { const b = e.target.closest("button[data-go]"); if (!b) return;
+  const col = $(`.col[data-person="${b.dataset.go}"]`); if (col) col.scrollIntoView({inline:"center", block:"nearest", behavior:"smooth"}); });
+$("#cols").addEventListener("scroll", () => { const cols = $("#cols"), mid = cols.scrollLeft + cols.clientWidth / 2; let best = null, d = 1e9;
+  for (const c of cols.children) { const x = c.offsetLeft + c.offsetWidth / 2; if (Math.abs(x - mid) < d) { d = Math.abs(x - mid); best = c; } }
+  for (const b of $("#picker").children) b.setAttribute("aria-pressed", String(best && b.dataset.go === best.dataset.person)); }, {passive:true});
+
+// ---- saving: one write in flight at a time; newest order wins; backoff 1 s, 5 s, 30 s; revert to the last confirmed order on final failure ----
+function flashSaved(){ setDb("on", "Saved " + new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}) + "."); }
+function markUnsaved(v){ save.unsaved = v; $("#unsaved").hidden = !v; }
+function afterDrop(){                                              // called after every drop or ▲/▼ press in my column
+  renderColumn(me); renderConsensus();
+  const v = encode(orders[me]); if (!me || !validV(v)) return;
+  markUnsaved(v === confirmed ? "" : v); renderColumn(me);
+  clearTimeout(save.timer); save.timer = setTimeout(() => queueSave(v), 500);
+}
+function queueSave(v){
+  if (v === confirmed) { markUnsaved(""); return; }
+  clearTimeout(save.retry); save.retry = 0; save.tries = 0;
+  if (save.inflight) { save.pending = v; return; }
+  send(v);
+}
+async function send(v){
+  if (!me || !validV(v)) return;
+  save.inflight = true; setDb("", "Saving…");
+  let ok = false, why = "";
+  try {
+    const key = store.get("board-key"); if (!key) throw new Error("not signed in");
+    const q = new URLSearchParams({poll:1, key, id:pollId(WEEK), v, note:"", t:Date.now()}).toString();      // note empty on purpose: the store keeps its own time
+    const r = await fetch(STORE + "?" + q, {cache:"no-store"}); const j = await r.json();
+    if (j.ok) { ok = true; confirmed = v; const mine = (j.votes || {})[me]; confirmedT = mine && mine.t ? mine.t : new Date().toISOString(); votes[pollId(WEEK)] = Object.assign(votes[pollId(WEEK)] || {}, j.votes || {}); }
+    else { why = j.error || "store refused"; if (why === "bad key") { store.del("board-key"); me = ""; showMe(); } }
+  } catch(e){ why = e.message || String(e); }
+  save.inflight = false;
+  if (ok) {
+    save.tries = 0;
+    if (save.pending) { const next = save.pending; save.pending = ""; if (next !== confirmed) { send(next); return; } }
+    markUnsaved(encode(orders[me]) === confirmed ? "" : save.unsaved); if (!save.unsaved) { flashSaved(); renderColumn(me); } return;
+  }
+  const intended = save.pending || v; save.pending = "";
+  if (!me || why === "bad key") { markUnsaved(""); setDb("off", "Did not save (" + why + ")."); renderAll(); return; }
+  if (save.tries < BACKOFF.length) {                              // keep the newest intended order on screen and in memory; retry with backoff
+    const wait = BACKOFF[save.tries++]; markUnsaved(intended);
+    setDb("warn", "Did not save (" + why + "). Unsaved changes; retrying in " + Math.round(wait / 1000) + " s.");
+    save.retry = setTimeout(() => { save.retry = 0; if (me) send(save.pending || intended); save.pending = ""; }, wait); return;
+  }
+  // final failure: back to the last confirmed order
+  save.tries = 0; markUnsaved(""); orders[me] = confirmed ? decode(confirmed) : startingOrder(me);
+  if (!(drag && drag.person === me)) { renderColumn(me); renderConsensus(); }
+  setDb("off", "Could not save after three tries (" + why + "). Showing your last saved order; drag again to retry.");
+}
+addEventListener("beforeunload", e => { if (save.unsaved) { e.preventDefault(); e.returnValue = ""; } });
+
+// ---- moving teams: ▲/▼ buttons, and drag within my own column ----
+function move(team, by){ const o = orders[me], i = o.indexOf(team), j = i + by; if (i < 0 || j < 0 || j > 31) return; o.splice(i, 1); o.splice(j, 0, team); afterDrop(); }
+$("#cols").addEventListener("click", e => { const b = e.target.closest("button[data-mv]"); if (!b) return; const col = b.closest(".col"); if (!col || col.dataset.person !== me) return;
+  move(b.closest(".row").dataset.team, parseInt(b.dataset.mv, 10)); const again = $(`.col[data-person="${me}"] .row[data-team="${b.closest(".row").dataset.team}"] button[data-mv="${b.dataset.mv}"]`); if (again && !again.disabled) again.focus(); });
+
+let raf = 0;
+const rowsOf = col => col.querySelector(".rows");
+function lift(){ if (!drag || drag.active) return; drag.active = true; drag.el.classList.add("lift"); document.body.classList.add("dragging"); if (!raf) raf = requestAnimationFrame(loop); }
+function place(y){                                                  // put the lifted row where the pointer is (midpoint rule)
+  const rows = rowsOf(drag.col), kids = [...rows.children].filter(c => c !== drag.el); let before = null;
+  for (const c of kids) { const r = c.getBoundingClientRect(); if (y < r.top + r.height / 2) { before = c; break; } }
+  if ((before || null) !== (drag.el.nextElementSibling || null)) rows.insertBefore(drag.el, before);
+  const base = rows.getBoundingClientRect().top + drag.el.offsetTop;                 // offsetTop ignores the transform
+  drag.el.style.transform = "translateY(" + (y - drag.grab - base) + "px)";
+}
+function loop(){ if (!drag || !drag.active) { raf = 0; return; } const y = drag.cy, m = 70;
+  if (y < m) scrollBy(0, -Math.ceil((m - y) / 4)); else if (y > innerHeight - m) scrollBy(0, Math.ceil((y - innerHeight + m) / 4));
+  place(y); raf = requestAnimationFrame(loop); }
+function endDrag(){ if (!drag) return; clearTimeout(drag.hold); try{ drag.el.releasePointerCapture(drag.pid); }catch(e){}
+  const was = drag; drag = null;
+  if (was.active) { was.el.classList.remove("lift"); was.el.style.transform = ""; document.body.classList.remove("dragging");
+    const now = [...rowsOf(was.col).children].map(r => r.dataset.team); if (now.join() !== orders[me].join()) { orders[me] = now; afterDrop(); } else renderColumn(me); } }
+$("#cols").addEventListener("pointerdown", e => {
+  const row = e.target.closest(".row"), col = e.target.closest(".col");
+  if (!row || !col || col.dataset.person !== me || e.target.closest("button") || (e.pointerType === "mouse" && e.button !== 0)) return;
+  endDrag(); drag = { person: me, col, el: row, pid: e.pointerId, y0: e.clientY, cy: e.clientY, grab: e.clientY - row.getBoundingClientRect().top, active: false, hold: 0 };
+  try{ row.setPointerCapture(e.pointerId); }catch(err){}
+  if (e.pointerType === "mouse") lift(); else drag.hold = setTimeout(lift, 250);         // touch: press and hold; a plain tap or a scroll does nothing
+  if (e.target.closest(".handle")) e.preventDefault(); });
+$("#cols").addEventListener("pointermove", e => { if (!drag || e.pointerId !== drag.pid) return; drag.cy = e.clientY;
+  if (!drag.active) { if (Math.abs(e.clientY - drag.y0) > 8) endDrag(); return; } e.preventDefault(); place(e.clientY); });
+$("#cols").addEventListener("pointerup", e => { if (drag && e.pointerId === drag.pid) endDrag(); });
+$("#cols").addEventListener("pointercancel", e => { if (drag && e.pointerId === drag.pid) endDrag(); });
+$("#cols").addEventListener("touchmove", e => { if (drag && drag.active) e.preventDefault(); }, {passive:false});
+$("#cols").addEventListener("dragstart", e => { if (e.target.closest(".row")) e.preventDefault(); });
+
+// ---- the shared board: one GET reads every column ----
+async function pull(){
+  try { const r = await fetch(STORE + "?poll=1&t=" + Date.now(), {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error(j.error || "store error");
+    votes = j.votes || {}; applyVotes(); renderAll(); if (!save.inflight && !save.retry) setDb("on", "Shared board connected" + (me ? "" : " · read-only until you sign in") + ".");
+  } catch(e){ applyVotes(); renderAll(); setDb("off", "Could not reach the shared board (" + (e.message || e) + ")."); }
+}
+(async () => {
+  showMe(); renderAll();
+  if (store.get("board-key")) whoami(store.get("board-key")).catch(() => {});
+  await pull(); setInterval(pull, 20000);
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") pull(); });
+  try { const v = (await (await fetch("../version.txt?t=" + Date.now(), {cache:"no-store"})).text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) { const u = new URL(location.href); u.searchParams.set("v", v); location.replace(u.pathname + u.search); } } catch(e){}
+})();
+</script>
+</body></html>

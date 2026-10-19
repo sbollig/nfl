@@ -918,7 +918,7 @@ function lockStarted(){ for (const g of GAMES) if (started(g)) { const lk = $("#
 setInterval(lockStarted, 15000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) pull(true); });
 // Live scores (Scott 10/11). ESPN's public scoreboard sends Access-Control-Allow-Origin: * so the viewer's browser fetches it
-// directly; nothing runs on a Village machine. Polls every 30 s while any game is in progress, every 5 min otherwise.
+// directly; nothing runs on a home computer. Polls every 30 s while any game is in progress, every 5 min otherwise.
 // Matches on away/home team names, the same key nfl_finals_post.py uses. Any failure leaves the line as it was.
 const ESPN_SB = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&week=" + WEEK;
 let liveTimer = null;
