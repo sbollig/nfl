@@ -1,7 +1,7 @@
 /* deck.css — shared Wallet-style card deck for the site pages (Mack, 2026-10-19; Scott: "each section should be able to hold those cards like the slate").
    Retro 1977 Broncos palette: Legacy Blue sampled from the team's throwback helmet photos (#0040a0–#0048b0, rounded), orange #fe5200 =
    the field of the team's own D-logo graphic on denverbroncos.com/uniforms/history. Linked AFTER theme.css; the triple :root outranks it.
-   Markup contract (deck.js builds the chrome):
+   Markup contract (deck.js builds the chrome; data-title and data-sub are injected as HTML, so attribute-escape them):
      <div class="deck" id="deck" data-key="standings-deck">
        <article class="dk tally|about|slate|g" data-id="afc-east" [data-win="afc-east" on a g] [data-open="1"] data-title="AFC East" data-sub="4 teams">…body…</article>
    Zones: tally/about cards stay at the top among themselves; slate cards reorder among slates and carry their g cards; a g card moves only within its slate. */
@@ -34,6 +34,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .dk.slate{--card:#ffffff;--paper:#f3f0e8;--ink:#1b2431;--muted:#5f6a7a;--line:#d3cec1;color:#1b2431;border-radius:6px;border:1px solid #c9c3b4;border-left:8px solid #fe5200;background:linear-gradient(180deg,#fdfcf9,#efece4)}
 .dk.slate .s2{opacity:.75}
 .dk.bron{background:#0a46a8;border:2px solid #fe5200;border-left-width:8px}
+.dk.g{border-left-width:8px}   /* team-colour rules set border:2px solid X; the deck keeps its 8px left edge */
 .hd{display:flex;align-items:stretch;min-height:60px}
 .strip{all:unset;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;flex:1;min-width:0;display:grid;align-content:center;gap:3px;padding:9px 6px 15px 14px;cursor:pointer;font:inherit;color:inherit;text-align:left;border-radius:14px 0 0 14px;-webkit-tap-highlight-color:transparent}
 .s1{display:flex;align-items:center;gap:8px;min-width:0;font-family:"Barlow Condensed",Barlow,system-ui,sans-serif;font-size:22px;font-weight:700;line-height:1.05}
