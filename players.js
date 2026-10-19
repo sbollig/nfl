@@ -23,8 +23,23 @@
       <button class="x" type="button" aria-label="Close">✕</button></div>
       <dl>${row("Age", c.age)}${row("Size", c.size)}${row("Hometown", c.home)}${row("College", c.college)}${row("Drafted", c.draft)}</dl>
       ${c.line ? `<div class="season"><b>2026:</b> ${esc(c.line)}</div>` : ""}
-      ${c.bio ? `<p class="bio">${esc(c.bio)}</p>` : ""}
-      <div class="src">Facts: ESPN${c.bio && c.wiki ? ` · Bio: <a href="${esc(c.wiki)}" target="_blank" rel="noopener">Wikipedia</a>` : ""}</div>`;
+      <div class="news" id="pc-news"><div class="lbl">Latest news</div><div class="nl">Loading…</div></div>
+      <div class="src">Facts and news: ESPN</div>`;
+  }
+  // Latest news per player (Scott 10/19: "NFL player news instead of the boring Wikipedia link"): ESPN's athlete overview feed,
+  // fetched when the card opens so it is always current; cached per player for the session. Failure leaves a one-line note.
+  const NEWS = {};
+  async function news(c) {
+    const id = c.id || (c.head && (c.head.match(/players\/full\/(\d+)\.png/) || [])[1]); const box = dlg && dlg.querySelector("#pc-news .nl"); if (!id || !box) return;
+    try {
+      if (!NEWS[id]) { const r = await fetch("https://site.web.api.espn.com/apis/common/v3/sports/football/nfl/athletes/" + id + "/overview", { cache: "no-store" });
+        const j = await r.json(); NEWS[id] = (j.news || []).slice(0, 5); }
+      const items = NEWS[id]; if (!dlg.open || dlg.querySelector("#pc-name").textContent !== c.name) return;
+      if (!items.length) { box.textContent = "No recent stories on ESPN."; return; }
+      box.innerHTML = items.map(a => { const d = a.published ? new Date(a.published) : null, when = d ? d.toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "";
+        const href = (a.links && a.links.web && a.links.web.href) || "#", vid = a.type === "Media" || /\/video\//.test(href);
+        return `<a class="ni" href="${esc(href)}" target="_blank" rel="noopener"><span class="nd">${esc(when)}${vid ? " · video" : ""}</span><span class="nh">${esc(a.headline || "")}</span></a>`; }).join("");
+    } catch (e) { box.textContent = "News is not reachable right now."; }
   }
   function open(c) {
     if (!dlg) {
@@ -32,7 +47,7 @@
       dlg.addEventListener("click", e => { if (e.target === dlg || e.target.closest(".x")) dlg.close(); });
       document.body.appendChild(dlg);
     }
-    dlg.innerHTML = html(c); dlg.showModal();
+    dlg.innerHTML = html(c); dlg.showModal(); news(c);
   }
   document.addEventListener("click", async e => {
     if (e.target.closest("a,select,input,button,dialog")) return;

@@ -16,3 +16,11 @@ dialog.pcard::backdrop{background:rgba(0,10,25,.6)}
 .pcard .bio{padding:10px 14px 4px;font-size:13.5px;line-height:1.5;margin:0}
 .pcard .src{padding:6px 14px 12px;font-size:11px;color:#c9d3e0} .pcard .src a{color:#c9d3e0}
 .pcard h2{text-decoration:none}
+
+.pcard .news{margin:10px 14px 0;font-size:13px}
+.pcard .news .lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:#c9d3e0;font-weight:600;margin-bottom:4px}
+.pcard .news .nl{display:grid;gap:4px;color:#c9d3e0}
+.pcard .ni{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:baseline;padding:7px 10px;border-radius:6px;background:#002244;color:#fff;text-decoration:none;line-height:1.3}
+.pcard .ni:hover,.pcard .ni:focus-visible{background:#1f4470;outline:none}
+.pcard .nd{color:#FB4F14;font-size:11px;font-weight:700;white-space:nowrap}
+.pcard .nh{font-weight:500}
