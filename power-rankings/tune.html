@@ -67,9 +67,9 @@ input[type=text]{font:inherit;background:var(--card);color:var(--ink);border:1px
 footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:420px){h1{font-size:36px}}
 </style>
-<link rel="stylesheet" href="../theme.css?v=124">
-<link rel="stylesheet" href="../deck.css?v=124">
-<style>h1{color:var(--fg)}</style>   <!-- tune-preview: deck palette puts --navy on the page background, so the h1 first word takes the foreground white (10/19) --><script src="../faces.js?v=124" defer></script>
+<link rel="stylesheet" href="../theme.css?v=125">
+<link rel="stylesheet" href="../deck.css?v=125">
+<style>h1{color:var(--fg)}</style>   <!-- tune-preview: deck palette puts --navy on the page background, so the h1 first word takes the foreground white (10/19) --><script src="../faces.js?v=125" defer></script>
 </head><body>
 <div class="wrap">
   <header>
@@ -115,11 +115,11 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
   </section>
 
 <nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../picks/week7.html">Picks</a><a href="./">Power Rankings</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="season.html">Season</a><a href="../broncos/week7.html">Broncos</a></nav>
-  <footer><span id="byline">Prepared by: Mack.</span> Settings are recomputed from the season's finals every Tuesday. Not betting advice. Mack's NFL Desk v0.9.124 · © 2026 · code PolyForm-NC 1.0 · writing CC BY-NC 4.0 · not affiliated with the NFL or ESPN · <a href="../NOTICE">notice</a></footer>
+  <footer><span id="byline">Prepared by: Mack.</span> Settings are recomputed from the season's finals every Tuesday. Not betting advice. Mack's NFL Desk v0.9.125 · © 2026 · code PolyForm-NC 1.0 · writing CC BY-NC 4.0 · not affiliated with the NFL or ESPN · <a href="../NOTICE">notice</a></footer>
 </div>
 <script>
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const BOARD_VER = "v124", MACK_VER = "326";
+const BOARD_VER = "v125", MACK_VER = "326";
 const $ = (s, r=document) => r.querySelector(s);
 const store = { get(k){ try{ return localStorage.getItem(k)||""; }catch(e){ return ""; } }, set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }, del(k){ try{ localStorage.removeItem(k); }catch(e){} } };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
