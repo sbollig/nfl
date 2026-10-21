@@ -651,6 +651,7 @@ function render(){   // runs once; afterwards cards are patched (renderCard, tex
   $("#deck").innerHTML = tallyCard("week", `${wl} tally`, `<span id="wk-strip">${weekStripText()}</span>`, `<div class="tiles" id="tiles"></div>`)
     + tallyCard("last", "Last week", `<span id="last-strip"></span>`, "")
     + tallyCard("mack", "Mack's record so far", `<span id="mack-strip"></span>`, "")
+    + PEOPLE.map(p => tallyCard("rec-" + p, `${p}'s record so far`, `<span id="rec-strip-${p}"></span>`, "")).join("")   // one record card per player (Scott 10/21)
     + tallyCard("about", "About this board", "how to read a card · picks lock · points", "")
     + wins.map(w => slateCard(w) + GAMES.filter(g => g.win === w).map(card).join("")).join("");
   // the two static sections keep their place in the HTML for the Tuesday scripts' regexes; at runtime they live inside their cards
@@ -660,6 +661,8 @@ function render(){   // runs once; afterwards cards are patched (renderCard, tex
     $("#last-strip").textContent = m ? `${m[3]} took ${m[1]}${pts ? ` · ${pts} pts` : ""}` : "last week's board"; }
   if (mack) { $("#bd-mack .bc").appendChild(mack); const m = mack.textContent.match(/Season\s+([\d-]+) straight up · ([\d-]+) against the spread/);
     $("#mack-strip").textContent = m ? `${m[1]} SU · ${m[2]} ATS` : "Mack's record so far"; }
+  for (const sec of document.querySelectorAll(".wrap > section.prec")) { const p = sec.dataset.who, bc = $(`#bd-rec-${p} .bc`), st = $(`#rec-strip-${p}`); if (!bc) continue; bc.appendChild(sec);
+    const m = sec.textContent.match(/Season\s+([\d-]+) winners · ([\d-]+) against the spread · ([\d-]+) over\/under.*?· (\d+) pts?/); if (st) st.textContent = m ? `${m[1]} SU · ${m[2]} ATS · ${m[3]} O/U · ${m[4]} pts` : "no graded picks yet"; }
   // the header paragraph and the footer notes keep their place in the HTML for the Tuesday scripts' regexes; at runtime they live in the About card (Scott 10/19)
   const sub = $("header .sub"), foot = $("footer.foot"); if (sub) $("#bd-about .bc").appendChild(sub); if (foot) $("#bd-about .bc").appendChild(foot);
   applyOrder(); normalizeDeck(); readOrder();
@@ -810,7 +813,7 @@ const REV = (() => { const sn = GAMES.filter(g => /sunday night/i.test(g.win)).m
 const DECK_KEY = () => KEY.replace("-cache", "-deck") + (REV ? "-rev" : "");
 function deckLoad(){ try{ const d = JSON.parse(localStorage.getItem(DECK_KEY())||"{}"); if (Array.isArray(d.order)) deck.order = d.order.filter(x => typeof x === "string"); if (d.open && typeof d.open === "object") deck.open = d.open; }catch(e){ deck.order = []; deck.open = {}; } }
 function deckSave(){ try{ localStorage.setItem(DECK_KEY(), JSON.stringify({ order: deck.order, open: deck.open, v: 1 })); }catch(e){} }
-function defaultOrder(){ let wins = [...new Set(GAMES.map(g => g.win))]; if (REV) wins = wins.slice().reverse(); return ["week","last","mack","about", ...wins.flatMap(w => [slateId(w), ...GAMES.filter(g => g.win === w).map(g => g.id)])]; }
+function defaultOrder(){ let wins = [...new Set(GAMES.map(g => g.win))]; if (REV) wins = wins.slice().reverse(); return ["week","last","mack", ...PEOPLE.map(p => "rec-" + p),"about", ...wins.flatMap(w => [slateId(w), ...GAMES.filter(g => g.win === w).map(g => g.id)])]; }
 function applyOrder(){   // saved order; unknown ids dropped, missing ids slotted after their default-order predecessor
   const def = defaultOrder(), known = new Set(def); let order = [...new Set(deck.order.filter(id => known.has(id)))];
   for (let i = 0; i < def.length; i++) { const id = def[i]; if (order.includes(id)) continue; const p = i ? order.indexOf(def[i-1]) : -1; order.splice(p + 1, 0, id); }
