@@ -447,20 +447,6 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 @media (min-width:640px){.bc .tiles{grid-template-columns:repeat(5,1fr)}}
 .hint{font-size:13px;color:var(--muted);margin:-8px 0 10px}
 
-/* pre-game ad box + header chip (Scott 10/21: "make the user want to click it" / "a type of advertisement box") */
-.dk a.prebtn{position:relative;display:grid;justify-items:center;text-align:center;gap:6px;margin:14px 0;padding:30px 16px 16px;border-radius:12px;text-decoration:none;color:#fff;
-  background:radial-gradient(circle at 50% 0,rgba(254,82,0,.35),transparent 60%),linear-gradient(160deg,#0a46a8,#062a66);border:3px solid #fe5200;box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 0 rgba(254,82,0,.55);animation:prepulse 2.4s ease-out 3}
-.dk a.prebtn .pr{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:#fe5200;padding:4px 14px;border-radius:0 0 8px 8px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
-.dk a.prebtn .pl2{display:flex;align-items:center;gap:12px} .dk a.prebtn .pl2 img{width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))} .dk a.prebtn .pl2 b{font-size:13px;opacity:.8;letter-spacing:.1em;text-transform:uppercase}
-.dk a.prebtn .pq{font-family:"Encode Sans Semi Condensed","Barlow Condensed",sans-serif;font-size:30px;font-weight:800;line-height:1.05;text-shadow:0 2px 0 rgba(0,0,0,.35)}
-.dk a.prebtn .pt{font-size:15px;line-height:1.4;max-width:34em;opacity:.95;font-style:italic}
-.dk a.prebtn .pc{margin-top:4px;background:#fe5200;padding:10px 22px;border-radius:999px;font-weight:800;font-size:16px;box-shadow:0 3px 0 #a33500}
-.dk a.prebtn .pf{font-size:12px;opacity:.75;letter-spacing:.04em}
-.dk a.prebtn:hover,.dk a.prebtn:focus-visible{filter:brightness(1.08);outline:none;transform:translateY(-1px)}
-.dk a.prebtn,.dk a.prebtn:visited,.dk a.prebtn *,.dk a.prechip,.dk a.prechip:visited{color:#fff !important}   /* the deck colors every link orange */
-.dk a.prechip{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:10px;background:#fe5200;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap}
-@keyframes prepulse{0%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 0 rgba(254,82,0,.55)}70%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 14px rgba(254,82,0,0)}100%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 0 rgba(254,82,0,0)}}
-@media (prefers-reduced-motion:reduce){.dk a.prebtn{animation:none}}
 </style>
 <link rel="stylesheet" href="../theme.css?v=116">
 <link rel="stylesheet" href="../deck.css?v=116">
