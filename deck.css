@@ -92,3 +92,6 @@ details.menu{position:relative} details.menu summary{list-style:none} details.me
 .bc ul{margin:0;padding-left:1.1em} .bc li{margin:2px 0}
 @media (prefers-reduced-motion:reduce){.body,.dk{transition:none}}
 @media (max-width:480px){.s1{font-size:19px}.dk.slate .s1,.dk.tally .s1,.dk.about .s1{font-size:16px}.ib{width:26px}.s1 .logo{width:24px;height:24px}}
+
+/* pre-game teaser on hub cards (Scott 10/21: make the pre-game link prominent) */
+b.hook{display:block;font-family:"Encode Sans Semi Condensed","Barlow Condensed",sans-serif;font-size:22px;line-height:1.15;color:#fe5200;margin:0 0 6px}

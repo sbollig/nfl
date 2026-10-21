@@ -446,6 +446,21 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 @media (max-width:480px){.s1 .dd{display:none}.s1 .tn{font-size:19px}.s1 .tn small{font-size:10px;margin-left:2px}.s1 .logo{width:22px;height:22px}.s1 .at{min-width:20px;font-size:11px}.strip{padding-left:14px}.ctl button[data-act="top"]{display:inline-flex}.ctl .ib{width:26px}.ctl .ib{width:30px}.s1 .side:has(.sc:not(:empty)) .logo{display:none}}
 @media (min-width:640px){.bc .tiles{grid-template-columns:repeat(5,1fr)}}
 .hint{font-size:13px;color:var(--muted);margin:-8px 0 10px}
+
+/* pre-game ad box + header chip (Scott 10/21: "make the user want to click it" / "a type of advertisement box") */
+.dk a.prebtn{position:relative;display:grid;justify-items:center;text-align:center;gap:6px;margin:14px 0;padding:30px 16px 16px;border-radius:12px;text-decoration:none;color:#fff;
+  background:radial-gradient(circle at 50% 0,rgba(254,82,0,.35),transparent 60%),linear-gradient(160deg,#0a46a8,#062a66);border:3px solid #fe5200;box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 0 rgba(254,82,0,.55);animation:prepulse 2.4s ease-out 3}
+.dk a.prebtn .pr{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:#fe5200;padding:4px 14px;border-radius:0 0 8px 8px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap}
+.dk a.prebtn .pl2{display:flex;align-items:center;gap:12px} .dk a.prebtn .pl2 img{width:46px;height:46px;object-fit:contain;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))} .dk a.prebtn .pl2 b{font-size:13px;opacity:.8;letter-spacing:.1em;text-transform:uppercase}
+.dk a.prebtn .pq{font-family:"Encode Sans Semi Condensed","Barlow Condensed",sans-serif;font-size:30px;font-weight:800;line-height:1.05;text-shadow:0 2px 0 rgba(0,0,0,.35)}
+.dk a.prebtn .pt{font-size:15px;line-height:1.4;max-width:34em;opacity:.95;font-style:italic}
+.dk a.prebtn .pc{margin-top:4px;background:#fe5200;padding:10px 22px;border-radius:999px;font-weight:800;font-size:16px;box-shadow:0 3px 0 #a33500}
+.dk a.prebtn .pf{font-size:12px;opacity:.75;letter-spacing:.04em}
+.dk a.prebtn:hover,.dk a.prebtn:focus-visible{filter:brightness(1.08);outline:none;transform:translateY(-1px)}
+.dk a.prebtn,.dk a.prebtn:visited,.dk a.prebtn *,.dk a.prechip,.dk a.prechip:visited{color:#fff !important}   /* the deck colors every link orange */
+.dk a.prechip{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:10px;background:#fe5200;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap}
+@keyframes prepulse{0%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 0 rgba(254,82,0,.55)}70%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 14px rgba(254,82,0,0)}100%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 0 rgba(254,82,0,0)}}
+@media (prefers-reduced-motion:reduce){.dk a.prebtn{animation:none}}
 </style>
 <link rel="stylesheet" href="../../theme.css?v=116">
 <link rel="stylesheet" href="../../deck.css?v=116">
@@ -641,6 +656,11 @@ function refreshStrips(){   // patch strip text in place (textContent): never re
   for (const w of new Set(GAMES.map(g => g.win))) { const el = document.querySelector("#" + slateId(w)); if (el) { const t = slateText(w); if (el.textContent !== t) el.textContent = t; el.className = slateClass(w); }
     const b = document.querySelector("#sb-" + slateId(w)); if (b) { const h = slateBody(w); if (b.innerHTML !== h) b.innerHTML = h; } }
 }
+function preBtn(g){ if (!g.pre) return "";   // Mack's pre-game page as an ad box (Scott 10/21: "a type of advertisement box instead of a basic link")
+  return `<a class="prebtn" href="${g.pre}"><span class="pr">📋 Mack's scouting report</span>
+    <span class="pl2"><img src="${LOGO[g.away]}" alt=""><b>vs</b><img src="${LOGO[g.home]}" alt=""></span>
+    <span class="pq">${g.preq || "Who has the edge?"}</span>${g.pret ? `<span class="pt">“${g.pret}”</span>` : ""}
+    <span class="pc">Read it before kickoff <b>→</b></span><span class="pf">Player matchups · injuries · the read</span></a>`; }
 function render(){   // runs once; afterwards cards are patched (renderCard, textContent) or moved (appendChild), never rebuilt as a deck
   const wins = [...new Set(GAMES.map(g => g.win))], wl = (document.title.match(/Week \d+/) || ["This week"])[0];
   deckLoad();
@@ -688,7 +708,7 @@ function card(g){
   const atTxt = r ? "Final" : (LIVE[g.id]?.clock||"at");
   const strip = hdHTML(g.id,
     `<span class="side away"><img class="logo ${g.away==="Broncos"?"retro":""}" src="${LOGO[g.away]}" alt="" loading="lazy"><span class="tn">${g.away}${g.ar?`<small>${g.ar}</small>`:""}</span><span class="poss" id="pa-${g.id}">${LIVE[g.id]?.poss==="away"?"🏈":""}</span><b class="sc" id="sa-${g.id}">${sa ?? ""}</b></span><span class="at ${r?"lv post":LIVE[g.id]?"lv "+LIVE[g.id].state:""}" id="at-${g.id}">${atTxt}${!r&&LIVE[g.id]?.dd?`<small class="dd ${LIVE[g.id].rz?"rz":""}">${LIVE[g.id].dd}</small>`:""}</span><span class="side home"><b class="sc" id="sh-${g.id}">${sh ?? ""}</b><span class="poss" id="ph-${g.id}">${LIVE[g.id]?.poss==="home"?"🏈":""}</span><span class="tn">${g.home}${g.hr?`<small>${g.hr}</small>`:""}</span><img class="logo ${g.home==="Broncos"?"retro":""}" src="${LOGO[g.home]}" alt="" loading="lazy"></span>`,
-    `<span class="kick">${g.kick}${g.qb?" · QB change":""}</span><span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span><span class="${leadClass(g)}" id="ld-${g.id}">${leadText(g)}</span>`);
+    `<span class="kick">${g.kick}${g.qb?" · QB change":""}</span>${g.pre?`<a class="prechip" href="${g.pre}" onclick="event.stopPropagation()">📋 Pre-game</a>`:""}<span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span><span class="${leadClass(g)}" id="ld-${g.id}">${leadText(g)}</span>`);
   return `<article class="g dk pick-${tint.replace(/[^A-Za-z0-9]/g,"")} ${g.bron?"bron":""} ${r?"final":""} ${g.mu?"has-mu":""} ${isOpen(g.id)?"open":""}" data-id="${g.id}">
     <span class="saved" id="sv-${g.id}">saved</span>${strip}<div class="body" id="bd-${g.id}"><div class="bi"><div class="bc">
     <div class="teams">
@@ -706,8 +726,8 @@ function card(g){
     ${g.px ? (() => { const sp = g.ats===g.home ? `${g.home} ${fm(g.mkt)}` : `${g.away} ${fm(-g.mkt)}`;   // Mack's own game pick on the props game (Scott 10/14): shown for the record, scores no points
       const ok = r && r.winner !== "Tie" ? (r.winner === g.su ? " ✓" : " ✗") : "", c = r ? r.margin + g.mkt : null;
       const ac = r ? (c === 0 ? " push" : ((c > 0) === (g.ats === g.home) ? " ✓" : " ✗")) : "";
-      return `<div class="mpk"><span class="lbl">Mack's pick</span><b>${g.su} ${g.p}%${ok}</b><b>${sp}${ac}</b><small>for the record, no points</small>${g.pre?`<a class="pre" href="${g.pre}">Broncos pre-game analysis →</a>`:""}</div>`; })() : ""}
-    ${!g.px && g.pre ? `<a class="pre" href="${g.pre}">${g.prel || "Pre-game analysis"} →</a>` : ""}
+      return `<div class="mpk"><span class="lbl">Mack's pick</span><b>${g.su} ${g.p}%${ok}</b><b>${sp}${ac}</b><small>for the record, no points</small></div>`; })() : ""}
+    ${preBtn(g)}
     ${g.mu ? `<div class="mu"><table>
       <thead><tr><th><span class="lbl">Matchup</span></th><th class="col">${g.away}<small>offense (NFL rank)</small></th><th class="col">${g.home}<small>offense (NFL rank)</small></th></tr></thead>
       <tbody>${g.mu.rows.map(r => `<tr><th>${r.k}</th><td class="${r.wa?(r.wa===g.away?"win":"lose"):""}">${r.wa?(r.wa===g.away?"wins":"loses"):"even"}${r.ra?` <small class="nrk">(#${r.ra})</small>`:""}</td><td class="${r.wh?(r.wh===g.home?"win":"lose"):""}">${r.wh?(r.wh===g.home?"wins":"loses"):"even"}${r.rh?` <small class="nrk">(#${r.rh})</small>`:""}</td></tr>`).join("")}</tbody></table>${g.pm ? `<div class="pm"><span class="lbl">Playmakers Matchup <small>NFL rank among the 32 teams' leaders · vs the other defense's rank</small></span><div class="pmg">${[g.away,g.home].map(t => `<div class="pmc"><b class="pmt">${t}</b>${(g.pm[t]||[]).map(x => `<div class="pmr ${x.res}">${x.head?`<img src="${x.head}" alt="" loading="lazy">`:"<i></i>"}<div class="pmn"><b>${x.name}</b>${x.inj?` <span class="pinj" title="${x.injf}${x.inj==="D"?" (treated as out)":""}">${x.inj}</span>`:""} <small>${x.pos}</small><small class="pms">${x.stat} · <b>#${x.rank}</b> ${({QB:"QB",RB:"rusher",Target:"receiver",Rusher:"pass rusher"})[x.role]} · vs ${x.vs} #${x.vrank}</small></div><span class="pmv">${x.res}</span></div>`).join("")}</div>`).join("")}</div></div>` : ""}</div>` : ""}
