@@ -113,5 +113,5 @@ header img.mascot{width:88px!important;height:auto!important;filter:drop-shadow(
 @media (min-width:700px){header img.mascot{width:120px!important}}
 /* 2026-10-22 Scott: same white outline wherever the D appears inline (picks game cards, hub + rankings card titles); size stays matched to the other team logos in that row */
 img[src*="broncos-d-logo"]:not(.mascot){filter:drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff)!important}
-/* 2026-10-22 Scott: retro D looked poor on the scouting "vs" white disc (white bronco bled into white) — navy disc + thin white ring instead */
-.dk a.prebtn .pl2 img[src*="broncos-d-logo"],.pl2 img[src*="broncos-d-logo"]{background:#073a8c!important;padding:7px!important;filter:none!important;box-shadow:0 0 0 2px #fff,0 2px 6px rgba(0,0,0,.45)}
+/* 2026-10-22 Scott: D in the vs box = white disc like the other teams; 11px padding so the near-square D fits inside the circle (corners were clipped) */
+.dk a.prebtn .pl2 img[src*="broncos-d-logo"],.pl2 img[src*="broncos-d-logo"]{padding:11px!important;filter:none!important}
