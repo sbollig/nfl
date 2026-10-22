@@ -113,5 +113,3 @@ header img.mascot{width:88px!important;height:auto!important;filter:drop-shadow(
 @media (min-width:700px){header img.mascot{width:120px!important}}
 /* 2026-10-22 Scott: same white outline wherever the D appears inline (picks game cards, hub + rankings card titles); size stays matched to the other team logos in that row */
 img[src*="broncos-d-logo"]:not(.mascot){filter:drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff)!important}
-/* 2026-10-22 Scott: D in the vs box = white disc like the other teams; 11px padding so the near-square D fits inside the circle (corners were clipped) */
-.dk a.prebtn .pl2 img[src*="broncos-d-logo"],.pl2 img[src*="broncos-d-logo"]{padding:11px!important;filter:none!important}
