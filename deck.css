@@ -108,3 +108,6 @@ details.menu{position:relative} details.menu summary{list-style:none} details.me
 .dk a.prechip{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:10px;background:#fe5200;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap}
 @keyframes prepulse{0%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 0 rgba(254,82,0,.55)}70%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 14px rgba(254,82,0,0)}100%{box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 0 rgba(254,82,0,0)}}
 @media (prefers-reduced-motion:reduce){.dk a.prebtn{animation:none}}
+/* 2026-10-22 Scott: one logo size on every page + thin white outline tracing the D (drop-shadow follows the transparent PNG's edge; a CSS border would draw a box) */
+header img.mascot{width:88px!important;height:auto!important;filter:drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff) drop-shadow(0 6px 14px rgba(0,0,0,.35))!important}
+@media (min-width:700px){header img.mascot{width:120px!important}}
