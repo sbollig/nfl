@@ -111,3 +111,5 @@ details.menu{position:relative} details.menu summary{list-style:none} details.me
 /* 2026-10-22 Scott: one logo size on every page + thin white outline tracing the D (drop-shadow follows the transparent PNG's edge; a CSS border would draw a box) */
 header img.mascot{width:88px!important;height:auto!important;filter:drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff) drop-shadow(0 6px 14px rgba(0,0,0,.35))!important}
 @media (min-width:700px){header img.mascot{width:120px!important}}
+/* 2026-10-22 Scott: same white outline wherever the D appears inline (picks game cards, hub + rankings card titles); size stays matched to the other team logos in that row */
+img[src*="broncos-d-logo"]:not(.mascot){filter:drop-shadow(1px 0 0 #fff) drop-shadow(-1px 0 0 #fff) drop-shadow(0 1px 0 #fff) drop-shadow(0 -1px 0 #fff)!important}
