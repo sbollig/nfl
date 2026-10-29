@@ -1,6 +1,6 @@
 # Mack's NFL Desk · v0.9.121
 
-Mack's NFL Desk is a product of the Village, and this website is a production of the Village. © 2026 Scott Bollig / the Village.
+Mack's NFL Desk is a product of the Village, and this website is a production of the Village. © 2026 Fionn Rith / the Village.
 
 A four-person NFL picks board, power rankings, injury report, standings, season leaders and Broncos pre-game reads, published at https://sbollig.github.io/nfl/. Pages are generated weekly from ESPN data; the shared picks board saves to a small store so everyone sees the same page.
 
