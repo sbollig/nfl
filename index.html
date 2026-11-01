@@ -260,11 +260,11 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
   }
   let STOREROWS = null;
   function renderPicks() {
-    const H = window.__hub || {}, total = H.total || 14, el = document.getElementById("picks-pk");
+    const H = window.__hub || {}, total = (H.total || 14) * 3, el = document.getElementById("picks-pk");   // 3 picks a game: winner, spread, over/under
     if (!STOREROWS) { put("picks-d", `Picks lock at kickoff${H.lock || ""}. Shared board not reachable right now.`); return; }
-    const n = p => Object.entries(STOREROWS).filter(([id, r]) => id !== "g99" && ((r.picks || {})[p] || {}).su).length;
+    const n = p => Object.entries(STOREROWS).filter(([id]) => id !== "g99").reduce((c, [, r]) => { const k = ((r.picks || {})[p] || {}); return c + ["su", "ats", "ou"].filter(x => k[x]).length; }, 0);   // every pick counts, so two of three on a card shows two (Scott 11/1)
     el.hidden = false;
-    el.innerHTML = PEOPLE.map(p => `<div class="${n(p) >= total ? "done" : ""}"><b>${n(p)}<small style="font-size:14px">/${total}</small></b><small>${p} picked</small></div>`).join("");
+    el.innerHTML = PEOPLE.map(p => `<div class="${n(p) >= total ? "done" : ""}"><b>${n(p)}<small style="font-size:14px">/${total}</small></b><small>${p} picks in</small></div>`).join("");
     put("picks-d", (H.open === undefined ? "Picks lock at kickoff." : H.open ? `${H.open} game${H.open === 1 ? "" : "s"} still open · picks lock at kickoff${H.lock}.` : "All picks are locked for the week."));
   }
   (async () => {

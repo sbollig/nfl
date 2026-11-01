@@ -770,8 +770,10 @@ function tiles(){
   const T = tally(), {finals, su, ats, mou, mx, rec} = T;
   const t = (l,v,s,c) => `<div class="tile${c?" champ":""}"${c?` title="${l} won last week"`:""}><div class="lbl">${l}</div><div class="v">${v}${s?`<small>${s}</small>`:""}</div></div>`;
   const mpts = T.pts.Mack; const px = a => a[1] ? ` · Props ${a[0]}-${a[1]-a[0]}` : "";
+  // picks in = every winner / spread / over-under filled, three per game, so a card with two of three made counts two (Scott 11/1)
+  const maxIn = GAMES.length * 3, pin = p => GAMES.reduce((n, g) => { const k = ((state[g.id]||{}).picks||{})[p]||{}; return n + ["su","ats","ou"].filter(x => k[x]).length; }, 0);
   $("#tiles").innerHTML = t("Finals in", finals, "/ " + GAMES.length) + PEOPLE.map(p => { const pts = T.pts[p];
-    return t(p, `${pts} pt${pts===1?"":"s"}`, `W ${rec[p].su[0]}-${rec[p].su[1]-rec[p].su[0]} · ATS ${rec[p].ats[0]}-${rec[p].ats[1]-rec[p].ats[0]} · O/U ${rec[p].ou[0]}-${rec[p].ou[1]-rec[p].ou[0]}${px(rec[p].x)}`, p===CHAMP); }).join("")
+    return t(p, `${pts} pt${pts===1?"":"s"}`, `${pin(p)}/${maxIn} picks in · W ${rec[p].su[0]}-${rec[p].su[1]-rec[p].su[0]} · ATS ${rec[p].ats[0]}-${rec[p].ats[1]-rec[p].ats[0]} · O/U ${rec[p].ou[0]}-${rec[p].ou[1]-rec[p].ou[0]}${px(rec[p].x)}`, p===CHAMP); }).join("")
     + t("Mack", `${mpts} pt${mpts===1?"":"s"}`, `W ${su[0]}-${su[1]-su[0]} · ATS ${ats[0]}-${ats[1]-ats[0]} · O/U ${mou[0]}-${mou[1]-mou[0]}${px(mx)}`, CHAMP==="Mack");
   refreshStrips();
 }
