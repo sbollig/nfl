@@ -1,89 +1,95 @@
 {
- "week": 8,
+ "week": 9,
  "games": [
   {
    "id": "g01",
-   "away": "Panthers",
-   "home": "Packers",
-   "ko": "2026-10-30T00:15Z"
+   "away": "Jaguars",
+   "home": "Ravens",
+   "ko": "2026-11-06T01:15Z"
   },
   {
    "id": "g02",
-   "away": "Ravens",
-   "home": "Bills",
-   "ko": "2026-11-01T18:00Z"
+   "away": "Bengals",
+   "home": "Falcons",
+   "ko": "2026-11-08T14:30Z"
   },
   {
    "id": "g03",
-   "away": "Titans",
-   "home": "Bengals",
-   "ko": "2026-11-01T18:00Z"
+   "away": "Cowboys",
+   "home": "Colts",
+   "ko": "2026-11-08T18:00Z"
   },
   {
    "id": "g04",
-   "away": "Cardinals",
-   "home": "Cowboys",
-   "ko": "2026-11-01T18:00Z"
+   "away": "Jets",
+   "home": "Chiefs",
+   "ko": "2026-11-08T18:00Z"
   },
   {
    "id": "g05",
-   "away": "Vikings",
-   "home": "Lions",
-   "ko": "2026-11-01T18:00Z"
+   "away": "Lions",
+   "home": "Dolphins",
+   "ko": "2026-11-08T18:00Z"
   },
   {
    "id": "g06",
-   "away": "Raiders",
-   "home": "Jets",
-   "ko": "2026-11-01T18:00Z"
+   "away": "Browns",
+   "home": "Saints",
+   "ko": "2026-11-08T18:00Z"
   },
   {
    "id": "g07",
-   "away": "Browns",
-   "home": "Steelers",
-   "ko": "2026-11-01T18:00Z"
+   "away": "Giants",
+   "home": "Eagles",
+   "ko": "2026-11-08T18:00Z"
   },
   {
    "id": "g08",
-   "away": "Falcons",
-   "home": "Buccaneers",
-   "ko": "2026-11-01T18:00Z"
+   "away": "Rams",
+   "home": "Commanders",
+   "ko": "2026-11-08T18:00Z"
   },
   {
    "id": "g09",
-   "away": "Colts",
-   "home": "Jaguars",
-   "ko": "2026-11-01T18:00Z"
+   "away": "Broncos",
+   "home": "Panthers",
+   "ko": "2026-11-08T18:00Z"
   },
   {
    "id": "g10",
-   "away": "Chargers",
-   "home": "Rams",
-   "ko": "2026-11-01T21:05Z"
+   "away": "Texans",
+   "home": "Chargers",
+   "ko": "2026-11-08T21:05Z"
   },
   {
    "id": "g11",
-   "away": "Chiefs",
-   "home": "Broncos",
-   "ko": "2026-11-01T21:25Z"
+   "away": "Packers",
+   "home": "Patriots",
+   "ko": "2026-11-08T21:25Z"
   },
   {
    "id": "g12",
-   "away": "Patriots",
-   "home": "Dolphins",
-   "ko": "2026-11-01T21:25Z"
+   "away": "Raiders",
+   "home": "49ers",
+   "ko": "2026-11-08T21:25Z"
   },
   {
    "id": "g13",
-   "away": "Eagles",
-   "home": "Commanders",
-   "ko": "2026-11-02T01:20Z"
+   "away": "Cardinals",
+   "home": "Seahawks",
+   "ko": "2026-11-08T21:25Z"
   },
   {
    "id": "g14",
-   "away": "Bears",
-   "home": "Seahawks",
-   "ko": "2026-11-03T01:15Z"
+   "away": "Buccaneers",
+   "home": "Bears",
+   "ko": "2026-11-09T01:20Z"
+  },
+  {
+   "id": "g15",
+   "away": "Bills",
+   "home": "Vikings",
+   "ko": "2026-11-10T01:15Z"
   }
  ]
 }
