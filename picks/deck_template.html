@@ -629,10 +629,10 @@ function tally(){   // the one place points are counted; tiles() and the strips 
   pts.Mack = su[0] + ats[0] + mou[0] + mx[0];   // Mack: winner on every game, spread only where he leaned, totals from g.mou
   return { finals, su, ats, mou, mx, rec, pts };
 }
-const weekStripText = () => { const T = tally(); return Object.keys(T.pts).sort((a,b) => T.pts[b]-T.pts[a]).map(p => `${p===CHAMP?"👑 ":""}${p} ${T.pts[p]}`).join(" · "); };
+const weekStripText = () => { const T = tally(); return Object.keys(T.pts).sort((a,b) => T.pts[b]-T.pts[a]).map(p => `${CHAMP.includes(p)?"👑 ":""}${p} ${T.pts[p]}`).join(" · "); };
 function slateBody(w){
   const si = slateInfo(w), gs = GAMES.filter(g => g.win === w), pts = si ? si.pts : {};
-  const row = p => `<tr class="${p==="Mack"?"mack":""}"><td>${p===CHAMP?"👑 ":""}${p}</td><td>${pts[p]||0} pt${(pts[p]||0)===1?"":"s"}</td></tr>`;
+  const row = p => `<tr class="${p==="Mack"?"mack":""}"><td>${CHAMP.includes(p)?"👑 ":""}${p}</td><td>${pts[p]||0} pt${(pts[p]||0)===1?"":"s"}</td></tr>`;
   return `<div class="sb"><table><tbody>${[...PEOPLE].sort((a,b)=>(pts[b]||0)-(pts[a]||0)).map(row).join("")}${row("Mack")}</tbody></table><div class="fin">Finals in ${si ? si.finals : 0} / ${gs.length}${gs.length && gs[0].kick ? ` · first kick ${gs[0].kick}` : ""}</div></div>`;
 }
 function refreshStrips(){   // patch strip text in place (textContent): never rebuilds a card, so an open dropdown is safe (Safari rule)
@@ -744,8 +744,8 @@ function tiles(){
   // picks in = every winner / spread / over-under filled, three per game, so a card with two of three made counts two (Scott 11/1)
   const maxIn = GAMES.length * 3, pin = p => GAMES.reduce((n, g) => { const k = ((state[g.id]||{}).picks||{})[p]||{}; return n + ["su","ats","ou"].filter(x => k[x]).length; }, 0);
   $("#tiles").innerHTML = t("Finals in", finals, "/ " + GAMES.length) + PEOPLE.map(p => { const pts = T.pts[p];
-    return t(p, `${pts} pt${pts===1?"":"s"}`, `${pin(p)}/${maxIn} picks in · W ${rec[p].su[0]}-${rec[p].su[1]-rec[p].su[0]} · ATS ${rec[p].ats[0]}-${rec[p].ats[1]-rec[p].ats[0]} · O/U ${rec[p].ou[0]}-${rec[p].ou[1]-rec[p].ou[0]}${px(rec[p].x)}`, p===CHAMP); }).join("")
-    + t("Mack", `${mpts} pt${mpts===1?"":"s"}`, `W ${su[0]}-${su[1]-su[0]} · ATS ${ats[0]}-${ats[1]-ats[0]} · O/U ${mou[0]}-${mou[1]-mou[0]}${px(mx)}`, CHAMP==="Mack");
+    return t(p, `${pts} pt${pts===1?"":"s"}`, `${pin(p)}/${maxIn} picks in · W ${rec[p].su[0]}-${rec[p].su[1]-rec[p].su[0]} · ATS ${rec[p].ats[0]}-${rec[p].ats[1]-rec[p].ats[0]} · O/U ${rec[p].ou[0]}-${rec[p].ou[1]-rec[p].ou[0]}${px(rec[p].x)}`, CHAMP.includes(p)); }).join("")
+    + t("Mack", `${mpts} pt${mpts===1?"":"s"}`, `W ${su[0]}-${su[1]-su[0]} · ATS ${ats[0]}-${ats[1]-ats[0]} · O/U ${mou[0]}-${mou[1]-mou[0]}${px(mx)}`, CHAMP.includes("Mack"));
   refreshStrips();
 }
 
@@ -753,7 +753,7 @@ function tiles(){
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
 const WEEK = 99, KEY = "wk99-cache", BOARD_VER = "v116";
 const PEOPLE = ["Todd","Ryota","Scott"];
-const CHAMP = "Ryota";   // last week's winner wears the crown; set by nfl_site_week.py each Tuesday
+const CHAMP = ["Ryota"];   // last week's winner(s) wear the crown — a tie is a shared crown (Scott 11/3); set by nfl_site_week.py each Tuesday
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
 function setDb(k,msg){ $("#dbdot").className="dot "+k; $("#dbmsg").textContent=msg; }

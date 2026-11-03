@@ -448,8 +448,8 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 .hint{font-size:13px;color:var(--muted);margin:-8px 0 10px}
 
 </style>
-<link rel="stylesheet" href="../theme.css?v=137">
-<link rel="stylesheet" href="../deck.css?v=137">
+<link rel="stylesheet" href="../theme.css?v=138">
+<link rel="stylesheet" href="../deck.css?v=138">
 <style>
 /* Retro Broncos (Scott 10/19): 1977 "Orange Crush" throwback — Legacy Blue + orange + white, the 1968 "D" on the helmet.
    The team publishes no hex values (denverbroncos.com/uniforms/throwback, read 2026-10-19); these are blue sampled from the
@@ -472,8 +472,8 @@ header .mascot{grid-column:2;grid-row:1/span 2;width:96px;height:auto;filter:dro
 .dk.tally[data-id="about"]{background:#061d4a;border:1px solid #2d63c7;color:#fff}.dk.tally[data-id="about"]::before{background:#fff}
 .dk.tally[data-id="about"] .sub{color:#fff;margin:0 0 10px;font-size:14px}.dk.tally[data-id="about"] .foot{border-top:0;padding-top:0;color:#fff;font-size:14px}.dk.tally[data-id="about"] .foot p{margin:0 0 8px}
 .tb{color:#fe5200;border-color:#fe5200}
-</style><link rel="stylesheet" href="../players.css?v=137"><script src="../players.js?v=137" defer></script>
-<script src="../faces.js?v=137" defer></script>
+</style><link rel="stylesheet" href="../players.css?v=138"><script src="../players.js?v=138" defer></script>
+<script src="../faces.js?v=138" defer></script>
 </head><body>
 
 <div class="layout"><main>
@@ -490,7 +490,7 @@ header .mascot{grid-column:2;grid-row:1/span 2;width:96px;height:auto;filter:dro
   <section class="rec">
     <div class="lbl">Last week</div>
     <div class="recrow">
-      <div><b>Week 8</b> Final — Scott 26 pts · Mack 26 pts · Todd 20 pts · Ryota 17 pts. <a href="../picks/week8.html">Week 8 board →</a></div>
+      <div><b>Week 8</b> Final — Scott 26 pts · Mack 26 pts · Todd 20 pts · Ryota 17 pts. <b>Scott</b> and <b>Mack</b> shared the week. <a href="../picks/week8.html">Week 8 board →</a></div>
     </div>
   </section>
 <!-- /LASTWEEK -->
@@ -547,7 +547,7 @@ header .mascot{grid-column:2;grid-row:1/span 2;width:96px;height:auto;filter:dro
     <p><b>Card colors.</b> Before a game, a card wears the colors of the team Mack picked to win. Once the final is in, it switches to the colors of the team that actually won. The Broncos game stays in Broncos colours either way.</p>
     <p><b>Picks lock at kickoff</b> (the Sunday 10 AM games lock at 10:15 AM Pacific). You can change a pick any time before then. After that, everyone's picks for that game are read-only; the scores can still be entered.</p>
     <p><b>Points.</b> One point for each correct pick: winner, spread, and over/under, so up to three a game. A push or a blank pick scores nothing. Mack's picks sit in the row under yours on each card. Like everyone's, they can change until that game kicks off and not after. The tiles at the top show each person's total, with the three records underneath. Mack is scored the same way on the picks he made: a winner in every game, a spread pick in every game (the side his line favors against the market; where the two are equal, the side of his winner), and an over/under in every game. His totals come from each team's points scored and allowed so far this season, with a deduction for a missing starting quarterback.</p>
-    <p>Prepared by: Mack. Picks and finals are shared across devices (refreshes every 20 seconds); the ratings update uses the official finals. Mack's NFL Desk, a product of the Village v1.9 · v0.9.137 · © 2026 Fionn Rith / the Village · code PolyForm-NC 1.0 · writing CC BY-NC 4.0 · not affiliated with the NFL or ESPN · <a href="../NOTICE">notice</a></p>
+    <p>Prepared by: Mack. Picks and finals are shared across devices (refreshes every 20 seconds); the ratings update uses the official finals. Mack's NFL Desk, a product of the Village v1.9 · v0.9.138 · © 2026 Fionn Rith / the Village · code PolyForm-NC 1.0 · writing CC BY-NC 4.0 · not affiliated with the NFL or ESPN · <a href="../NOTICE">notice</a></p>
   </footer>
 </div>
 </main>
@@ -659,10 +659,10 @@ function tally(){   // the one place points are counted; tiles() and the strips 
   pts.Mack = su[0] + ats[0] + mou[0] + mx[0];   // Mack: winner on every game, spread only where he leaned, totals from g.mou
   return { finals, su, ats, mou, mx, rec, pts };
 }
-const weekStripText = () => { const T = tally(); return Object.keys(T.pts).sort((a,b) => T.pts[b]-T.pts[a]).map(p => `${p===CHAMP?"👑 ":""}${p} ${T.pts[p]}`).join(" · "); };
+const weekStripText = () => { const T = tally(); return Object.keys(T.pts).sort((a,b) => T.pts[b]-T.pts[a]).map(p => `${CHAMP.includes(p)?"👑 ":""}${p} ${T.pts[p]}`).join(" · "); };
 function slateBody(w){
   const si = slateInfo(w), gs = GAMES.filter(g => g.win === w), pts = si ? si.pts : {};
-  const row = p => `<tr class="${p==="Mack"?"mack":""}"><td>${p===CHAMP?"👑 ":""}${p}</td><td>${pts[p]||0} pt${(pts[p]||0)===1?"":"s"}</td></tr>`;
+  const row = p => `<tr class="${p==="Mack"?"mack":""}"><td>${CHAMP.includes(p)?"👑 ":""}${p}</td><td>${pts[p]||0} pt${(pts[p]||0)===1?"":"s"}</td></tr>`;
   return `<div class="sb"><table><tbody>${[...PEOPLE].sort((a,b)=>(pts[b]||0)-(pts[a]||0)).map(row).join("")}${row("Mack")}</tbody></table><div class="fin">Finals in ${si ? si.finals : 0} / ${gs.length}${gs.length && gs[0].kick ? ` · first kick ${gs[0].kick}` : ""}</div></div>`;
 }
 function refreshStrips(){   // patch strip text in place (textContent): never rebuilds a card, so an open dropdown is safe (Safari rule)
@@ -774,16 +774,16 @@ function tiles(){
   // picks in = every winner / spread / over-under filled, three per game, so a card with two of three made counts two (Scott 11/1)
   const maxIn = GAMES.length * 3, pin = p => GAMES.reduce((n, g) => { const k = ((state[g.id]||{}).picks||{})[p]||{}; return n + ["su","ats","ou"].filter(x => k[x]).length; }, 0);
   $("#tiles").innerHTML = t("Finals in", finals, "/ " + GAMES.length) + PEOPLE.map(p => { const pts = T.pts[p];
-    return t(p, `${pts} pt${pts===1?"":"s"}`, `${pin(p)}/${maxIn} picks in · W ${rec[p].su[0]}-${rec[p].su[1]-rec[p].su[0]} · ATS ${rec[p].ats[0]}-${rec[p].ats[1]-rec[p].ats[0]} · O/U ${rec[p].ou[0]}-${rec[p].ou[1]-rec[p].ou[0]}${px(rec[p].x)}`, p===CHAMP); }).join("")
-    + t("Mack", `${mpts} pt${mpts===1?"":"s"}`, `W ${su[0]}-${su[1]-su[0]} · ATS ${ats[0]}-${ats[1]-ats[0]} · O/U ${mou[0]}-${mou[1]-mou[0]}${px(mx)}`, CHAMP==="Mack");
+    return t(p, `${pts} pt${pts===1?"":"s"}`, `${pin(p)}/${maxIn} picks in · W ${rec[p].su[0]}-${rec[p].su[1]-rec[p].su[0]} · ATS ${rec[p].ats[0]}-${rec[p].ats[1]-rec[p].ats[0]} · O/U ${rec[p].ou[0]}-${rec[p].ou[1]-rec[p].ou[0]}${px(rec[p].x)}`, CHAMP.includes(p)); }).join("")
+    + t("Mack", `${mpts} pt${mpts===1?"":"s"}`, `W ${su[0]}-${su[1]-su[0]} · ATS ${ats[0]}-${ats[1]-ats[0]} · O/U ${mou[0]}-${mou[1]-mou[0]}${px(mx)}`, CHAMP.includes("Mack"));
   refreshStrips();
 }
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 9, KEY = "wk09-cache", BOARD_VER = "v137";
+const WEEK = 9, KEY = "wk09-cache", BOARD_VER = "v138";
 const PEOPLE = ["Todd","Ryota","Scott"];
-const CHAMP = "";   // last week's winner wears the crown; set by nfl_site_week.py each Tuesday
+const CHAMP = ["Scott","Mack"];   // last week's winner(s) wear the crown — a tie is a shared crown (Scott 11/3); set by nfl_site_week.py each Tuesday
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
 function setDb(k,msg){ $("#dbdot").className="dot "+k; $("#dbmsg").textContent=msg; }
