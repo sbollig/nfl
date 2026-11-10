@@ -2,8 +2,8 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Mack's NFL Hub</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="theme.css?v=151">
-<link rel="stylesheet" href="deck.css?v=151">
+<link rel="stylesheet" href="theme.css?v=153">
+<link rel="stylesheet" href="deck.css?v=153">
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Barlow,system-ui,sans-serif;font-size:15px;line-height:1.45;padding-inline:16px;padding-block:28px 48px;font-variant-numeric:tabular-nums}
@@ -46,7 +46,7 @@ h1{font-family:"Barlow Condensed";font-size:44px;font-weight:700;line-height:.95
 footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:420px){h1{font-size:38px}.now .pk{gap:6px}.now .pk b{font-size:22px}}
 </style>
-<script src="faces.js?v=151" defer></script>
+<script src="faces.js?v=153" defer></script>
 </head><body>
 <div class="layout"><main>
 <div class="wrap">
@@ -54,9 +54,9 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
     <div class="lbl">NFL 2026 · Broncos first</div>
     <h1>Mack's <span>NFL Hub</span></h1>
     <img class="mascot" src="img/broncos-d-logo.png" alt="Denver Broncos D logo, 1970–1996" loading="eager">
-    <div class="sub">Power ratings, weekly picks, season projection, the Week 9 pick board and the Broncos pre-game. Everything you need before you pick, in the order you need it.</div>
+    <div class="sub">Power ratings, weekly picks, season projection, the Week 10 pick board and the Broncos pre-game. Everything you need before you pick, in the order you need it.</div>
   </header>
-<nav class="site-nav" aria-label="Site"><a href="./" aria-current="page">Hub</a><a href="picks/week9.html">Picks</a><a href="power-rankings/">Power Rankings</a><a href="standings.html">Standings</a><a href="injuries.html">Injuries</a><a href="leaders.html">Leaders</a><a href="power-rankings/season.html">Season</a><a href="broncos/week9.html">Broncos</a></nav>
+<nav class="site-nav" aria-label="Site"><a href="./" aria-current="page">Hub</a><a href="picks/week10.html">Picks</a><a href="power-rankings/">Power Rankings</a><a href="standings.html">Standings</a><a href="injuries.html">Injuries</a><a href="leaders.html">Leaders</a><a href="power-rankings/season.html">Season</a><a href="broncos/week9.html">Broncos</a></nav>
 
 <div class="deck" id="deck" data-key="hub-deck" data-label="Right now, then the pages" aria-label="Hub cards">
 
@@ -64,18 +64,18 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
   <div class="now" id="now">
     <div class="row"><div class="ic">🏈</div><div><b class="k" id="bron-k">Next Broncos game</b><div class="d" id="bron-d">Checking the schedule…</div></div></div>
     <div class="row"><div class="ic">✍️</div><div><b class="k" id="picks-k">Week 6 picks</b><div class="d" id="picks-d">Picks lock at kickoff. Reading the shared board…</div><div class="pk" id="picks-pk" hidden></div></div></div>
-    <div class="row"><div class="ic">👑</div><div><b class="k" id="lead-k">The lead</b><div class="d" id="lead-d">Graded on the board as finals come in — <a href="picks/week9.html">see the board →</a></div></div></div>
+    <div class="row"><div class="ic">👑</div><div><b class="k" id="lead-k">The lead</b><div class="d" id="lead-d">Graded on the board as finals come in — <a href="picks/week10.html">see the board →</a></div></div></div>
   </div>
 </article>
 
 
-<article class="dk g" data-id="p-picks" data-win="pages" data-title="Week 9 Picks" data-sub="pick winners, spreads and totals before each kickoff">
+<article class="dk g" data-id="p-picks" data-win="pages" data-title="Week 10 Picks" data-sub="pick winners, spreads and totals before each kickoff">
   <p>Todd, Ryota and Scott pick winner, spread and over/under on every game; Mack's line sits under yours. Finals grade everyone automatically and the week's crown goes to the top score.</p>
-  <a class="go" href="picks/week9.html">Open the board →</a>
+  <a class="go" href="picks/week10.html">Open the board →</a>
 </article>
 
 <article class="dk g" data-id="p-rank" data-win="pages" data-title="Power Rankings" data-sub="new every Tuesday after the ratings run">
-  <p>All 32 teams after Week 8 in tiers, who moved and why, the Broncos panel, and this week's lines against the market.</p>
+  <p>All 32 teams after Week 9 in tiers, who moved and why, the Broncos panel, and this week's lines against the market.</p>
   <a class="go" href="power-rankings/">Open the rankings →</a>
 </article>
 
@@ -95,7 +95,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
   <a class="go" href="injuries.html">Open the report →</a>
 </article>
 
-<article class="dk g" data-id="p-lead" data-win="pages" data-title="Season Leaders" data-sub="through Week 8 · who is carrying their team">
+<article class="dk g" data-id="p-lead" data-win="pages" data-title="Season Leaders" data-sub="through Week 9 · who is carrying their team">
   <p>Top five players in every category and top five teams on offense, defense and special teams, with logos. Broncos marked.</p>
   <a class="go" href="leaders.html">Open the leaders →</a>
 </article>
@@ -106,23 +106,12 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
 </article>
 
 <!-- BRONNEXT -->
-<article class="dk g bron" data-id="p-bron-next" data-win="pages" data-open="1" data-title='<img class="logo" src="img/broncos-d-logo.png" alt=""><span class="tn">Broncos: Next · @ Panthers</span>' data-sub="Sun Nov 8 · 10:00 AM PT · market Broncos −2.5 · O/U 43.5">
-  <p>Props game: everyone picks Over/Under on total sacks 4.5, total takeaways 2.5 and total points 43.5. Mack: sacks Under, takeaways Under, points Over. Market from DraftKings via ESPN, frozen when the Week 9 board was built.</p>
-  <a class="prebtn" href="broncos/week9.html"><span class="pr">📋 Mack's scouting report</span><span class="pl2"><img src="https://a.espncdn.com/i/teamlogos/nfl/500/den.png" alt=""><b>vs</b><img src="https://a.espncdn.com/i/teamlogos/nfl/500/car.png" alt=""></span><span class="pq">Where is Bo Nix? (and where is Bryce Young?)</span><span class="pt">“Denver arrives in first place in the AFC West after beating Kansas City 28-24 on a fourth-and-goal sack, with a 23-sack defense and a quarterback who has thrown three…”</span><span class="pc">Read it before kickoff <b>→</b></span><span class="pf">Player matchups · injuries · the read</span></a>
+<article class="dk g bron" data-id="p-bron-next" data-win="pages" data-open="1" data-title='<img class="logo" src="img/broncos-d-logo.png" alt=""><span class="tn">Broncos: off this week</span>' data-sub="Week 10 bye">
+  <p>No Broncos game this week; the board and the night-game pages are below.</p>
 </article>
 <!-- /BRONNEXT -->
 
-<!-- NIGHTGAMES -->
-<article class="dk g" data-id="p-tnf" data-win="pages" data-open="1" data-title='<span class="tn">Thursday Night: Jaguars @ Ravens</span>' data-sub="Thu Nov 5 · 5:15 PM PT · market Jaguars −9.5 · O/U 41.5">
-  <p>Mack: Jaguars (75%), Ravens +9.5, Over.</p>
-  <a class="prebtn" href="games/week9-tnf.html"><span class="pr">📋 Mack's scouting report</span><span class="pl2"><img src="https://a.espncdn.com/i/teamlogos/nfl/500/jax.png" alt=""><b>vs</b><img src="https://a.espncdn.com/i/teamlogos/nfl/500/bal.png" alt=""></span><span class="pq">Where is Trevor Lawrence?</span><span class="pt">“Baltimore is down to its third quarterback: Lamar Jackson is headed to injured reserve after thumb surgery, Tyler Huntley's season is over with turf toe, and undrafted…”</span><span class="pc">Read it before kickoff <b>→</b></span><span class="pf">Player matchups · injuries · the read</span></a>
-</article>
 
-<article class="dk g" data-id="p-snf" data-win="pages" data-open="1" data-title='<span class="tn">Sunday Night: Buccaneers @ Bears</span>' data-sub="Sun Nov 8 · 5:20 PM PT · market Bears −6 · O/U 46.5">
-  <p>Mack: Bears (67%), Bears −6, Under.</p>
-  <a class="prebtn" href="games/week9-snf.html"><span class="pr">📋 Mack's scouting report</span><span class="pl2"><img src="https://a.espncdn.com/i/teamlogos/nfl/500/tb.png" alt=""><b>vs</b><img src="https://a.espncdn.com/i/teamlogos/nfl/500/chi.png" alt=""></span><span class="pq">Where is Caleb Williams? And where is Baker Mayfield?</span><span class="pt">“Tampa Bay just won a game without completing a pass: 324 rushing yards and four interceptions of Michael Penix in a 16-0 downpour win over Atlanta (ESPN recap, Nov 1)…”</span><span class="pc">Read it before kickoff <b>→</b></span><span class="pf">Player matchups · injuries · the read</span></a>
-</article>
-<!-- /NIGHTGAMES -->
 
 
 
@@ -165,6 +154,10 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
   <section id="archive">
     <div class="lbl">Past weeks</div>
     <div class="grid" style="margin-top:8px">
+      <a class="card" href="picks/week9.html"><h2>Week 9 Results</h2><p>Final: Mack 28 · Todd 27 · Scott 27 · Ryota 22. Mack took the week.</p><span class="go">Open →</span></a>
+      <a class="card" href="broncos/week9.html"><h2>Week 9 Broncos Pre-Game</h2><p>Broncos at Panthers · AWAY GAME · Bank of America Stadium, Charlotte, as written before kickoff.</p><span class="go">Open →</span></a>
+      <a class="card" href="games/week9-tnf.html"><h2>Week 9 Thursday Night Pre-Game</h2><p>Jaguars at Ravens · TNF · M&amp;T Bank Stadium, Baltimore, as written before kickoff.</p><span class="go">Open →</span></a>
+      <a class="card" href="games/week9-snf.html"><h2>Week 9 Sunday Night Pre-Game</h2><p>Buccaneers at Bears · SNF · Soldier Field, Chicago, as written before kickoff.</p><span class="go">Open →</span></a>
       <a class="card" href="picks/week8.html"><h2>Week 8 Results</h2><p>Final: Scott 26 · Mack 26 · Todd 20 · Ryota 17. Scott and Mack shared the week.</p><span class="go">Open →</span></a>
       <a class="card" href="broncos/week8.html"><h2>Week 8 Broncos Pre-Game</h2><p>Broncos vs. Chiefs · HOME GAME · Empower Field at Mile High, Denver, as written before kickoff.</p><span class="go">Open →</span></a>
       <a class="card" href="games/week8-tnf.html"><h2>Week 8 Thursday Night Pre-Game</h2><p>Panthers at Packers · TNF · Lambeau Field, Green Bay, as written before kickoff.</p><span class="go">Open →</span></a>
@@ -182,7 +175,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
       <a class="card" href="broncos/week6.html"><h2>Week 6 Broncos Pre-Game</h2><p>Broncos vs Seahawks · HOME GAME · Empower Field at Mile High, as written before kickoff.</p><span class="go">Open →</span></a>
       <a class="card" href="picks/week5.html"><h2>Week 5 Results</h2><p>Final: Ryota 26 · Mack 25 · Scott 24 · Todd 22. Ryota took the week.</p><span class="go">Open →</span></a>
       <a class="card" href="broncos/week5.html"><h2>Week 5 Broncos Pre-Game</h2><p>Broncos @ Chargers · AWAY GAME · SoFi Stadium, as written before kickoff.</p><span class="go">Open →</span></a>
-      <a class="card" href="picks/week4.html"><h2>Week 4 Results</h2><p>Final board, graded on the page.</p><span class="go">Open →</span></a>
+      <a class="card" href="picks/week4.html"><h2>Week 4 Results</h2><p>Final: Scott 29 · Mack 24 · Todd 22 · Ryota 17. Scott took the week.</p><span class="go">Open →</span></a>
     </div>
   </section>
 <!-- /ARCHIVE -->
@@ -202,8 +195,8 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
 
 </div>
 
-<nav class="site-nav" aria-label="Site"><a href="./" aria-current="page">Hub</a><a href="picks/week9.html">Picks</a><a href="power-rankings/">Power Rankings</a><a href="standings.html">Standings</a><a href="injuries.html">Injuries</a><a href="leaders.html">Leaders</a><a href="power-rankings/season.html">Season</a><a href="broncos/week9.html">Broncos</a></nav>
-  <footer>Prepared by Mack (385). Ratings and picks are Mack's; market lines from DraftKings via ESPN; scores and logos from ESPN. Updated Nov 9, 2026. Mack's NFL Desk, a product of the Village v1.9 · v0.9.151 · © 2026 Fionn Rith / the Village · code PolyForm-NC 1.0 · writing CC BY-NC 4.0 · not affiliated with the NFL or ESPN · <a href="NOTICE">notice</a></footer>
+<nav class="site-nav" aria-label="Site"><a href="./" aria-current="page">Hub</a><a href="picks/week10.html">Picks</a><a href="power-rankings/">Power Rankings</a><a href="standings.html">Standings</a><a href="injuries.html">Injuries</a><a href="leaders.html">Leaders</a><a href="power-rankings/season.html">Season</a><a href="broncos/week9.html">Broncos</a></nav>
+  <footer>Prepared by Mack (385). Ratings and picks are Mack's; market lines from DraftKings via ESPN; scores and logos from ESPN. Updated Nov 10, 2026. Mack's NFL Desk, a product of the Village v1.9 · v0.9.153 · © 2026 Fionn Rith / the Village · code PolyForm-NC 1.0 · writing CC BY-NC 4.0 · not affiliated with the NFL or ESPN · <a href="NOTICE">notice</a></footer>
 </div>
 </main>
 </div>
@@ -226,7 +219,7 @@ footer{color:var(--muted);font-size:13px;border-top:1px solid var(--line);paddin
   } catch (e) {}
 })();
 </script>
-<script src="deck.js?v=151"></script>
+<script src="deck.js?v=153"></script>
 <script>
 // Right now: computed in the browser at load. Week comes from the live board link (nfl_site_week.py rewrites it each Tuesday).
 // Any fetch failure leaves a plain line; nothing here ever blanks the card.
