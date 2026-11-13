@@ -691,12 +691,18 @@ function render(){   // runs once; afterwards cards are patched (renderCard, tex
     return `<article data-win="${w.replace(/"/g,"&quot;")}" class="dk slate ${isOpen(id)?"open":""}" data-id="${id}">${hdHTML(id, `<span class="tt">${w}<small>${gs.length} game${gs.length>1?"s":""}</small></span>`,
       `<span class="${slateClass(w)}" id="${id}">${slateText(w)}</span><span class="st0">nobody leads yet · first kick ${gs[0].kick}</span>`)}${bodyHTML(id, `<div id="sb-${id}">${slateBody(w)}</div>`)}</article>`; };
   $("#deck").innerHTML = tallyCard("week", `${wl} tally`, `<span id="wk-strip">${weekStripText()}</span>`, `<div class="tiles" id="tiles"></div>`)
+    + tallyCard("season", "Season standings", `<span id="season-strip"></span>`, "")   // season + same-picks boards roll up here (Scott 2026-11-13)
     + tallyCard("last", "Last week", `<span id="last-strip"></span>`, "")
     + tallyCard("mack", "Mack's record so far", `<span id="mack-strip"></span>`, "")
     + PEOPLE.map(p => tallyCard("rec-" + p, `${p}'s record so far`, `<span id="rec-strip-${p}"></span>`, "")).join("")   // one record card per player (Scott 10/21)
     + tallyCard("about", "About this board", "how to read a card · picks lock · points", "")
     + wins.map(w => slateCard(w) + GAMES.filter(g => g.win === w).map(card).join("")).join("");
   // the two static sections keep their place in the HTML for the Tuesday scripts' regexes; at runtime they live inside their cards
+  { const sbs = document.querySelectorAll(".wrap > section.sboard, .wrap > details.sb-how"), bc = $("#bd-season .bc");
+    if (bc && sbs.length) { sbs.forEach(x => bc.appendChild(x));
+      const lead = [...(sbs[0].querySelectorAll(".sb-lead"))].map(r => r.querySelector(".sb-nm").textContent.replace("★", "").trim()), pt = sbs[0].querySelector(".sb-lead .sb-pt");
+      $("#season-strip").textContent = lead.length ? `★ ${lead.join(" & ")} leads · ${pt ? pt.textContent.replace(/\s+/g, " ").trim() : ""}` : "season to date"; }
+    else if (bc) bc.closest(".dk, article, section")?.remove(); }
   const recs = document.querySelectorAll(".wrap > section.rec"), last = recs[0], mack = recs[1];
   if (last) { $("#bd-last .bc").appendChild(last); const t = last.textContent.replace(/\s+/g, " ");
     const m = t.match(/(Week \d+)\s+Final\s*—\s*(.*?)\.\s*(\S+) took the week/); const pts = m && (m[2].match(new RegExp(m[3] + "\\s+(\\d+) pts")) || [])[1];
