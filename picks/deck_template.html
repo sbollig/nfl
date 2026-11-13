@@ -660,12 +660,16 @@ function render(){   // runs once; afterwards cards are patched (renderCard, tex
     + tallyCard("season", "Season standings", `<span id="season-strip"></span>`, "")   // season + same-picks boards roll up here (Scott 2026-11-13)
     + tallyCard("made", "Made picks only, missed thrown out", `<span id="made-strip"></span>`, "")   // own card (Scott 2026-11-13)
     + tallyCard("props", "Broncos props game", `<span id="props-strip"></span>`, "")   // props record card (Scott 2026-11-13)
+    + tallyCard("kings", "Most king titles", `<span id="kings-strip"></span>`, "")   // weekly crowns (Scott 2026-11-13)
     + tallyCard("last", "Last week", `<span id="last-strip"></span>`, "")
     + tallyCard("mack", "Mack's record so far", `<span id="mack-strip"></span>`, "")
     + PEOPLE.map(p => tallyCard("rec-" + p, `${p}'s record so far`, `<span id="rec-strip-${p}"></span>`, "")).join("")   // one record card per player (Scott 10/21)
     + tallyCard("about", "About this board", "how to read a card · picks lock · points", "")
     + wins.map(w => slateCard(w) + GAMES.filter(g => g.win === w).map(card).join("")).join("");
   // the two static sections keep their place in the HTML for the Tuesday scripts' regexes; at runtime they live inside their cards
+  { const kb = document.querySelector('.wrap > section.sboard[aria-label="King titles"]'), kc = $("#bd-kings .bc");
+    if (kb && kc) { kc.appendChild(kb); $("#kings-strip").textContent = boardStrip(kb).replace(/ (\d+) 👑/g, " $1 👑"); }
+    else if (kc) kc.closest(".dk, article, section")?.remove(); }
   { const pb = document.querySelector('.wrap > section.sboard[aria-label="Props standings"]'), pc = $("#bd-props .bc");
     if (pb && pc) { pc.appendChild(pb); const ld = [...pb.querySelectorAll("tr.sb-lead")].map(r => r.querySelector(".sb-nm").textContent.replace("★", "").trim()), rc = pb.querySelector("tr.sb-lead .sb-pt");
       $("#props-strip").textContent = boardStrip(pb); }
