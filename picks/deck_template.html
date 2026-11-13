@@ -656,12 +656,17 @@ function render(){   // runs once; afterwards cards are patched (renderCard, tex
       `<span class="${slateClass(w)}" id="${id}">${slateText(w)}</span><span class="st0">nobody leads yet · first kick ${gs[0].kick}</span>`)}${bodyHTML(id, `<div id="sb-${id}">${slateBody(w)}</div>`)}</article>`; };
   $("#deck").innerHTML = tallyCard("week", `${wl} tally`, `<span id="wk-strip">${weekStripText()}</span>`, `<div class="tiles" id="tiles"></div>`)
     + tallyCard("season", "Season standings", `<span id="season-strip"></span>`, "")   // season + same-picks boards roll up here (Scott 2026-11-13)
+    + tallyCard("made", "Made picks only, missed thrown out", `<span id="made-strip"></span>`, "")   // own card (Scott 2026-11-13)
     + tallyCard("last", "Last week", `<span id="last-strip"></span>`, "")
     + tallyCard("mack", "Mack's record so far", `<span id="mack-strip"></span>`, "")
     + PEOPLE.map(p => tallyCard("rec-" + p, `${p}'s record so far`, `<span id="rec-strip-${p}"></span>`, "")).join("")   // one record card per player (Scott 10/21)
     + tallyCard("about", "About this board", "how to read a card · picks lock · points", "")
     + wins.map(w => slateCard(w) + GAMES.filter(g => g.win === w).map(card).join("")).join("");
   // the two static sections keep their place in the HTML for the Tuesday scripts' regexes; at runtime they live inside their cards
+  { const mb = document.querySelector('.wrap > section.sboard[aria-label="Common picks standings"]'), mc = $("#bd-made .bc");
+    if (mb && mc) { mc.appendChild(mb); const ld = [...mb.querySelectorAll(".sb-lead .sb-nm")].map(x => x.textContent.replace("★", "").trim()), pt = mb.querySelector(".sb-lead .sb-pt"), n = mb.querySelector(".sb-note");
+      $("#made-strip").textContent = (ld.length ? `★ ${ld.join(" & ")} leads · ${pt.textContent.replace(/\s+/g, " ").trim()}` : "") + (n ? ` · ${(n.textContent.match(/\d+ of \d+ picks/) || [""])[0]} counted` : ""); }
+    else if (mc) mc.closest(".dk, article, section")?.remove(); }
   { const sbs = document.querySelectorAll(".wrap > section.sboard, .wrap > details.sb-how"), bc = $("#bd-season .bc");
     if (bc && sbs.length) { sbs.forEach(x => bc.appendChild(x));
       const lead = [...(sbs[0].querySelectorAll(".sb-lead"))].map(r => r.querySelector(".sb-nm").textContent.replace("★", "").trim()), pt = sbs[0].querySelector(".sb-lead .sb-pt");
