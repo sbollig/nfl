@@ -629,6 +629,8 @@ function tally(){   // the one place points are counted; tiles() and the strips 
   pts.Mack = su[0] + ats[0] + mou[0] + mx[0];   // Mack: winner on every game, spread only where he leaned, totals from g.mou
   return { finals, su, ats, mou, mx, rec, pts };
 }
+const boardStrip = sec => [...sec.querySelectorAll(".sb-row, tr.sb-lead, tr:not(:first-child)")].filter((r, i, a) => a.indexOf(r) === i && r.querySelector(".sb-nm"))   // same look as the tally strip: everyone, rank order (Scott 2026-11-13)
+  .map(r => `${r.classList.contains("sb-lead") ? "★ " : ""}${r.querySelector(".sb-nm").textContent.replace("★", "").trim()} ${r.querySelector(".sb-pt").textContent.replace(/\s*pts?\s*$/, "").trim()}`).join(" · ");
 const weekStripText = () => { const T = tally(); return Object.keys(T.pts).sort((a,b) => T.pts[b]-T.pts[a]).map(p => `${CHAMP.includes(p)?"👑 ":""}${p} ${T.pts[p]}`).join(" · "); };
 function slateBody(w){
   const si = slateInfo(w), gs = GAMES.filter(g => g.win === w), pts = si ? si.pts : {};
@@ -666,21 +668,21 @@ function render(){   // runs once; afterwards cards are patched (renderCard, tex
   // the two static sections keep their place in the HTML for the Tuesday scripts' regexes; at runtime they live inside their cards
   { const pb = document.querySelector('.wrap > section.sboard[aria-label="Props standings"]'), pc = $("#bd-props .bc");
     if (pb && pc) { pc.appendChild(pb); const ld = [...pb.querySelectorAll("tr.sb-lead")].map(r => r.querySelector(".sb-nm").textContent.replace("★", "").trim()), rc = pb.querySelector("tr.sb-lead .sb-pt");
-      $("#props-strip").textContent = ld.length ? `★ ${ld.join(" & ")} ${ld.length > 1 ? "lead" : "leads"} · ${rc ? rc.textContent : ""}` : "props record"; }
+      $("#props-strip").textContent = boardStrip(pb); }
     else if (pc) pc.closest(".dk, article, section")?.remove(); }
   { const mb = document.querySelector('.wrap > section.sboard[aria-label="Common picks standings"]'), mc = $("#bd-made .bc");
     if (mb && mc) { mc.appendChild(mb); const ld = [...mb.querySelectorAll(".sb-lead .sb-nm")].map(x => x.textContent.replace("★", "").trim()), pt = mb.querySelector(".sb-lead .sb-pt"), n = mb.querySelector(".sb-note");
-      $("#made-strip").textContent = (ld.length ? `★ ${ld.join(" & ")} leads · ${pt.textContent.replace(/\s+/g, " ").trim()}` : "") + (n ? ` · ${(n.textContent.match(/\d+ of \d+ picks/) || [""])[0]} counted` : ""); }
+      $("#made-strip").textContent = boardStrip(mb); }
     else if (mc) mc.closest(".dk, article, section")?.remove(); }
   { const sbs = document.querySelectorAll(".wrap > section.sboard, .wrap > details.sb-how"), bc = $("#bd-season .bc");
     if (bc && sbs.length) { sbs.forEach(x => bc.appendChild(x));
       const lead = [...(sbs[0].querySelectorAll(".sb-lead"))].map(r => r.querySelector(".sb-nm").textContent.replace("★", "").trim()), pt = sbs[0].querySelector(".sb-lead .sb-pt");
-      $("#season-strip").textContent = lead.length ? `★ ${lead.join(" & ")} leads · ${pt ? pt.textContent.replace(/\s+/g, " ").trim() : ""}` : "season to date"; }
+      $("#season-strip").textContent = boardStrip(sbs[0]); }
     else if (bc) bc.closest(".dk, article, section")?.remove(); }
   const recs = document.querySelectorAll(".wrap > section.rec"), last = recs[0], mack = recs[1];
   if (last) { $("#bd-last .bc").appendChild(last); const t = last.textContent.replace(/\s+/g, " ");
     const m = t.match(/(Week \d+)\s+Final\s*—\s*(.*?)\.\s*(\S+) took the week/); const pts = m && (m[2].match(new RegExp(m[3] + "\\s+(\\d+) pts")) || [])[1];
-    $("#last-strip").textContent = m ? `${m[3]} took ${m[1]}${pts ? ` · ${pts} pts` : ""}` : "last week's board"; }
+    $("#last-strip").textContent = m ? m[2].split(" · ").map(x => { const q = x.match(/^(\S+)\s+(\d+)/); return q ? `${CHAMP.includes(q[1]) ? "👑 " : ""}${q[1]} ${q[2]}` : x; }).join(" · ") : "last week's board"; }   // tally-style strip (Scott 2026-11-13)
   if (mack) { $("#bd-mack .bc").appendChild(mack); const m = mack.textContent.match(/Season\s+([\d-]+) straight up · ([\d-]+) against the spread/);
     $("#mack-strip").textContent = m ? `${m[1]} SU · ${m[2]} ATS` : "Mack's record so far"; }
   for (const sec of document.querySelectorAll(".wrap > section.prec")) { const p = sec.dataset.who, bc = $(`#bd-rec-${p} .bc`), st = $(`#rec-strip-${p}`); if (!bc) continue; bc.appendChild(sec);
