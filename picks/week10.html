@@ -364,7 +364,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .inj{font-size:12px;color:var(--muted);display:grid;gap:2px;line-height:1.35}
 .inj b{color:var(--ink);font-weight:600}
 .saved{position:absolute;top:10px;right:12px;font-size:11px;color:var(--good);opacity:0;transition:opacity .3s}
-.saved.show{opacity:1}
+.saved.show,.saved.wait,.saved.bad{opacity:1}.saved.wait{color:var(--muted)}.saved.bad{color:var(--bad);font-weight:700}
 .foot{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 .foot p{margin:0 0 6px}
 @media (prefers-reduced-motion:reduce){.saved{transition:none}}
@@ -798,53 +798,80 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 10, KEY = "wk10-cache", BOARD_VER = "v156";
+const WEEK = 10, KEY = "wk10-cache", BOARD_VER = "v157";
 const PEOPLE = ["Todd","Ryota","Scott"];
 const CHAMP = ["Mack"];   // last week's winner(s) wear the crown — a tie is a shared crown (Scott 11/3); set by nfl_site_week.py each Tuesday
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
 function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
 function setDb(k,msg){ $("#dbdot").className="dot "+k; $("#dbmsg").textContent=msg; }
-const timers = {}, baseline = {};   // baseline[id] = server-known row, taken once per pending save (iOS fires input+change per select)
+// ---- Saving picks (Mack 2026-11-13, Scott: "it doesn't always take the first time") ----
+// Old flow lost picks: a board refresh landing while a pick was still waiting (0.5 s debounce) or in flight overwrote it with the
+// server's older copy, and the pending save then saw "no change" and sent nothing (reproduced on sandbox week 99: 5 fast picks -> 1 stored).
+// Now: (1) a refresh never overwrites a card with an unconfirmed pick; (2) every save is read back and retried until the board matches;
+// (3) "saved" shows only once confirmed; (4) unconfirmed cards persist on this device and resend on reload / every 20 s.
+const timers = {}, srv = {}, inflight = new Set(), again = new Set();
+const PKEY = KEY + "-pending";
+const pending = new Set((() => { try { return JSON.parse(localStorage.getItem(PKEY) || "[]"); } catch(e) { return []; } })());
+function savePending(){ try{ localStorage.setItem(PKEY, JSON.stringify([...pending])); }catch(e){} }
+function markCard(id, cls, txt){ const el = $("#sv-"+id); if (!el) return; el.textContent = txt; el.classList.remove("show","wait","bad"); if (cls) el.classList.add(cls); if (cls === "show") setTimeout(() => el.classList.remove("show"), 1500); }
 function queueSave(id){
   const s = state[id] = state[id] || {};
-  if (!(id in baseline)) baseline[id] = JSON.stringify(s);
   s.as = $("#as-"+id).value.trim(); s.hs = $("#hs-"+id).value.trim();
-  if ($("#sk-"+id)){ const X = state.g99 = state.g99 || {}; if (!("g99" in baseline)) baseline.g99 = JSON.stringify(X); X.as = $("#sk-"+id).value.trim(); X.hs = $("#tk-"+id).value.trim(); }   // props game finals
+  if ($("#sk-"+id)){ const X = state.g99 = state.g99 || {}; X.as = $("#sk-"+id).value.trim(); X.hs = $("#tk-"+id).value.trim(); }   // props game finals
   s.picks = {}; for (const p of PEOPLE) if ($("#su-"+p+"-"+id)) s.picks[p] = { su: $("#su-"+p+"-"+id).value, ats: $("#ats-"+p+"-"+id).value, ou: $("#ou-"+p+"-"+id).value };
-  saveCache(); tiles();
+  pending.add(id); savePending(); saveCache(); tiles(); markCard(id, "wait", "saving…");
   clearTimeout(timers[id]); timers[id] = setTimeout(() => push(id), 500);
 }
+function diffCalls(id){   // what this device has that the board does not, compared with the board's last known row
+  const s = state[id] || {}, prev = srv[id] || {}, G = GAMES.find(x => x.id === id), calls = [];
+  if (G && !started(G)) for (const p of PEOPLE){ const v = (s.picks||{})[p]; if (!v) continue; const o = (prev.picks||{})[p] || {};
+    if (v.su !== (o.su||"") || v.ats !== (o.ats||"") || v.ou !== (o.ou||"")) calls.push({week:WEEK, game:id, person:p, su:v.su, ats:v.ats, ou:v.ou}); }
+  if ((s.as||"") !== (prev.as||"") || (s.hs||"") !== (prev.hs||"")) calls.push({week:WEEK, game:id, as:s.as||"", hs:s.hs||""});
+  if (G && G.px){ const X = state.g99 || {}, P = srv.g99 || {}; if ((X.as||"") !== (P.as||"") || (X.hs||"") !== (P.hs||"")) calls.push({week:WEEK, game:"g99", as:X.as||"", hs:X.hs||""}); }
+  return calls;
+}
 async function push(id){
-  const s = state[id]; const before = baseline[id]; delete baseline[id];
-  const prev = before ? JSON.parse(before) : {};
-  const calls = [];
-  const G = GAMES.find(x => x.id === id);
-  if (!started(G)) for (const p of PEOPLE){ const v = s.picks[p], o = (prev.picks||{})[p]||{}; if (v.su!==o.su || v.ats!==o.ats || v.ou!==o.ou) calls.push({week:WEEK, game:id, person:p, su:v.su, ats:v.ats, ou:v.ou}); }
-  if (s.as !== (prev.as||"") || s.hs !== (prev.hs||"")) calls.push({week:WEEK, game:id, as:s.as, hs:s.hs});
-  if (G.px && "g99" in baseline){ const X = state.g99 || {}, P = JSON.parse(baseline.g99); delete baseline.g99; if ((X.as||"") !== (P.as||"") || (X.hs||"") !== (P.hs||"")) calls.push({week:WEEK, game:"g99", as:X.as||"", hs:X.hs||""}); }
+  if (inflight.has(id)) { again.add(id); return; }   // one save per card at a time; a change made meanwhile goes in the next round
+  inflight.add(id);
   try {
-    for (const body of calls){ const q = new URLSearchParams(body).toString(); const r = await fetch(STORE + "?" + q, {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error(j.error||"store refused"); }
-    const el=$("#sv-"+id); el.classList.add("show"); setTimeout(()=>el.classList.remove("show"),1200);
-    ping("saved:" + id);
-    setDb("on","Saved to the shared board at " + new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}) + ". Everyone sees the same picks and scores. Board " + BOARD_VER + ".");
-    await pull(false);
-  } catch(e){ if (!(id in baseline)) baseline[id] = before; ping("savefail:" + id + ":" + String(e).slice(0,30)); setDb("off","Could not reach the shared board; your entry is kept on this device and will show again here. Try later."); }
+    for (let attempt = 0; attempt < 5; attempt++){
+      again.delete(id);
+      try {
+        for (const body of diffCalls(id)){ const q = new URLSearchParams(body).toString(); const r = await fetch(STORE + "?" + q, {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error(j.error||"store refused"); }
+        await pull(true);   // read back what the board stored
+      } catch(e){ ping("savefail:" + id + ":" + String(e).slice(0,30)); }
+      if (diffCalls(id).length === 0 && !again.has(id)){
+        pending.delete(id); savePending(); markCard(id, "show", "saved ✓"); ping("saved:" + id);
+        setDb("on","Saved to the shared board at " + new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}) + ". Everyone sees the same picks and scores. Board " + BOARD_VER + ".");
+        return;
+      }
+      if (!again.has(id)) await new Promise(r => setTimeout(r, 1000 * 2 ** attempt));   // 1, 2, 4, 8 s
+    }
+    markCard(id, "bad", "not saved yet · retrying");
+    setDb("off","A pick has not reached the shared board yet. It is kept on this device and will keep retrying; leave the page open or come back to it.");
+  } finally { inflight.delete(id); }
 }
 async function pull(quiet){
   try {
     const r = await fetch(STORE + "?week=" + WEEK, {cache:"no-store"}); const j = await r.json();
     if (!j.ok) throw new Error(j.error||"store error");
     let changed=false;
+    for (const k of Object.keys(srv)) if (!(k in (j.data||{}))) delete srv[k];
     for (const [id,row] of Object.entries(j.data||{})){
-      const cur = state[id] || {}; const nxt = {as: row.as||"", hs: row.hs||"", picks:{}};
+      const nxt = {as: row.as||"", hs: row.hs||"", picks:{}};
       for (const p of PEOPLE){ const pk=(row.picks||{})[p]||{}; nxt.picks[p] = {su: pk.su||"", ats: pk.ats||"", ou: pk.ou||""}; }
-      if (JSON.stringify(cur.as||"")!==JSON.stringify(nxt.as) || JSON.stringify(cur.hs||"")!==JSON.stringify(nxt.hs) || JSON.stringify(cur.picks||{})!==JSON.stringify(nxt.picks)){ state[id]=nxt; changed=true; dirty.add(id); }
+      srv[id] = nxt;
+      if (pending.has(id) || (id === "g99" && GAMES.some(g => g.px && pending.has(g.id)))) continue;   // never overwrite an unconfirmed pick
+      const cur = state[id] || {};
+      if (JSON.stringify(cur.as||"")!==JSON.stringify(nxt.as) || JSON.stringify(cur.hs||"")!==JSON.stringify(nxt.hs) || JSON.stringify(cur.picks||{})!==JSON.stringify(nxt.picks)){ state[id]=JSON.parse(JSON.stringify(nxt)); changed=true; dirty.add(id); }
     }
     saveCache();
     if (changed) dirty.forEach(id => renderCard(id)); else tiles();
     if (!quiet) setDb("on","Connected to the shared board. Picks and scores are the same on every device. Board " + BOARD_VER + ".");
-  } catch(e){ if(!quiet) setDb("off","Shared board not reachable right now; showing what this device last saw."); }
+    return true;
+  } catch(e){ if(!quiet) setDb("off","Shared board not reachable right now; showing what this device last saw."); return false; }
 }
+setInterval(() => { for (const id of pending) if (!inflight.has(id)) push(id); }, 20000);   // keep retrying anything unconfirmed
 document.addEventListener("input", e => { const a = e.target.closest?.(".g"); if(a) queueSave(a.dataset.id); });
 document.addEventListener("change", e => { const a = e.target.closest?.(".g"); if(a) queueSave(a.dataset.id); });
 // Re-render ONE card, and never while a dropdown is in use (Scott 10/17: Safari flickered on every team pick, then
@@ -963,7 +990,7 @@ function act(what, id){
   dk.addEventListener("pointercancel", e => { if (drag && e.pointerId === drag.pid) end(); });
   dk.addEventListener("dragstart", e => { if (e.target.closest(".handle,.strip")) e.preventDefault(); });   // no native DnD ghost
 })();
-loadCache(); render(); setDb("", "Connecting to the shared board…"); pull(false);
+loadCache(); render(); setDb("", "Connecting to the shared board…"); pull(false).then(() => { for (const id of pending) push(id); });   // resend anything this device never got confirmed
 // Tell the store which version/browser loaded (diagnostic), and self-refresh if a newer board is published.
 function ping(ev){ try{ fetch(STORE + "?ping=1&ver=" + BOARD_VER + "&ev=" + encodeURIComponent(ev) + "&ua=" + encodeURIComponent(navigator.userAgent.slice(0,160)), {cache:"no-store"}).catch(()=>{}); }catch(e){} }
 ping("load");
