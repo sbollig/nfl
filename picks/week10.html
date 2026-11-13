@@ -364,7 +364,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .inj{font-size:12px;color:var(--muted);display:grid;gap:2px;line-height:1.35}
 .inj b{color:var(--ink);font-weight:600}
 .saved{position:absolute;top:10px;right:12px;font-size:11px;color:var(--good);opacity:0;transition:opacity .3s}
-.saved.show,.saved.wait,.saved.bad{opacity:1}.saved.wait{color:var(--muted)}.saved.bad{color:var(--bad);font-weight:700}
+.saved{display:none}.savebar{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line);font-size:13px;color:var(--muted)}.savebar:empty{display:none}.sv-ok{color:var(--good);font-weight:700}.sv-wait{font-weight:700}.sv-bad{color:var(--bad);font-weight:700}.sv-lock{font-style:italic}.saved.show,.saved.wait,.saved.bad{opacity:1}.saved.wait{color:var(--muted)}.saved.bad{color:var(--bad);font-weight:700}
 .foot{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 .foot p{margin:0 0 6px}
 @media (prefers-reduced-motion:reduce){.saved{transition:none}}
@@ -782,6 +782,7 @@ function card(g){
         const cell = (v, what) => `<select class="mk" disabled aria-label="Mack ${what}"><option>${v||"—"}</option></select>`;   // Mack's picks: fixed at publish, read-only
         return `<label class="lbl">Mack</label>${g.px?cell(g.px.msk,"sacks")+cell(g.px.mtk,"takeaways"):cell(g.su,"winner")+cell(g.ats?sp[g.ats]:"","spread")}${cell(g.mou,"total")}`; })()}
     </div>
+    <div class="savebar" id="sb-${g.id}" aria-live="polite">${saveText(g.id)}</div>
   </div></div></div></article>`;
 }
 function tiles(){
@@ -798,7 +799,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 10, KEY = "wk10-cache", BOARD_VER = "v157";
+const WEEK = 10, KEY = "wk10-cache", BOARD_VER = "v158";
 const PEOPLE = ["Todd","Ryota","Scott"];
 const CHAMP = ["Mack"];   // last week's winner(s) wear the crown — a tie is a shared crown (Scott 11/3); set by nfl_site_week.py each Tuesday
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
@@ -813,7 +814,18 @@ const timers = {}, srv = {}, inflight = new Set(), again = new Set();
 const PKEY = KEY + "-pending";
 const pending = new Set((() => { try { return JSON.parse(localStorage.getItem(PKEY) || "[]"); } catch(e) { return []; } })());
 function savePending(){ try{ localStorage.setItem(PKEY, JSON.stringify([...pending])); }catch(e){} }
-function markCard(id, cls, txt){ const el = $("#sv-"+id); if (!el) return; el.textContent = txt; el.classList.remove("show","wait","bad"); if (cls) el.classList.add(cls); if (cls === "show") setTimeout(() => el.classList.remove("show"), 1500); }
+function saveText(id){   // status line under the picks, until kickoff (Scott 2026-11-13: "make the saved under the picks")
+  const G = GAMES.find(x => x.id === id); if (!G) return "";
+  if (started(G)) return `<span class="sv-lock">Picks locked at kickoff</span>`;
+  const st = saveState[id];
+  if (st === "wait") return `<span class="sv-wait">Saving…</span>`;
+  if (st === "bad") return `<span class="sv-bad">Not saved yet · retrying</span>`;
+  const row = srv[id] || {picks:{}};
+  const n = p => { const v = (row.picks||{})[p] || {}; return ["su","ats","ou"].filter(k => v[k]).length; };
+  return `<span class="sv-ok">${st === "ok" ? "✓ Saved" : "Saved on the board"}</span> · ` + PEOPLE.map(p => `${p} ${n(p)}/3${n(p) === 3 ? " ✓" : ""}`).join(" · ");
+}
+const saveState = {};
+function markCard(id, cls, txt){ saveState[id] = cls === "show" ? "ok" : cls; const sb = $("#sb-"+id); if (sb) sb.innerHTML = saveText(id); const el = $("#sv-"+id); if (!el) return; el.textContent = txt; el.classList.remove("show","wait","bad"); if (cls) el.classList.add(cls); if (cls === "show") setTimeout(() => el.classList.remove("show"), 1500); }
 function queueSave(id){
   const s = state[id] = state[id] || {};
   s.as = $("#as-"+id).value.trim(); s.hs = $("#hs-"+id).value.trim();
@@ -867,6 +879,7 @@ async function pull(quiet){
     }
     saveCache();
     if (changed) dirty.forEach(id => renderCard(id)); else tiles();
+    for (const g of GAMES){ const sb = $("#sb-"+g.id); if (sb) sb.innerHTML = saveText(g.id); }
     if (!quiet) setDb("on","Connected to the shared board. Picks and scores are the same on every device. Board " + BOARD_VER + ".");
     return true;
   } catch(e){ if(!quiet) setDb("off","Shared board not reachable right now; showing what this device last saw."); return false; }
