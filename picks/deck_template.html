@@ -660,7 +660,7 @@ function render(){   // runs once; afterwards cards are patched (renderCard, tex
     + tallyCard("season", "Season standings", `<span id="season-strip"></span>`, "")   // season + same-picks boards roll up here (Scott 2026-11-13)
     + tallyCard("made", "Made picks only, missed thrown out", `<span id="made-strip"></span>`, "")   // own card (Scott 2026-11-13)
     + tallyCard("props", "Broncos props game", `<span id="props-strip"></span>`, "")   // props record card (Scott 2026-11-13)
-    + tallyCard("kings", "Most king titles", `<span id="kings-strip"></span>`, "")   // weekly crowns (Scott 2026-11-13)
+    + tallyCard("kings", "Most king titles · shared week = ½", `<span id="kings-strip"></span>`, "")   // weekly crowns (Scott 2026-11-13)
     + tallyCard("last", "Last week", `<span id="last-strip"></span>`, "")
     + tallyCard("mack", "Mack's record so far", `<span id="mack-strip"></span>`, "")
     + PEOPLE.map(p => tallyCard("rec-" + p, `${p}'s record so far`, `<span id="rec-strip-${p}"></span>`, "")).join("")   // one record card per player (Scott 10/21)
