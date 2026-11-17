@@ -447,7 +447,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 @media (min-width:640px){.bc .tiles{grid-template-columns:repeat(5,1fr)}}
 .hint{font-size:13px;color:var(--muted);margin:-8px 0 10px}
 
-.team .lw{display:block;font-family:Barlow;font-size:12px;font-weight:500;color:var(--muted);margin-top:2px}</style>
+.team .lw{display:block;font-family:Barlow;font-size:12px;font-weight:500;color:var(--muted);margin-top:2px}.kl td{text-align:left;opacity:1;font-weight:400;color:var(--ink)}.kl td small{display:block;font-size:10.5px;color:var(--muted);font-weight:500}.kl .kv{font-weight:700}.kl summary{list-style:none;cursor:pointer;font-size:12px;line-height:1.35}.kl summary::-webkit-details-marker{display:none}.kl details small{margin-top:2px}.kl td.win .kv{color:var(--good)}.kl td.lose .kv{color:var(--bad)}.kl td.win,.kl td.lose{color:var(--ink);font-weight:400}</style>
 <link rel="stylesheet" href="../theme.css?v=131">
 <link rel="stylesheet" href="../deck.css?v=131">
 <style>
@@ -739,9 +739,17 @@ function card(g){
     ${g.mu ? `<div class="mu"><table>
       <thead><tr><th><span class="lbl">Matchup</span></th><th class="col">${g.away}<small>offense (NFL rank)</small></th><th class="col">${g.home}<small>offense (NFL rank)</small></th></tr></thead>
       <tbody>${g.mu.rows.map(r => `<tr><th>${r.k}</th><td class="${r.wa?(r.wa===g.away?"win":"lose"):""}">${r.wa?(r.wa===g.away?"wins":"loses"):"even"}${r.ra?` <small class="nrk">(#${r.ra})</small>`:""}</td><td class="${r.wh?(r.wh===g.home?"win":"lose"):""}">${r.wh?(r.wh===g.home?"wins":"loses"):"even"}${r.rh?` <small class="nrk">(#${r.rh})</small>`:""}</td></tr>`).join("")}</tbody></table>${g.pm ? `<div class="pm"><span class="lbl">Playmakers Matchup <small>NFL rank among the 32 teams' leaders · vs the other defense's rank</small></span><div class="pmg">${[g.away,g.home].map(t => `<div class="pmc"><b class="pmt">${t}</b>${(g.pm[t]||[]).map(x => `<div class="pmr ${x.res}">${x.head?`<img src="${x.head}" alt="" loading="lazy">`:"<i></i>"}<div class="pmn"><b>${x.name}</b>${x.inj?` <span class="pinj" title="${x.injf}${x.inj==="D"?" (treated as out)":""}">${x.inj}</span>`:""} <small>${x.pos}</small><small class="pms">${x.stat} · <b>#${x.rank}</b> ${({QB:"QB",RB:"rusher",Target:"receiver",Rusher:"pass rusher"})[x.role]} · vs ${x.vs} #${x.vrank}</small></div><span class="pmv">${x.res}</span></div>`).join("")}</div>`).join("")}</div></div>` : ""}</div>` : ""}
+    ${g.kl ? (() => { const R = {w:3,"":2,l:1}, sideOf = L => L.t === g.away ? 0 : 1;   // Key player loss (Scott 2026-11-17): display only, does not move Mack's line
+      const cell = L => { const worse = R[L.va] < R[L.vb], cls = L.ir ? "" : worse ? "lose" : L.va === "w" ? "win" : L.va === "l" ? "lose" : "";
+        const last = s => s ? s.split(" ").slice(-1)[0].replace(/^(Jr\.|Sr\.|II|III|IV)$/, "") || s.split(" ").slice(-2)[0] : "";   // one line, details on tap (Scott 2026-11-17)
+        return `<td class="${cls}"><details class="kd" onclick="event.stopPropagation()"><summary><b>${last(L.n)}</b> ${L.pos}·${L.st} → ${L.nx ? last(L.nx) : "none"} · <span class="kv">${L.v}${L.q ? "?" : ""}</span></summary><small>${L.n}${L.rk ? " · " + L.rk : ""}</small><small>→ ${L.nx || "no backup listed"}${L.nxe ? " (" + L.nxe + ")" : ""}${L.nrk ? " · " + L.nrk : ""}</small>${L.q ? "<small>? = if he sits (Questionable)</small>" : ""}</details></td>`; };
+      const net = t => g.kl.filter(L => L.t === t && !L.q && !L.ir && L.flip).length, qn = t => g.kl.filter(L => L.t === t && L.q && L.flip).length;
+      return `<div class="mu kl"><table><thead><tr><th><span class="lbl">Key player loss</span></th><th class="col">${g.away}<small>loss → verdict</small></th><th class="col">${g.home}<small>loss → verdict</small></th></tr></thead>
+      <tbody>${g.kl.length ? g.kl.map(L => `<tr><th>${L.k}</th>${sideOf(L) === 0 ? cell(L) + "<td>—</td>" : "<td>—</td>" + cell(L)}</tr>`).join("") : `<tr><th></th><td>none listed</td><td>none listed</td></tr>`}</tbody></table>
+      <p class="musum">Edges flipped: <b>${g.away} ${net(g.away)}</b>${qn(g.away) ? ` (+${qn(g.away)} if Q sit)` : ""} · <b>${g.home} ${net(g.home)}</b>${qn(g.home) ? ` (+${qn(g.home)} if Q sit)` : ""}. Rule-based, display only.</p></div>`; })() : `
     <div class="inj"><span class="lbl">Key injuries → who steps in</span>
       <div class="it"><b>${g.away}</b>${g.inj.away.length?g.inj.away.map(e=>`<div class="ir">${injFace(e)}</div>`).join(""):`<div class="ir">none listed</div>`}</div>
-      <div class="it"><b>${g.home}</b>${g.inj.home.length?g.inj.home.map(e=>`<div class="ir">${injFace(e)}</div>`).join(""):`<div class="ir">none listed</div>`}</div></div>
+      <div class="it"><b>${g.home}</b>${g.inj.home.length?g.inj.home.map(e=>`<div class="ir">${injFace(e)}</div>`).join(""):`<div class="ir">none listed</div>`}</div></div>`}
     <div class="pick">${chip(g.px ? `Mack: sacks ${g.px.msk} · takeaways ${g.px.mtk} · total ${g.mou}` : `Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
     ${g.px?`<div class="pxf"><span class="lbl">Finals</span> Sacks <input id="sk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).as??""}" aria-label="Total sacks" ${canWrite?"":"disabled"}> Takeaways <input id="tk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).hs??""}" aria-label="Total takeaways" ${canWrite?"":"disabled"}></div>`:""}
     <div class="you">
