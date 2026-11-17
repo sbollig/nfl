@@ -447,7 +447,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 @media (min-width:640px){.bc .tiles{grid-template-columns:repeat(5,1fr)}}
 .hint{font-size:13px;color:var(--muted);margin:-8px 0 10px}
 
-</style>
+.team .lw{display:block;font-family:Barlow;font-size:12px;font-weight:500;color:var(--muted);margin-top:2px}</style>
 <link rel="stylesheet" href="../theme.css?v=131">
 <link rel="stylesheet" href="../deck.css?v=131">
 <style>
@@ -720,7 +720,7 @@ function card(g){
   return `<article class="g dk pick-${tint.replace(/[^A-Za-z0-9]/g,"")} ${g.bron?"bron":""} ${r?"final":""} ${g.mu?"has-mu":""} ${isOpen(g.id)?"open":""}" data-id="${g.id}">
     <span class="saved" id="sv-${g.id}">saved</span>${strip}<div class="body" id="bd-${g.id}"><div class="bi"><div class="bc">
     <div class="teams">
-      <div class="team away"><span class="nm">${g.away}</span></div><div class="at">final score</div><div class="team home"><span class="nm">${g.home}</span></div>
+      <div class="team away"><span class="nm">${g.away}</span>${g.al?`<small class="lw">${g.al}</small>`:""}</div><div class="at">final score</div><div class="team home"><span class="nm">${g.home}</span>${g.hl?`<small class="lw">${g.hl}</small>`:""}</div>
       <input class="score ${LIVE[g.id]?"lv":""}" id="as-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="${LIVE[g.id]?.as ?? "–"}" value="${s.as ?? ""}" aria-label="${g.away} score" ${canWrite?"":"disabled"}>
       <div></div>
       <input class="score ${LIVE[g.id]?"lv":""}" id="hs-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="${LIVE[g.id]?.hs ?? "–"}" value="${s.hs ?? ""}" aria-label="${g.home} score" ${canWrite?"":"disabled"}>
