@@ -447,7 +447,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 @media (min-width:640px){.bc .tiles{grid-template-columns:repeat(5,1fr)}}
 .hint{font-size:13px;color:var(--muted);margin:-8px 0 10px}
 
-.team .lw{display:block;font-family:Barlow;font-size:12px;font-weight:500;color:var(--muted);margin-top:2px}</style>
+.team .lw{display:block;font-family:Barlow;font-size:12px;font-weight:500;color:var(--muted);margin-top:2px}.ivb{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;padding:1px 5px;margin-right:5px;border-radius:3px;border:1px solid currentColor;vertical-align:1px}.iv-loss{color:var(--bad)}.iv-gain{color:var(--good)}.iv-even{color:var(--muted)}</style>
 <link rel="stylesheet" href="../theme.css?v=131">
 <link rel="stylesheet" href="../deck.css?v=131">
 <style>
@@ -699,7 +699,9 @@ function render(){   // runs once; afterwards cards are patched (renderCard, tex
 function card(g){
   // key-injury lines with headshots (Scott 10/14): the injured player and whoever steps in
   const injFace = e => { const f = n => HS[n] ? `<span class="ihp"><img src="${HS[n]}" alt="" loading="lazy">${n}</span>` : n;
-    return e.replace(/^([^(]+?) \(/, (m, n) => f(n) + " (").replace(/→ ([^(]+?) \(/, (m, n) => "→ " + f(n) + " ("); };
+    const bm = e.match(/ ⟦(LOSS|EVEN|GAIN)⟧$/), bdg = bm ? `<span class="ivb iv-${bm[1].toLowerCase()}">${bm[1]}</span>` : "";   // LOSS/EVEN/GAIN badge (Scott 2026-11-17)
+    e = e.replace(/ ⟦(LOSS|EVEN|GAIN)⟧$/, "");
+    return bdg + e.replace(/^([^(]+?) \(/, (m, n) => f(n) + " (").replace(/→ ([^(]+?) \(/, (m, n) => "→ " + f(n) + " ("); };
   const s = state[g.id] || {}; const r = grade(g, s);
   const chip = (t, k) => `<span class="chip ${k||""}">${t}</span>`;
   const verdict = r ? [
