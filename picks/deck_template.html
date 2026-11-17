@@ -760,7 +760,7 @@ function card(g){
         return `<label class="lbl">Mack</label>${g.px?cell(g.px.msk,"sacks")+cell(g.px.mtk,"takeaways"):cell(g.su,"winner")+cell(g.ats?sp[g.ats]:"","spread")}${cell(g.mou,"total")}`; })()}
     </div>
     <div class="savebar" id="sb-${g.id}" aria-live="polite">${saveText(g.id)}</div>
-    ${g.yt ? `<div class="ytv"><span class="lbl">Video</span><button type="button" class="ytb" aria-label="Play: ${g.yt.t}" onclick="event.stopPropagation();this.outerHTML='<iframe src=&quot;https://www.youtube-nocookie.com/embed/${g.yt.id}?autoplay=1&quot; title=&quot;${g.yt.t.replace(/"/g,"")}&quot; allow=&quot;autoplay; encrypted-media; picture-in-picture&quot; allowfullscreen></iframe>'"><img src="https://i.ytimg.com/vi/${g.yt.id}/hqdefault.jpg" alt="" loading="lazy"><span class="ytp">▶</span></button><small>${g.yt.t} · NFL on YouTube · loads from YouTube only when you press play</small></div>` : ""}
+    ${[].concat(g.yt || []).map(v => `<div class="ytv"><span class="lbl">Video</span><button type="button" class="ytb" aria-label="Play: ${v.t}" onclick="event.stopPropagation();this.outerHTML='<iframe src=&quot;https://www.youtube-nocookie.com/embed/${v.id}?autoplay=1&quot; title=&quot;${v.t.replace(/"/g,"")}&quot; allow=&quot;autoplay; encrypted-media; picture-in-picture&quot; allowfullscreen></iframe>'"><img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="" loading="lazy"><span class="ytp">▶</span></button><small>${v.t} · NFL on YouTube · loads from YouTube only when you press play</small></div>`).join("")}
   </div></div></div></article>`;
 }
 function tiles(){
