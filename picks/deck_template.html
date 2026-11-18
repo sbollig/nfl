@@ -567,15 +567,17 @@ function grade(g, s){
     ats = cover === 0 ? "push" : ((cover > 0) === (g.ats === g.home) ? "ok" : "no"); }
   const cover = margin + g.mkt, ppl = {};
   // props game (g.px): su = total sacks O/U, ats = total takeaways O/U; finals for both kept under store row g99 (as = sacks, hs = takeaways)
-  const X = state.g99 || {}, sk = g.px ? num(X.as) : null, tk = g.px ? num(X.hs) : null;
+  const X = state.g99 || {}, sk = g.px ? num(X.as) : null, tk = g.px && !g.px.td ? num(X.hs) : null;
+  const TD = !!(g.px && g.px.td), td1 = TD && X.hs ? String(X.hs) : null;   // 1st Broncos TD scorer replaces takeaways from Week 12 (Scott 2026-11-18); hs = scorer name
+  const tdv = pick => !pick || td1 === null ? null : (pick === td1 ? "ok" : "no");
   const ouv = (pick, val, line) => !pick || val === null ? null : val === line ? "push" : ((val > line) === (pick === "Over") ? "ok" : "no");
   for (const p of PEOPLE){ const pk = (s.picks||{})[p] || {};
-    if (g.px){ ppl[p] = { su: ouv(pk.su, sk, g.px.sk), ats: ouv(pk.ats, tk, g.px.tk), ou: ouv(pk.ou, as+hs, g.ou) }; continue; }
+    if (g.px){ ppl[p] = { su: ouv(pk.su, sk, g.px.sk), ats: TD ? tdv(pk.ats) : ouv(pk.ats, tk, g.px.tk), ou: ouv(pk.ou, as+hs, g.ou) }; continue; }
     ppl[p] = { su: pk.su ? (winner==="Tie" ? "push" : (winner===pk.su ? "ok":"no")) : null,
                ats: pk.ats ? (cover===0 ? "push" : ((cover>0)===(pk.ats===g.home) ? "ok":"no")) : null,
                ou: pk.ou ? (as+hs===g.ou ? "push" : (((as+hs)>g.ou)===(pk.ou==="Over") ? "ok":"no")) : null }; }
   const mou = g.mou ? (as+hs===g.ou ? "push" : (((as+hs)>g.ou)===(g.mou==="Over") ? "ok":"no")) : null;   // Mack's over/under
-  return {margin, winner, su: g.px ? ouv(g.px.msk, sk, g.px.sk) : su, ats: g.px ? ouv(g.px.mtk, tk, g.px.tk) : ats, mou, ppl, total: as + hs};
+  return {margin, winner, su: g.px ? ouv(g.px.msk, sk, g.px.sk) : su, ats: g.px ? (TD ? tdv(g.px.mtd) : ouv(g.px.mtk, tk, g.px.tk)) : ats, mou, ppl, total: as + hs};
 }
 
 const LIVE = {};   // live scores from ESPN, by game id (Scott 10/11: "put a live score on the picks page")
@@ -706,9 +708,9 @@ function card(g){
   const chip = (t, k) => `<span class="chip ${k||""}">${t}</span>`;
   const verdict = r ? [
     r.su ? chip(`Mack ${g.px?"Sacks":"SU"} ${r.su==="ok"?"✓":r.su==="no"?"✗":"push"}`, r.su) : "",
-    r.ats ? chip(`${g.px?"Mack TA":"ATS"} ${r.ats==="ok"?"✓":r.ats==="no"?"✗":"push"}`, r.ats) : "",
+    r.ats ? chip(`${g.px?(g.px.td?"Mack TD":"Mack TA"):"ATS"} ${r.ats==="ok"?"✓":r.ats==="no"?"✗":"push"}`, r.ats) : "",
     r.mou ? chip(`Mack O/U ${r.mou==="ok"?"✓":r.mou==="no"?"✗":"push"}`, r.mou) : "",
-    ...PEOPLE.map(p => ["su","ats","ou"].map(k => r.ppl[p][k] ? chip(`${p} ${g.px?{su:"Sacks",ats:"TA",ou:"O/U"}[k]:k==="su"?"W":k.toUpperCase()} ${r.ppl[p][k]==="ok"?"✓":r.ppl[p][k]==="no"?"✗":"push"}`, r.ppl[p][k]) : "").join("")),
+    ...PEOPLE.map(p => ["su","ats","ou"].map(k => r.ppl[p][k] ? chip(`${p} ${g.px?{su:"Sacks",ats:g.px.td?"TD":"TA",ou:"O/U"}[k]:k==="su"?"W":k.toUpperCase()} ${r.ppl[p][k]==="ok"?"✓":r.ppl[p][k]==="no"?"✗":"push"}`, r.ppl[p][k]) : "").join("")),
     chip(`Total ${r.total} ${r.total>g.ou?"over":r.total<g.ou?"under":"push"}`, r.total===g.ou?"push":"")
   ].join("") : "";
   // card colour: Mack's pick before the game; once final, the team that won outright (Scott 10/1). A tie keeps the pick's colours.
@@ -745,20 +747,20 @@ function card(g){
     <div class="inj"><span class="lbl">Key injuries → who steps in</span>
       <div class="it"><b>${g.away}</b>${g.inj.away.length?g.inj.away.map(e=>`<div class="ir">${injFace(e)}</div>`).join(""):`<div class="ir">none listed</div>`}</div>
       <div class="it"><b>${g.home}</b>${g.inj.home.length?g.inj.home.map(e=>`<div class="ir">${injFace(e)}</div>`).join(""):`<div class="ir">none listed</div>`}</div></div>
-    <div class="pick">${chip(g.px ? `Mack: sacks ${g.px.msk} · takeaways ${g.px.mtk} · total ${g.mou}` : `Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
-    ${g.px?`<div class="pxf"><span class="lbl">Finals</span> Sacks <input id="sk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).as??""}" aria-label="Total sacks" ${canWrite?"":"disabled"}> Takeaways <input id="tk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).hs??""}" aria-label="Total takeaways" ${canWrite?"":"disabled"}></div>`:""}
+    <div class="pick">${chip(g.px ? (g.px.td ? `Mack: sacks ${g.px.msk} · 1st TD ${g.px.mtd} · total ${g.mou}` : `Mack: sacks ${g.px.msk} · takeaways ${g.px.mtk} · total ${g.mou}`) : `Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
+    ${g.px?`<div class="pxf"><span class="lbl">Finals</span> Sacks <input id="sk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).as??""}" aria-label="Total sacks" ${canWrite?"":"disabled"}> ${g.px.td ? `1st Broncos TD <select id="tk-${g.id}" aria-label="First Broncos touchdown scorer" ${canWrite?"":"disabled"}><option value="">–</option>${g.px.td.concat(["Other Bronco","No Bronco TD"]).map(n=>`<option ${(state.g99||{}).hs===n?"selected":""}>${n}</option>`).join("")}</select>` : `Takeaways <input id="tk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).hs??""}" aria-label="Total takeaways" ${canWrite?"":"disabled"}>`}</div>`:""}
     <div class="you">
-      ${g.px ? `<div class="px-note">Broncos game: no winner or spread pick. Over/Under on total sacks, total takeaways (interceptions + fumbles recovered) and total points, both teams combined.</div>` : ""}
-      <span class="lbl"></span><span class="lbl">${g.px?`Sacks ${g.px.sk}`:"Winner"}</span><span class="lbl">${g.px?`Takeaways ${g.px.tk}`:"Spread"}</span><span class="lbl">Total ${g.ou}</span>
+      ${g.px ? `<div class="px-note">Broncos game: no winner or spread pick. ${g.px.td ? "Over/Under on total sacks and total points (both teams), plus the first Broncos player to score a touchdown (rushing or receiving; a passing TD counts for the catcher)." : "Over/Under on total sacks, total takeaways (interceptions + fumbles recovered) and total points, both teams combined."}</div>` : ""}
+      <span class="lbl"></span><span class="lbl">${g.px?`Sacks ${g.px.sk}`:"Winner"}</span><span class="lbl">${g.px?(g.px.td?"1st Broncos TD":`Takeaways ${g.px.tk}`):"Spread"}</span><span class="lbl">Total ${g.ou}</span>
       ${PEOPLE.map(p => { const pk=(s.picks||{})[p]||{}; const sel=(v,x)=>v===x?"selected":""; const ou2=v=>`<option ${sel(v,"Over")}>Over</option><option ${sel(v,"Under")}>Under</option>`;
         const sp = g.mkt<0 ? [[g.away, `${g.away} +${-g.mkt}`],[g.home, `${g.home} ${g.mkt}`]] : [[g.away, `${g.away} ${g.mkt===0?"PK":"-"+g.mkt}`],[g.home, `${g.home} ${g.mkt===0?"PK":"+"+g.mkt}`]];
         return `<label class="lbl">${p}</label>
         <select id="su-${p}-${g.id}" aria-label="${p} winner" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option>${g.px?ou2(pk.su):`<option ${sel(pk.su,g.away)}>${g.away}</option><option ${sel(pk.su,g.home)}>${g.home}</option>`}</select>
-        <select id="ats-${p}-${g.id}" aria-label="${p} spread" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option>${g.px?ou2(pk.ats):sp.map(([v,l])=>`<option value="${v}" ${sel(pk.ats,v)}>${l}</option>`).join("")}</select>
+        <select id="ats-${p}-${g.id}" aria-label="${p} spread" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option>${g.px?(g.px.td?g.px.td.concat(["Other Bronco","No Bronco TD"]).map(n=>`<option ${sel(pk.ats,n)}>${n}</option>`).join(""):ou2(pk.ats)):sp.map(([v,l])=>`<option value="${v}" ${sel(pk.ats,v)}>${l}</option>`).join("")}</select>
         <select id="ou-${p}-${g.id}" aria-label="${p} total" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option><option ${sel(pk.ou,"Over")}>Over</option><option ${sel(pk.ou,"Under")}>Under</option></select>`; }).join("")}
       ${(() => { const sp = g.mkt<0 ? {[g.away]:`${g.away} +${-g.mkt}`,[g.home]:`${g.home} ${g.mkt}`} : {[g.away]:`${g.away} ${g.mkt===0?"PK":"-"+g.mkt}`,[g.home]:`${g.home} ${g.mkt===0?"PK":"+"+g.mkt}`};
         const cell = (v, what) => `<select class="mk" disabled aria-label="Mack ${what}"><option>${v||"—"}</option></select>`;   // Mack's picks: fixed at publish, read-only
-        return `<label class="lbl">Mack</label>${g.px?cell(g.px.msk,"sacks")+cell(g.px.mtk,"takeaways"):cell(g.su,"winner")+cell(g.ats?sp[g.ats]:"","spread")}${cell(g.mou,"total")}`; })()}
+        return `<label class="lbl">Mack</label>${g.px?cell(g.px.msk,"sacks")+(g.px.td?cell(g.px.mtd,"first TD"):cell(g.px.mtk,"takeaways")):cell(g.su,"winner")+cell(g.ats?sp[g.ats]:"","spread")}${cell(g.mou,"total")}`; })()}
     </div>
     <div class="savebar" id="sb-${g.id}" aria-live="polite">${saveText(g.id)}</div>
   </div></div></div></article>`;
