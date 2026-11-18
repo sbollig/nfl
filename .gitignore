@@ -1,0 +1,5 @@
+# temp/backup files from edits and previews (Atlas 2026-11-18: 15 refreshes refused on a dirty tree)
+*.orig
+*.rej
+picks/_*.html
+_*.html
