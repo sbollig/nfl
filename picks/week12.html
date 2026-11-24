@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Week 12 Board</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#f6f4ee;--card:#ffffff;--ink:#1b2431;--muted:#6b7787;--line:#d9d5ca;
+  --navy:#0b2340;--orange:#e4521c;--orange-soft:#fbe9e0;--good:#2f7a4a;--good-soft:#e3f1e7;--bad:#b23a2e;--bad-soft:#f7e3e0;--push:#8a7a2a;
+  --field:#eef0e8;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  color-scheme:dark;--paper:#141a22;--card:#1d2530;--ink:#eef0f3;--muted:#98a3b3;--line:#333d4a;
+  --navy:#e9eef7;--orange:#ff7a3d;--orange-soft:#3b2317;--good:#6fcf8c;--good-soft:#1c3324;--bad:#f28b7d;--bad-soft:#3a1e1a;--push:#d8c25a;--field:#222b36;}}
+:root[data-theme="dark"]{
+  color-scheme:dark;--paper:#141a22;--card:#1d2530;--ink:#eef0f3;--muted:#98a3b3;--line:#333d4a;
+  --navy:#e9eef7;--orange:#ff7a3d;--orange-soft:#3b2317;--good:#6fcf8c;--good-soft:#1c3324;--bad:#f28b7d;--bad-soft:#3a1e1a;--push:#d8c25a;--field:#222b36;}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:Barlow,system-ui,sans-serif;font-size:15px;line-height:1.4;margin:0;padding-inline:16px;padding-block:20px 48px;font-variant-numeric:tabular-nums}
+.wrap{max-width:1040px;margin:0 auto;display:grid;gap:22px}
+h1,h2,.disp{font-family:"Barlow Condensed",Barlow,system-ui,sans-serif;text-wrap:balance;margin:0}
+h1{font-size:44px;font-weight:700;line-height:1;letter-spacing:.01em;color:var(--navy)}
+h1 span{color:var(--orange)}
+.sub{color:var(--muted);margin-top:6px;font-size:14px}
+.lbl{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.rec{border-top:2px solid var(--navy);border-bottom:1px solid var(--line);padding:10px 0}
+.recrow{display:grid;gap:4px;font-size:14px;margin-top:4px}
+.recrow b{font-family:"Barlow Condensed";font-size:17px;color:var(--orange);margin-right:6px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+.tile{background:var(--card);border:1px solid var(--line);padding:12px 14px;border-radius:6px}
+.tile .v{font-family:"Barlow Condensed";font-size:30px;font-weight:700;line-height:1;margin-top:4px;color:var(--navy)}
+.tile.champ{position:relative;border-color:var(--push);box-shadow:inset 0 0 0 1px var(--push)}
+.tile.champ::before{content:"👑";position:absolute;top:-14px;left:6px;font-size:24px;line-height:1;transform:rotate(-14deg)}
+#tiles{padding-top:16px}   /* room for the crown: the card body clips overflow (Scott 10/19 "Ryota's crown got cut off") */
+.you .px-note{grid-column:1/-1;color:var(--muted);font-style:italic}
+.pm{margin:10px 0 4px}.pm .lbl small{text-transform:none;letter-spacing:0;font-weight:500}
+.pmg{display:grid;grid-template-columns:1fr;gap:8px;margin-top:6px}.mu{align-content:start}.mu table{align-self:start}
+.pmt{display:block;font-family:"Barlow Condensed";font-size:16px;margin-bottom:4px}
+.pmr{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:5px;margin-bottom:4px;border:1px solid var(--line);background:var(--paper)}
+.pmr img,.pmr i{width:32px;height:32px;border-radius:50%;object-fit:cover;object-position:top;background:#fff;border:2px solid var(--line);flex:none}
+.pmn{flex:1;min-width:0;font-size:12px;line-height:1.25;color:var(--ink)}.pmn small{color:var(--muted)}.pms{display:block}
+.pmv{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;border-radius:3px;background:transparent;color:var(--muted);border:1px solid var(--muted)}
+.pmr.wins{border-color:var(--good)}.pmr.wins .pmv{background:var(--good-soft);color:var(--good);border-color:var(--good)}.pmr.wins img{border-color:var(--good)}
+.pmr.loses .pmv{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.pinj{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.04em;padding:0 5px;border-radius:3px;background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad);vertical-align:1px}
+.inj .it{margin-top:4px}.inj .it>b{display:block}.inj .ir{margin:2px 0 2px 2px}
+.ihp{white-space:nowrap}.ihp img{width:22px;height:22px;border-radius:50%;object-fit:cover;object-position:top;background:#fff;border:1px solid var(--line);vertical-align:-6px;margin-right:4px}
+.nrk{font-weight:500;opacity:.8;white-space:nowrap}
+.mpk{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;margin:8px 0;padding:6px 8px;border:1px dashed var(--line);border-radius:4px}
+.mpk a.pre{margin-left:auto;font-weight:600}
+.pxf{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;margin:8px 0}
+.pxf input{width:52px;font:inherit;padding:4px 6px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink)}
+.tile .v small{font-size:13px;display:block;margin-left:0;margin-top:2px;color:var(--muted);font-weight:500;margin-left:4px}
+.status{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted);display:inline-block}
+.dot.on{background:var(--good)}.dot.off{background:var(--bad)}
+h2{font-size:22px;font-weight:600;color:var(--navy);border-bottom:2px solid var(--navy);padding-bottom:4px;display:flex;justify-content:space-between;align-items:baseline}
+h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
+.games{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:12px}
+.g{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:grid;gap:10px;position:relative;min-width:0}
+/* team-colored cards: card takes the colors of Mack's SU pick; once the game is final, the outright winner's (ESPN teams API, fetched 2026-09-28) */
+.g.pick-Cardinals{--card:#a40227;--paper:#af2041;--ink:#ffffff;--muted:#e4b3be;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#af2041;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#a40227;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Cardinals .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Cardinals .lbl{color:#e4b3be}
+.g.pick-Cardinals .score,.g.pick-Cardinals select{background:#af2041;color:#ffffff;border-color:#ffffff}
+.g.pick-Cardinals .chip{background:#af2041;color:#ffffff}
+.g.pick-Cardinals .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Cardinals .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Cardinals.final{background:#a40227}
+.g.pick-Falcons{--card:#a71930;--paper:#b23549;--ink:#ffffff;--muted:#e5bac1;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#b23549;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#a71930;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Falcons .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Falcons .lbl{color:#e5bac1}
+.g.pick-Falcons .score,.g.pick-Falcons select{background:#b23549;color:#ffffff;border-color:#ffffff}
+.g.pick-Falcons .chip{background:#b23549;color:#ffffff}
+.g.pick-Falcons .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Falcons .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Falcons.final{background:#a71930}
+.g.pick-Ravens{--card:#29126f;--paper:#432e80;--ink:#ffffff;--muted:#bfb8d4;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#432e80;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#29126f;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Ravens .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Ravens .lbl{color:#bfb8d4}
+.g.pick-Ravens .score,.g.pick-Ravens select{background:#432e80;color:#ffffff;border-color:#ffffff}
+.g.pick-Ravens .chip{background:#432e80;color:#ffffff}
+.g.pick-Ravens .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Ravens .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Ravens.final{background:#29126f}
+.g.pick-Bills{--card:#00338d;--paper:#1f4b9b;--ink:#ffffff;--muted:#b2c2dd;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#1f4b9b;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#00338d;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Bills .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Bills .lbl{color:#b2c2dd}
+.g.pick-Bills .score,.g.pick-Bills select{background:#1f4b9b;color:#ffffff;border-color:#ffffff}
+.g.pick-Bills .chip{background:#1f4b9b;color:#ffffff}
+.g.pick-Bills .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Bills .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Bills.final{background:#00338d}
+.g.pick-Panthers{--card:#0085ca;--paper:#007aba;--ink:#111111;--muted:#0c3448;--line:#000000;--navy:#000000;--orange:#000000;--orange-soft:#000000;--field:#007aba;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#0085ca;color:#111111;border:2px solid #000000;box-shadow:inset 6px 0 0 #000000}
+.g.pick-Panthers .chip.mack{color:#ffffff;background:#000000;border-color:#000000}
+.g.pick-Panthers .lbl{color:#0c3448}
+.g.pick-Panthers .score,.g.pick-Panthers select{background:#007aba;color:#111111;border-color:#000000}
+.g.pick-Panthers .chip{background:#007aba;color:#111111}
+.g.pick-Panthers .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Panthers .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Panthers.final{background:#0085ca}
+.g.pick-Bears{--card:#0b1c3a;--paper:#283752;--ink:#ffffff;--muted:#b6bbc4;--line:#e64100;--navy:#e64100;--orange:#e64100;--orange-soft:#e64100;--field:#283752;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#0b1c3a;color:#ffffff;border:2px solid #e64100;box-shadow:inset 6px 0 0 #e64100}
+.g.pick-Bears .chip.mack{color:#111111;background:#e64100;border-color:#e64100}
+.g.pick-Bears .lbl{color:#b6bbc4}
+.g.pick-Bears .score,.g.pick-Bears select{background:#283752;color:#ffffff;border-color:#e64100}
+.g.pick-Bears .chip{background:#283752;color:#ffffff}
+.g.pick-Bears .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Bears .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Bears.final{background:#0b1c3a}
+.g.pick-Bengals{--card:#fb4f14;--paper:#e74912;--ink:#111111;--muted:#572412;--line:#000000;--navy:#000000;--orange:#000000;--orange-soft:#000000;--field:#e74912;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#fb4f14;color:#111111;border:2px solid #000000;box-shadow:inset 6px 0 0 #000000}
+.g.pick-Bengals .chip.mack{color:#ffffff;background:#000000;border-color:#000000}
+.g.pick-Bengals .lbl{color:#572412}
+.g.pick-Bengals .score,.g.pick-Bengals select{background:#e74912;color:#111111;border-color:#000000}
+.g.pick-Bengals .chip{background:#e74912;color:#111111}
+.g.pick-Bengals .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Bengals .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Bengals.final{background:#fb4f14}
+.g.pick-Browns{--card:#472a08;--paper:#5d4426;--ink:#ffffff;--muted:#c8bfb5;--line:#ff3c00;--navy:#ff3c00;--orange:#ff3c00;--orange-soft:#ff3c00;--field:#5d4426;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#472a08;color:#ffffff;border:2px solid #ff3c00;box-shadow:inset 6px 0 0 #ff3c00}
+.g.pick-Browns .chip.mack{color:#111111;background:#ff3c00;border-color:#ff3c00}
+.g.pick-Browns .lbl{color:#c8bfb5}
+.g.pick-Browns .score,.g.pick-Browns select{background:#5d4426;color:#ffffff;border-color:#ff3c00}
+.g.pick-Browns .chip{background:#5d4426;color:#ffffff}
+.g.pick-Browns .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Browns .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Browns.final{background:#472a08}
+.g.pick-Cowboys{--card:#002a5c;--paper:#1f4470;--ink:#ffffff;--muted:#b2bfce;--line:#b0b7bc;--navy:#b0b7bc;--orange:#b0b7bc;--orange-soft:#b0b7bc;--field:#1f4470;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#002a5c;color:#ffffff;border:2px solid #b0b7bc;box-shadow:inset 6px 0 0 #b0b7bc}
+.g.pick-Cowboys .chip.mack{color:#111111;background:#b0b7bc;border-color:#b0b7bc}
+.g.pick-Cowboys .lbl{color:#b2bfce}
+.g.pick-Cowboys .score,.g.pick-Cowboys select{background:#1f4470;color:#ffffff;border-color:#b0b7bc}
+.g.pick-Cowboys .chip{background:#1f4470;color:#ffffff}
+.g.pick-Cowboys .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Cowboys .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Cowboys.final{background:#002a5c}
+.g.pick-Broncos{--card:#0a2343;--paper:#273d5a;--ink:#ffffff;--muted:#b6bdc7;--line:#fc4c02;--navy:#fc4c02;--orange:#fc4c02;--orange-soft:#fc4c02;--field:#273d5a;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#0a2343;color:#ffffff;border:2px solid #fc4c02;box-shadow:inset 6px 0 0 #fc4c02}
+.g.pick-Broncos .chip.mack{color:#111111;background:#fc4c02;border-color:#fc4c02}
+.g.pick-Broncos .lbl{color:#b6bdc7}
+.g.pick-Broncos .score,.g.pick-Broncos select{background:#273d5a;color:#ffffff;border-color:#fc4c02}
+.g.pick-Broncos .chip{background:#273d5a;color:#ffffff}
+.g.pick-Broncos .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Broncos .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Broncos.final{background:#0a2343}
+.g.pick-Lions{--card:#0076b6;--paper:#1f86bf;--ink:#ffffff;--muted:#b2d6e9;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#1f86bf;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#0076b6;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Lions .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Lions .lbl{color:#b2d6e9}
+.g.pick-Lions .score,.g.pick-Lions select{background:#1f86bf;color:#ffffff;border-color:#ffffff}
+.g.pick-Lions .chip{background:#1f86bf;color:#ffffff}
+.g.pick-Lions .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Lions .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Lions.final{background:#0076b6}
+.g.pick-Packers{--card:#204e32;--paper:#3b634b;--ink:#ffffff;--muted:#bccac2;--line:#ffb612;--navy:#ffb612;--orange:#ffb612;--orange-soft:#ffb612;--field:#3b634b;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#204e32;color:#ffffff;border:2px solid #ffb612;box-shadow:inset 6px 0 0 #ffb612}
+.g.pick-Packers .chip.mack{color:#111111;background:#ffb612;border-color:#ffb612}
+.g.pick-Packers .lbl{color:#bccac2}
+.g.pick-Packers .score,.g.pick-Packers select{background:#3b634b;color:#ffffff;border-color:#ffb612}
+.g.pick-Packers .chip{background:#3b634b;color:#ffffff}
+.g.pick-Packers .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Packers .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Packers.final{background:#204e32}
+.g.pick-Texans{--card:#021018;--paper:#202d34;--ink:#ffffff;--muted:#b3b7ba;--line:#eb0028;--navy:#eb0028;--orange:#eb0028;--orange-soft:#eb0028;--field:#202d34;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#021018;color:#ffffff;border:2px solid #eb0028;box-shadow:inset 6px 0 0 #eb0028}
+.g.pick-Texans .chip.mack{color:#ffffff;background:#eb0028;border-color:#eb0028}
+.g.pick-Texans .lbl{color:#b3b7ba}
+.g.pick-Texans .score,.g.pick-Texans select{background:#202d34;color:#ffffff;border-color:#eb0028}
+.g.pick-Texans .chip{background:#202d34;color:#ffffff}
+.g.pick-Texans .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Texans .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Texans.final{background:#021018}
+.g.pick-Colts{--card:#003b75;--paper:#1f5386;--ink:#ffffff;--muted:#b2c4d6;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#1f5386;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#003b75;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Colts .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Colts .lbl{color:#b2c4d6}
+.g.pick-Colts .score,.g.pick-Colts select{background:#1f5386;color:#ffffff;border-color:#ffffff}
+.g.pick-Colts .chip{background:#1f5386;color:#ffffff}
+.g.pick-Colts .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Colts .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Colts.final{background:#003b75}
+.g.pick-Jaguars{--card:#007487;--paper:#1f8595;--ink:#ffffff;--muted:#b2d5db;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#1f8595;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#007487;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Jaguars .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Jaguars .lbl{color:#b2d5db}
+.g.pick-Jaguars .score,.g.pick-Jaguars select{background:#1f8595;color:#ffffff;border-color:#ffffff}
+.g.pick-Jaguars .chip{background:#1f8595;color:#ffffff}
+.g.pick-Jaguars .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Jaguars .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Jaguars.final{background:#007487}
+.g.pick-Chiefs{--card:#e31837;--paper:#e6344f;--ink:#ffffff;--muted:#f7bac3;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#e6344f;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#e31837;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Chiefs .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Chiefs .lbl{color:#f7bac3}
+.g.pick-Chiefs .score,.g.pick-Chiefs select{background:#e6344f;color:#ffffff;border-color:#ffffff}
+.g.pick-Chiefs .chip{background:#e6344f;color:#ffffff}
+.g.pick-Chiefs .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Chiefs .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Chiefs.final{background:#e31837}
+.g.pick-Raiders{--card:#000000;--paper:#1f1f1f;--ink:#ffffff;--muted:#b2b2b2;--line:#a5acaf;--navy:#a5acaf;--orange:#a5acaf;--orange-soft:#a5acaf;--field:#1f1f1f;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#000000;color:#ffffff;border:2px solid #a5acaf;box-shadow:inset 6px 0 0 #a5acaf}
+.g.pick-Raiders .chip.mack{color:#111111;background:#a5acaf;border-color:#a5acaf}
+.g.pick-Raiders .lbl{color:#b2b2b2}
+.g.pick-Raiders .score,.g.pick-Raiders select{background:#1f1f1f;color:#ffffff;border-color:#a5acaf}
+.g.pick-Raiders .chip{background:#1f1f1f;color:#ffffff}
+.g.pick-Raiders .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Raiders .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Raiders.final{background:#000000}
+.g.pick-Chargers{--card:#0080c6;--paper:#0076b6;--ink:#111111;--muted:#0c3247;--line:#111111;--navy:#111111;--orange:#111111;--orange-soft:#111111;--field:#0076b6;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#0080c6;color:#111111;border:2px solid #111111;box-shadow:inset 6px 0 0 #111111}
+.g.pick-Chargers .chip.mack{color:#ffffff;background:#111111;border-color:#111111}
+.g.pick-Chargers .lbl{color:#0c3247}
+.g.pick-Chargers .score,.g.pick-Chargers select{background:#0076b6;color:#111111;border-color:#111111}
+.g.pick-Chargers .chip{background:#0076b6;color:#111111}
+.g.pick-Chargers .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Chargers .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Chargers.final{background:#0080c6}
+.g.pick-Rams{--card:#003594;--paper:#1f4da1;--ink:#ffffff;--muted:#b2c2df;--line:#ffd100;--navy:#ffd100;--orange:#ffd100;--orange-soft:#ffd100;--field:#1f4da1;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#003594;color:#ffffff;border:2px solid #ffd100;box-shadow:inset 6px 0 0 #ffd100}
+.g.pick-Rams .chip.mack{color:#111111;background:#ffd100;border-color:#ffd100}
+.g.pick-Rams .lbl{color:#b2c2df}
+.g.pick-Rams .score,.g.pick-Rams select{background:#1f4da1;color:#ffffff;border-color:#ffd100}
+.g.pick-Rams .chip{background:#1f4da1;color:#ffffff}
+.g.pick-Rams .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Rams .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Rams.final{background:#003594}
+.g.pick-Dolphins{--card:#008e97;--paper:#00838b;--ink:#111111;--muted:#0c3639;--line:#111111;--navy:#111111;--orange:#111111;--orange-soft:#111111;--field:#00838b;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#008e97;color:#111111;border:2px solid #111111;box-shadow:inset 6px 0 0 #111111}
+.g.pick-Dolphins .chip.mack{color:#ffffff;background:#111111;border-color:#111111}
+.g.pick-Dolphins .lbl{color:#0c3639}
+.g.pick-Dolphins .score,.g.pick-Dolphins select{background:#00838b;color:#111111;border-color:#111111}
+.g.pick-Dolphins .chip{background:#00838b;color:#111111}
+.g.pick-Dolphins .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Dolphins .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Dolphins.final{background:#008e97}
+.g.pick-Vikings{--card:#4f2683;--paper:#644092;--ink:#ffffff;--muted:#cabeda;--line:#ffc62f;--navy:#ffc62f;--orange:#ffc62f;--orange-soft:#ffc62f;--field:#644092;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#4f2683;color:#ffffff;border:2px solid #ffc62f;box-shadow:inset 6px 0 0 #ffc62f}
+.g.pick-Vikings .chip.mack{color:#111111;background:#ffc62f;border-color:#ffc62f}
+.g.pick-Vikings .lbl{color:#cabeda}
+.g.pick-Vikings .score,.g.pick-Vikings select{background:#644092;color:#ffffff;border-color:#ffc62f}
+.g.pick-Vikings .chip{background:#644092;color:#ffffff}
+.g.pick-Vikings .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Vikings .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Vikings.final{background:#4f2683}
+.g.pick-Patriots{--card:#002a5c;--paper:#1f4470;--ink:#ffffff;--muted:#b2bfce;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#1f4470;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#002a5c;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Patriots .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Patriots .lbl{color:#b2bfce}
+.g.pick-Patriots .score,.g.pick-Patriots select{background:#1f4470;color:#ffffff;border-color:#ffffff}
+.g.pick-Patriots .chip{background:#1f4470;color:#ffffff}
+.g.pick-Patriots .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Patriots .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Patriots.final{background:#002a5c}
+.g.pick-Saints{--card:#d3bc8d;--paper:#c2ad82;--ink:#111111;--muted:#4b4436;--line:#000000;--navy:#000000;--orange:#000000;--orange-soft:#000000;--field:#c2ad82;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#d3bc8d;color:#111111;border:2px solid #000000;box-shadow:inset 6px 0 0 #000000}
+.g.pick-Saints .chip.mack{color:#ffffff;background:#000000;border-color:#000000}
+.g.pick-Saints .lbl{color:#4b4436}
+.g.pick-Saints .score,.g.pick-Saints select{background:#c2ad82;color:#111111;border-color:#000000}
+.g.pick-Saints .chip{background:#c2ad82;color:#111111}
+.g.pick-Saints .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Saints .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Saints.final{background:#d3bc8d}
+.g.pick-Giants{--card:#003c7f;--paper:#1f538e;--ink:#ffffff;--muted:#b2c4d9;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#1f538e;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#003c7f;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Giants .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Giants .lbl{color:#b2c4d9}
+.g.pick-Giants .score,.g.pick-Giants select{background:#1f538e;color:#ffffff;border-color:#ffffff}
+.g.pick-Giants .chip{background:#1f538e;color:#ffffff}
+.g.pick-Giants .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Giants .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Giants.final{background:#003c7f}
+.g.pick-Jets{--card:#115740;--paper:#2e6b57;--ink:#ffffff;--muted:#b8cdc6;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#2e6b57;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#115740;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Jets .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Jets .lbl{color:#b8cdc6}
+.g.pick-Jets .score,.g.pick-Jets select{background:#2e6b57;color:#ffffff;border-color:#ffffff}
+.g.pick-Jets .chip{background:#2e6b57;color:#ffffff}
+.g.pick-Jets .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Jets .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Jets.final{background:#115740}
+.g.pick-Eagles{--card:#06424d;--paper:#245962;--ink:#ffffff;--muted:#b4c6ca;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#245962;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#06424d;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Eagles .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Eagles .lbl{color:#b4c6ca}
+.g.pick-Eagles .score,.g.pick-Eagles select{background:#245962;color:#ffffff;border-color:#ffffff}
+.g.pick-Eagles .chip{background:#245962;color:#ffffff}
+.g.pick-Eagles .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Eagles .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Eagles.final{background:#06424d}
+.g.pick-Steelers{--card:#000000;--paper:#1f1f1f;--ink:#ffffff;--muted:#b2b2b2;--line:#ffb612;--navy:#ffb612;--orange:#ffb612;--orange-soft:#ffb612;--field:#1f1f1f;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#000000;color:#ffffff;border:2px solid #ffb612;box-shadow:inset 6px 0 0 #ffb612}
+.g.pick-Steelers .chip.mack{color:#111111;background:#ffb612;border-color:#ffb612}
+.g.pick-Steelers .lbl{color:#b2b2b2}
+.g.pick-Steelers .score,.g.pick-Steelers select{background:#1f1f1f;color:#ffffff;border-color:#ffb612}
+.g.pick-Steelers .chip{background:#1f1f1f;color:#ffffff}
+.g.pick-Steelers .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Steelers .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Steelers.final{background:#000000}
+.g.pick-49ers{--card:#aa0000;--paper:#b41f1f;--ink:#ffffff;--muted:#e6b2b2;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#b41f1f;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#aa0000;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-49ers .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-49ers .lbl{color:#e6b2b2}
+.g.pick-49ers .score,.g.pick-49ers select{background:#b41f1f;color:#ffffff;border-color:#ffffff}
+.g.pick-49ers .chip{background:#b41f1f;color:#ffffff}
+.g.pick-49ers .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-49ers .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-49ers.final{background:#aa0000}
+.g.pick-Seahawks{--card:#002a5c;--paper:#1f4470;--ink:#ffffff;--muted:#b2bfce;--line:#69be28;--navy:#69be28;--orange:#69be28;--orange-soft:#69be28;--field:#1f4470;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#002a5c;color:#ffffff;border:2px solid #69be28;box-shadow:inset 6px 0 0 #69be28}
+.g.pick-Seahawks .chip.mack{color:#111111;background:#69be28;border-color:#69be28}
+.g.pick-Seahawks .lbl{color:#b2bfce}
+.g.pick-Seahawks .score,.g.pick-Seahawks select{background:#1f4470;color:#ffffff;border-color:#69be28}
+.g.pick-Seahawks .chip{background:#1f4470;color:#ffffff}
+.g.pick-Seahawks .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Seahawks .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Seahawks.final{background:#002a5c}
+.g.pick-Buccaneers{--card:#bd1c36;--paper:#c5374e;--ink:#ffffff;--muted:#ebbbc3;--line:#ffffff;--navy:#ffffff;--orange:#ffffff;--orange-soft:#ffffff;--field:#c5374e;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#bd1c36;color:#ffffff;border:2px solid #ffffff;box-shadow:inset 6px 0 0 #ffffff}
+.g.pick-Buccaneers .chip.mack{color:#111111;background:#ffffff;border-color:#ffffff}
+.g.pick-Buccaneers .lbl{color:#ebbbc3}
+.g.pick-Buccaneers .score,.g.pick-Buccaneers select{background:#c5374e;color:#ffffff;border-color:#ffffff}
+.g.pick-Buccaneers .chip{background:#c5374e;color:#ffffff}
+.g.pick-Buccaneers .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Buccaneers .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Buccaneers.final{background:#bd1c36}
+.g.pick-Titans{--card:#4495d2;--paper:#3f89c1;--ink:#111111;--muted:#20394b;--line:#001532;--navy:#001532;--orange:#001532;--orange-soft:#001532;--field:#3f89c1;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#4495d2;color:#111111;border:2px solid #001532;box-shadow:inset 6px 0 0 #001532}
+.g.pick-Titans .chip.mack{color:#ffffff;background:#001532;border-color:#001532}
+.g.pick-Titans .lbl{color:#20394b}
+.g.pick-Titans .score,.g.pick-Titans select{background:#3f89c1;color:#111111;border-color:#001532}
+.g.pick-Titans .chip{background:#3f89c1;color:#111111}
+.g.pick-Titans .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Titans .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Titans.final{background:#4495d2}
+.g.pick-Commanders{--card:#5a1414;--paper:#6e3030;--ink:#ffffff;--muted:#ceb8b8;--line:#ffb612;--navy:#ffb612;--orange:#ffb612;--orange-soft:#ffb612;--field:#6e3030;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;background:#5a1414;color:#ffffff;border:2px solid #ffb612;box-shadow:inset 6px 0 0 #ffb612}
+.g.pick-Commanders .chip.mack{color:#111111;background:#ffb612;border-color:#ffb612}
+.g.pick-Commanders .lbl{color:#ceb8b8}
+.g.pick-Commanders .score,.g.pick-Commanders select{background:#6e3030;color:#ffffff;border-color:#ffb612}
+.g.pick-Commanders .chip{background:#6e3030;color:#ffffff}
+.g.pick-Commanders .chip.ok{background:var(--good-soft);color:var(--good);border-color:var(--good)}
+.g.pick-Commanders .chip.no{background:var(--bad-soft);color:var(--bad);border-color:var(--bad)}
+.g.pick-Commanders.final{background:#5a1414}
+.g.bron{--card:#002244;--paper:#0d2f57;--ink:#ffffff;--muted:#c9d3e0;--line:#FB4F14;--navy:#FB4F14;--orange:#FB4F14;--orange-soft:#FB4F14;--field:#0d2f57;--good:#8fe3a6;--good-soft:#1c4a2c;--bad:#ffb3a7;--bad-soft:#5a2a24;--push:#ffd766;
+  background:#002244;color:#fff;border:2px solid #FB4F14;box-shadow:inset 6px 0 0 #FB4F14}
+.g.bron .chip.mack{color:#002244;background:#FB4F14;border-color:#FB4F14}
+.g.bron .lbl{color:#c9d3e0}
+.g.bron .score,.g.bron select{background:#0d2f57;color:#fff;border-color:#FB4F14}
+.g.bron.final{background:#002244}
+.g.final{background:var(--field)}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.team{font-family:"Barlow Condensed";font-size:26px;font-weight:700;line-height:1;color:var(--navy)}
+.team.away{text-align:left}.team.home{text-align:right;justify-content:flex-end}
+.team{display:flex;align-items:center;gap:6px}
+.logo{width:34px;height:34px;object-fit:contain;flex:none;filter:drop-shadow(0 0 1px rgba(255,255,255,.6))}
+.at{font-size:12px;color:var(--muted);text-align:center}
+.score{width:100%;font:inherit;font-family:"Barlow Condensed";font-size:30px;font-weight:700;text-align:center;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);padding:4px 2px;min-width:0}
+.score:focus{outline:2px solid var(--orange);outline-offset:1px}
+.numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:13px}
+.numbers div{display:grid;gap:2px}
+.numbers b{font-weight:600}
+.pick{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:13px}
+.chip{border-radius:999px;padding:2px 9px;font-weight:600;font-size:12px;border:1px solid var(--line);background:var(--paper)}
+.chip.mack{background:var(--orange-soft);border-color:var(--orange);color:var(--orange)}
+.chip.ok{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.chip.no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.chip.push{border-color:var(--push);color:var(--push)}
+.you{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:6px 8px;align-items:center;font-size:13px}
+.you select,.you input[type=text]{font:inherit;padding:5px 7px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);min-width:0;width:100%}
+.you select.mk{opacity:1;-webkit-appearance:none;appearance:none;background-image:none}
+.you select:focus,.you input:focus{outline:2px solid var(--orange);outline-offset:1px}
+.kick{font-size:12px;color:var(--muted)}
+.score.lv::placeholder{color:inherit;opacity:.85} .at.lv{font-weight:700;color:var(--ink);white-space:nowrap;text-align:center} .at .dd{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-top:2px;line-height:1.25} .at .dd.rz{color:#e02020} .poss{font-size:14px;margin:0 4px} .lead{display:inline-block;margin-left:8px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.02em;border:1.5px solid #fff;color:#fff;background:#e4521c;vertical-align:1px;text-shadow:0 1px 1px rgba(0,0,0,.35)} .lead.won{border-color:#fff;color:#fff;background:#2f7a4a} .lead:empty{display:none} h2 .slate{margin-left:auto;margin-right:10px;font-family:Barlow;letter-spacing:.02em;font-size:12px;text-transform:none} h2 .slate.won{background:#b8860b;border-color:#fff} .at.in::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#e02020;margin:0 5px 1px 0;animation:lv 1.4s infinite} @keyframes lv{50%{opacity:.25}}
+.team .nm{display:flex;flex-direction:column;align-items:flex-start;gap:3px} .team.home .nm{align-items:flex-end} .team .rec{font-size:12px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums;line-height:1}
+.mu{font-size:12px;color:var(--muted);display:grid;gap:4px;min-width:0;max-width:100%;overflow:hidden}
+.mu table{width:100%;border-collapse:collapse;table-layout:fixed}
+.mu th{text-align:left;font-weight:600;color:var(--ink);padding:3px 4px 3px 0;vertical-align:bottom;white-space:normal}
+.mu thead th.col{font-family:"Barlow Condensed";font-size:15px;text-align:center;padding:0 4px 4px;line-height:1.1}
+.mu thead th.col small{display:block;font-family:Barlow;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.mu td{padding:4px;border-top:1px solid var(--line);text-align:center;white-space:normal;overflow-wrap:anywhere;opacity:.6}
+.mu td.win{opacity:1;color:var(--good);font-weight:700}
+.mu td.lose{opacity:1;color:var(--bad);font-weight:700}
+.musum{font-size:11px} .musum b{color:var(--ink)}
+/* matchup on the right (Scott 10/7): wide screens split an expanded game body into two columns */
+@media (min-width:900px){
+  .g.has-mu .bc{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:22px;align-items:start}
+  .g.has-mu .bc>*{grid-column:1}
+  .g.has-mu .bc>.mu{grid-column:2;grid-row:1/span 9;border-left:1px solid var(--line);padding-left:18px;height:100%}
+  .g.has-mu .bc>.mu table{font-size:13px}
+}
+.inj{font-size:12px;color:var(--muted);display:grid;gap:2px;line-height:1.35}
+.inj b{color:var(--ink);font-weight:600}
+.saved{position:absolute;top:10px;right:12px;font-size:11px;color:var(--good);opacity:0;transition:opacity .3s}
+.saved{display:none}.savebar{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line);font-size:13px;color:var(--muted)}.savebar:empty{display:none}.sv-ok{color:var(--good);font-weight:700}.sv-wait{font-weight:700}.sv-bad{color:var(--bad);font-weight:700}.sv-lock{font-style:italic}.saved.show,.saved.wait,.saved.bad{opacity:1}.saved.wait{color:var(--muted)}.saved.bad{color:var(--bad);font-weight:700}
+.foot{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+.foot p{margin:0 0 6px}
+@media (prefers-reduced-motion:reduce){.saved{transition:none}}
+@media (max-width:420px){h1{font-size:36px}.team{font-size:22px}.numbers{grid-template-columns:repeat(2,1fr)}}
+
+/* ---- Wallet-style deck (Mack 2026-10-19, Scott: stacked passes, arrangeable per device) ---- */
+.preview-banner{background:#e4521c;color:#fff;font-weight:600;padding:8px 12px;border-radius:6px;margin-top:10px;font-size:14px;letter-spacing:.01em}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;max-width:720px;margin:0 auto;width:100%}
+.toolbar .status{flex:1;min-width:0}
+.tb{all:unset;cursor:pointer;font:600 12px Barlow,system-ui,sans-serif;color:var(--orange);padding:0 12px;border:1px solid var(--line);border-radius:999px;min-height:34px;display:inline-flex;align-items:center;white-space:nowrap}
+.tb:hover,.tb:focus-visible{background:var(--orange-soft);outline:none}
+.deck{display:flex;flex-direction:column;max-width:720px;margin:0 auto;width:100%;padding-top:6px;min-width:0}
+.dk{position:relative;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 -6px 16px rgba(0,0,0,.30);min-width:0;transition:transform .15s ease,box-shadow .15s ease}
+.dk+.dk{margin-top:-10px}
+.dk.lift{transform:scale(1.02);box-shadow:0 16px 34px rgba(0,0,0,.5);z-index:50;transition:none}
+body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
+/* non-game cards are a different material (Scott 10/19): ledger paper with a dashed edge and square corners, no team colors */
+/* slate cards are paper: dark ink on light (Scott 10/19 "slate cards to be dark on light"); tally cards keep the dark ledger look */
+.dk.slate{--card:#ffffff;--paper:#f3f0e8;--ink:#1b2431;--muted:#5f6a7a;--line:#d3cec1;--navy:#0b2340;--orange:#d9480f;--orange-soft:#fbe9e0;--good:#2f7a4a;--good-soft:#e3f1e7;--bad:#b23a2e;--bad-soft:#f7e3e0;--push:#8a7a2a;--field:#eceae2;
+  color:var(--ink);border-radius:6px;border:1px solid #c9c3b4;background:linear-gradient(180deg,#fdfcf9,#efece4);box-shadow:0 -6px 16px rgba(0,0,0,.30)}
+.dk.slate .lbl{color:var(--muted)}.dk.slate table th,.dk.slate table td{border-color:var(--line)}
+.dk.tally{border-radius:6px;border:1px dashed var(--orange);background:repeating-linear-gradient(135deg,transparent 0 10px,rgba(255,255,255,.025) 10px 11px),linear-gradient(180deg,color-mix(in srgb,var(--card) 90%,var(--muted)),var(--card));box-shadow:0 -6px 16px rgba(0,0,0,.30)}
+.dk.tally .strip,.dk.slate .strip{border-radius:5px 0 0 5px}
+.dk.tally .tt,.dk.slate .tt{font-family:"Barlow Condensed";letter-spacing:.04em;text-transform:uppercase;font-size:17px}
+.dk.tally::before,.dk.slate::before{content:"";position:absolute;left:-1px;top:14px;bottom:14px;width:4px;border-radius:0 3px 3px 0;background:var(--orange)}
+.dk.slate::before{background:#d9480f}
+.deck .g{padding:0;display:block;border-radius:14px;box-shadow:inset 6px 0 0 var(--line),0 -6px 16px rgba(0,0,0,.30)}
+.deck .g.final{background:var(--card)}
+.hd{display:flex;align-items:stretch;min-height:58px}
+.strip{all:unset;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;flex:1;min-width:0;display:grid;align-content:center;gap:3px;padding:9px 6px 15px 16px;cursor:pointer;font:inherit;color:inherit;text-align:left;border-radius:14px 0 0 14px;-webkit-tap-highlight-color:transparent}
+.strip:focus-visible{outline:2px solid var(--orange);outline-offset:-3px}
+.s1{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;min-width:0}
+.s1 .side{display:flex;align-items:center;gap:5px;min-width:0}
+.s1 .side.home{justify-content:flex-end;text-align:right}
+.s1 .logo{width:26px;height:26px}
+.s1 .tn{font-family:"Barlow Condensed";font-size:20px;font-weight:700;line-height:1;color:var(--navy);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.s1 .tn small{font-family:Barlow;font-size:11px;font-weight:500;color:var(--muted);margin-left:3px}
+.s1 .sc{font-family:"Barlow Condensed";font-size:21px;font-weight:700;line-height:1;color:var(--ink);flex:none}
+.s1 .sc:empty,.s1 .poss:empty{display:none}
+.s1 .side:has(.sc:not(:empty)) .tn small{display:none}
+.s2 .who img{width:1.3em;height:1.3em;vertical-align:-.3em;margin-right:.25em}
+.s1 .at{min-width:26px;font-size:12px}
+.s1 .tt{font-family:"Barlow Condensed";font-size:21px;font-weight:700;line-height:1;color:var(--navy);grid-column:1/-1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s1 .tt small{font-family:Barlow;font-size:12px;font-weight:500;color:var(--muted);margin-left:8px}
+.s1 .tt .who img{width:1em;height:1em;vertical-align:-.1em;margin-right:.25em}
+.s2{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;overflow:hidden;font-size:12px;color:var(--muted);min-height:16px;line-height:1.3;min-width:0}
+.s2>*{white-space:nowrap}
+.s2 .kick,.s2 .st0,.s2 #wk-strip,.s2 #last-strip,.s2 #mack-strip{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.s2 .lock,.s2 .lead{flex:none}
+.s2 .lock:empty{display:none}
+.s2 .kick{font-size:12px}
+.s2 .lead{margin-left:0}
+.s2 .lead:not(:empty)+.st0{display:none}
+.ctl{display:flex;align-items:center;padding-right:4px;flex:none;align-self:flex-start;height:58px}
+.ib{all:unset;cursor:pointer;width:30px;height:44px;display:inline-flex;align-items:center;justify-content:center;font-size:17px;color:var(--muted);border-radius:8px;-webkit-tap-highlight-color:transparent}
+.ib:hover,.ib:focus-visible{background:rgba(127,127,127,.22);color:var(--ink);outline:none}
+.handle{touch-action:none;cursor:grab;font-size:21px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;width:34px}
+.lift .handle{cursor:grabbing}
+.menu{position:relative}
+.menu summary{list-style:none}
+.menu summary::-webkit-details-marker{display:none}
+.mn{position:absolute;right:0;top:46px;z-index:60;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.45);display:grid;min-width:180px;padding:4px}
+.mn button{all:unset;cursor:pointer;font:inherit;font-size:14px;padding:10px 12px;border-radius:6px;color:var(--ink);white-space:nowrap}
+.mn button:hover,.mn button:focus-visible{background:rgba(127,127,127,.22)}
+.mn hr{border:0;border-top:1px solid var(--line);margin:4px 0}
+.body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .2s ease}
+.dk.open .body{grid-template-rows:1fr}
+.bi{overflow:hidden;min-height:0}
+.bc{display:grid;gap:10px;padding:2px 14px 26px 16px}
+.bc .rec{border:0;padding:0}
+.bc .tile{background:var(--paper)}
+.bc .teams .team{font-size:16px}
+.deck .saved{top:auto;bottom:8px;right:14px}
+.sb table{width:100%;border-collapse:collapse;font-size:14px}
+.sb td{padding:5px 4px;border-top:1px solid var(--line)} .sb td:last-child{text-align:right;font-family:"Barlow Condensed";font-size:18px;font-weight:700;color:var(--navy)}
+.sb tr.mack td{color:var(--muted)} .sb .fin{font-size:12px;color:var(--muted);margin-top:6px}
+.you select,.you input[type=text]{height:40px;min-height:40px} .score{min-height:44px} .pxf input{height:40px}
+@media (prefers-reduced-motion:reduce){.body,.dk{transition:none}}
+@media (max-width:480px){.s1 .dd{display:none}.s1 .tn{font-size:19px}.s1 .tn small{font-size:10px;margin-left:2px}.s1 .logo{width:22px;height:22px}.s1 .at{min-width:20px;font-size:11px}.strip{padding-left:14px}.ctl button[data-act="top"]{display:inline-flex}.ctl .ib{width:26px}.ctl .ib{width:30px}.s1 .side:has(.sc:not(:empty)) .logo{display:none}}
+@media (min-width:640px){.bc .tiles{grid-template-columns:repeat(5,1fr)}}
+.hint{font-size:13px;color:var(--muted);margin:-8px 0 10px}
+
+.team .lw{display:block;font-family:Barlow;font-size:12px;font-weight:500;color:var(--muted);margin-top:2px}.ivb{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.06em;padding:1px 5px;margin-right:5px;border-radius:3px;border:1px solid currentColor;vertical-align:1px}.iv-loss{color:var(--bad)}.iv-gain{color:var(--good)}.iv-even{color:var(--muted)}.ytv{margin-top:10px;display:grid;gap:4px}.ytv small{font-size:11px;color:var(--muted)}.ytb{position:relative;display:block;width:100%;max-width:560px;aspect-ratio:16/9;padding:0;border:0;border-radius:8px;overflow:hidden;cursor:pointer;background:#000}.ytb img{width:100%;height:100%;object-fit:cover;display:block}.ytp{position:absolute;inset:0;margin:auto;width:64px;height:44px;border-radius:12px;background:rgba(200,0,0,.9);color:#fff;font-size:22px;display:grid;place-items:center}.ytv iframe{width:100%;max-width:560px;aspect-ratio:16/9;border:0;border-radius:8px}.pxf input.tdres{width:9.5em;text-align:left;cursor:default}</style>
+<link rel="stylesheet" href="../theme.css?v=191">
+<link rel="stylesheet" href="../deck.css?v=191">
+<style>
+/* Retro Broncos (Scott 10/19): 1977 "Orange Crush" throwback — Legacy Blue + orange + white, the 1968 "D" on the helmet.
+   The team publishes no hex values (denverbroncos.com/uniforms/throwback, read 2026-10-19); these are blue sampled from the
+   team's own throwback helmet photos (#0040a0–#0048b0, rounded); orange #fe5200 = the field color of the team's own D-logo graphic on /uniforms/history. Outranks ../theme.css (linked above). */
+:root:root:root{color-scheme:dark;--paper:#0a46a8;--card:#073a8c;--ink:#ffffff;--muted:#cfe0ff;--line:#2d63c7;--navy:#ffffff;
+  --orange:#fe5200;--orange-soft:#7a3a0e;--field:#083b90;--bd-line:#2d63c7;--bd-orange:#fe5200;--bd-orange-soft:rgba(245,130,32,.18);--bd-muted:#cfe0ff}
+:root:root:root body{background:#0a46a8}
+.site-nav a{color:#fe5200}.site-nav a[aria-current="page"]{color:#cfe0ff}
+h1 span{color:var(--orange-head,#fe5200)}.preview-banner{background:#fe5200;color:#0a2a66}
+header{display:grid;grid-template-columns:1fr auto;column-gap:14px;align-items:center}
+header .lbl,header h1,header .preview-banner,header .sub{grid-column:1}
+header .mascot{grid-column:2;grid-row:1/span 2;width:96px;height:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+@media (min-width:700px){header .mascot{width:140px;grid-row:1/span 3}}
+.g.bron{--card:#0a46a8;--paper:#1255c0;--line:#fe5200;--navy:#fe5200;--orange:#fe5200;--orange-soft:#fe5200;--field:#1255c0;--muted:#cfe0ff;background:#0a46a8;border-color:#fe5200;box-shadow:inset 6px 0 0 #fe5200}
+.g.bron .chip.mack{color:#0a2a66;background:#fe5200;border-color:#fe5200}.g.bron .lbl{color:#cfe0ff}
+.g.bron .score,.g.bron select{background:#1255c0;color:#fff;border-color:#fe5200}.g.bron.final{background:#0a46a8}
+.logo.retro{object-fit:contain;background:none}
+.dk.tally{border-color:#fe5200}.dk.tally::before{background:#fe5200}.dk.slate::before{background:#fe5200}
+/* About card: white on dark, no team or ledger styling (Scott 10/19) */
+.dk.tally[data-id="about"]{background:#061d4a;border:1px solid #2d63c7;color:#fff}.dk.tally[data-id="about"]::before{background:#fff}
+.dk.tally[data-id="about"] .sub{color:#fff;margin:0 0 10px;font-size:14px}.dk.tally[data-id="about"] .foot{border-top:0;padding-top:0;color:#fff;font-size:14px}.dk.tally[data-id="about"] .foot p{margin:0 0 8px}
+.tb{color:#fe5200;border-color:#fe5200}
+</style><link rel="stylesheet" href="../players.css?v=191"><script src="../players.js?v=191" defer></script>
+<script src="../faces.js?v=191" defer></script>
+</head><body>
+
+<div class="layout"><main>
+<div class="wrap">
+  <header>
+    <div class="lbl">NFL 2026 · Week 12 · ratings after Week 11 (all 13 final)</div>
+    <h1>Week 12 <span>Board</span></h1>
+    <img class="mascot" src="../img/broncos-d-logo.png" alt="Denver Broncos D logo, 1970–1996" loading="eager">
+    <div class="sub">Mack's line, the DraftKings market (via ESPN, fetched Nov 24 9:07 AM PT), and his pick for every game. Enter Todd's, Ryota's and Scott's winner, spread and over/under, then the finals as the games go. Everything saves to a shared board, so all three of you see the same page.</div>
+  </header>
+<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../picks/week12.html" aria-current="page">Picks</a><a href="../power-rankings/">Power Rankings</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../power-rankings/season.html">Season</a><a href="../broncos/week11.html">Broncos</a></nav>
+
+<!-- SEASONBOARD -->
+<style>.sboard{margin:10px 0 14px;padding:12px 14px;border:2px solid #c9a227;border-radius:12px;background:linear-gradient(180deg,rgba(201,162,39,.12),transparent)}.sboard h2{margin:0 0 8px;font-size:1.1rem}.sb-row{display:flex;align-items:center;gap:10px;padding:6px 4px;border-top:1px solid var(--line);font-size:1.05rem}.sb-rk{width:1.4em;color:var(--muted);font-weight:700}.sb-nm{flex:1;font-weight:600}.sb-pt{font-weight:800;font-variant-numeric:tabular-nums}.sb-lead{font-size:1.2rem}.sb-star{color:#d4a017;font-size:1.25em;margin-left:4px}.sb-how{margin:0 0 14px;font-size:.92rem}.sb-how summary{cursor:pointer;font-weight:700;color:#d4a017}.sb-how p{margin:.5em 0}.pxt{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.pxt th,.pxt td{padding:6px 4px;border-top:1px solid var(--line);text-align:center}.pxt th{font-size:.8rem;color:var(--muted)}.pxt td.sb-nm{text-align:left}.pxt td.pb{color:#f3d27a;font-weight:800}.sb-wk{color:var(--muted);font-size:.85rem;margin-right:10px}.sb-note{margin:0 0 6px;font-size:.85rem;color:var(--muted)}</style>
+  <section class="sboard" aria-label="Season standings"><h2>Season standings · Weeks 4–11</h2><div class="sb-row sb-lead"><span class="sb-rk">1</span><span class="sb-nm">Scott <span class=sb-star aria-label=leader>★</span></span><span class="sb-pt">200 <small>pts</small></span></div><div class="sb-row"><span class="sb-rk">2</span><span class="sb-nm">Mack</span><span class="sb-pt">191 <small>pts</small></span></div><div class="sb-row"><span class="sb-rk">3</span><span class="sb-nm">Ryota</span><span class="sb-pt">179 <small>pts</small></span></div><div class="sb-row"><span class="sb-rk">4</span><span class="sb-nm">Todd</span><span class="sb-pt">170 <small>pts</small></span></div></section>
+  <section class="sboard" aria-label="Common picks standings"><h2>Made picks only, missed thrown out · Weeks 4–11</h2><p class="sb-note">307 of 344 picks counted: a pick anyone left blank is thrown out for everyone. <a href="ledger.html">See every pick →</a></p><div class="sb-row sb-lead"><span class="sb-rk">1</span><span class="sb-nm">Scott <span class=sb-star aria-label=leader>★</span></span><span class="sb-pt">183 <small>pts</small></span></div><div class="sb-row"><span class="sb-rk">2</span><span class="sb-nm">Ryota</span><span class="sb-pt">170 <small>pts</small></span></div><div class="sb-row"><span class="sb-rk">3</span><span class="sb-nm">Mack</span><span class="sb-pt">168 <small>pts</small></span></div><div class="sb-row"><span class="sb-rk">4</span><span class="sb-nm">Todd</span><span class="sb-pt">156 <small>pts</small></span></div></section>
+  <section class="sboard" aria-label="Props standings"><h2>Broncos props game · Weeks 6, 7, 8, 9, 11</h2><p class="sb-note">Over/under on total points in the Broncos game, plus total sacks and total takeaways (Weeks 6–10), then total tackles for loss and the first Broncos TD scorer (from Week 11). Gold = best at that pick. <a href="ledger.html">See every pick →</a></p><div style="overflow-x:auto"><table class="pxt"><tr><th></th><th>Sacks</th><th>TFL</th><th>Takeaways</th><th>Points</th><th>Overall</th></tr><tr class="sb-lead"><td class="sb-nm">Mack <span class=sb-star aria-label=leader>★</span></td><td class="pb">3-1</td><td class="pb">1-0</td><td class="">2-2</td><td class="">3-2</td><td class="sb-pt">9-5</td></tr><tr class=""><td class="sb-nm">Todd</td><td class="">2-2</td><td class="">0-1</td><td class="pb">3-1</td><td class="">3-2</td><td class="sb-pt">8-6</td></tr><tr class=""><td class="sb-nm">Ryota</td><td class="pb">3-1</td><td class="">0-1</td><td class="">0-4</td><td class="pb">4-1</td><td class="sb-pt">7-7</td></tr><tr class=""><td class="sb-nm">Scott</td><td class="">2-2</td><td class="">0-1</td><td class="">1-3</td><td class="">3-2</td><td class="sb-pt">6-8</td></tr></table></div></section>
+  <section class="sboard" aria-label="King titles"><h2>King titles · Weeks 4–11</h2><p class="sb-note">A king title is a week won on points. * = a tied week, a shared crown that counts for each winner.</p><div class="sb-row sb-lead"><span class="sb-rk">1</span><span class="sb-nm">Scott <span class=sb-star aria-label=leader>★</span></span><span class="sb-wk">Weeks 4, 6, 8*, 10*</span><span class="sb-pt">4 <small>👑</small> <small>(2 shared, 2 unshared)</small></span></div><div class="sb-row sb-lead"><span class="sb-rk">2</span><span class="sb-nm">Mack <span class=sb-star aria-label=leader>★</span></span><span class="sb-wk">Weeks 8*, 9, 10*, 11</span><span class="sb-pt">4 <small>👑</small> <small>(2 shared, 2 unshared)</small></span></div><div class="sb-row"><span class="sb-rk">3</span><span class="sb-nm">Ryota</span><span class="sb-wk">Weeks 5, 7</span><span class="sb-pt">2 <small>👑</small> <small>(0 shared, 2 unshared)</small></span></div><div class="sb-row"><span class="sb-rk">4</span><span class="sb-nm">Todd</span><span class="sb-wk">—</span><span class="sb-pt">0 <small>👑</small></span></div></section>
+  <details class="sb-how"><summary>How these two boards work</summary><p><b>Season standings</b> adds up every point each of us has earned this season, scored exactly like the weekly board: one point each for the right winner, the right side of the spread, and the right over/under (the Broncos props game counts the same way). A blank pick or a push scores nothing. Mack's picks are graded the same way as everyone else's.</p><p><b>Made picks only, missed thrown out</b> is the even-footing view. It counts only the picks all four of us made. If anyone left a pick blank, whether a winner, a spread or an over/under, that pick is thrown out for everyone, so nobody gains or loses ground from a skipped pick. That is why its totals are lower, and why the order can differ from the season standings.</p><p><a href="ledger.html"><b>See every pick →</b></a> who picked what in every game, right or wrong, and which picks were thrown out.</p><p><b>The gold star</b> marks the leader of each board. If two people tie for first, both get a star. Both boards update each week once the finals are in.</p></details>
+<!-- /SEASONBOARD -->
+<!-- LASTWEEK -->
+  <section class="rec">
+    <div class="lbl">Last week</div>
+    <div class="recrow">
+      <div><b>Week 11</b> Final — Mack 24 pts · Ryota 21 pts · Todd 17 pts · Scott 17 pts. <b>Mack</b> took the week. <a href="../picks/week11.html">Week 11 board →</a></div>
+    </div>
+  </section>
+<!-- /LASTWEEK -->
+
+  <section class="rec">
+    <div class="lbl">Mack's record so far</div>
+    <div class="recrow">
+      <div><b>Week 9</b> 13-2 straight up · 7-8 against the spread · avg miss 9.0 pts (book 8.3)</div>
+      <div><b>Week 10</b> 10-4 straight up · 10-4 against the spread · avg miss 9.9 pts (book 10.8)</div>
+      <div><b>Week 11</b> 9-4 straight up · 4-9 against the spread · avg miss 8.4 pts (book 7.8)</div>
+      <div><b>Season</b> 95-52 straight up · 73-70-4 against the spread</div>
+      <div class="l4l"><b>↳ Same weeks as Todd, Ryota and Scott (Weeks 4–11)</b> 75-34-1 winners · 53-54-3 against the spread · 57-58 over/under · 6-3 props · 191 pts</div>
+    </div>
+  </section>
+<!-- PEOPLEREC -->
+  <section class="rec prec" data-who="Todd">
+    <div class="lbl">Todd's record so far</div>
+    <div class="recrow">
+      <div><b>Week 9</b> 12-2 winners · 6-8 against the spread · 7-8 over/under · 2-0 props · 27 pts</div>
+      <div><b>Week 10</b> 10-4 winners · 9-5 against the spread · 6-8 over/under · 25 pts</div>
+      <div><b>Week 11</b> 7-5 winners · 5-7 against the spread · 5-8 over/under · 0-1 props · 17 pts</div>
+      <div><b>Season</b> 70-36-1 winners · 46-58-3 against the spread · 49-63 over/under · 5-4 props · 170 pts</div>
+    </div>
+  </section>
+  <section class="rec prec" data-who="Ryota">
+    <div class="lbl">Ryota's record so far</div>
+    <div class="recrow">
+      <div><b>Week 9</b> 10-2 winners · 4-8 against the spread · 7-6 over/under · 1-1 props · 22 pts</div>
+      <div><b>Week 10</b> 9-5 winners · 5-9 against the spread · 9-5 over/under · 23 pts</div>
+      <div><b>Week 11</b> 8-4 winners · 6-6 against the spread · 7-6 over/under · 0-1 props · 21 pts</div>
+      <div><b>Season</b> 68-37-1 winners · 53-47-3 against the spread · 55-52 over/under · 3-6 props · 179 pts</div>
+    </div>
+  </section>
+  <section class="rec prec" data-who="Scott">
+    <div class="lbl">Scott's record so far</div>
+    <div class="recrow">
+      <div><b>Week 9</b> 12-2 winners · 5-9 against the spread · 9-6 over/under · 1-1 props · 27 pts</div>
+      <div><b>Week 10</b> 10-4 winners · 10-4 against the spread · 8-6 over/under · 28 pts</div>
+      <div><b>Week 11</b> 7-3 winners · 3-7 against the spread · 7-4 over/under · 0-1 props · 17 pts</div>
+      <div><b>Season</b> 74-32-1 winners · 59-45-3 against the spread · 64-48 over/under · 3-6 props · 200 pts</div>
+    </div>
+  </section>
+<!-- /PEOPLEREC -->
+
+  <div class="toolbar"><div class="status"><span class="dot" id="dbdot"></span><span id="dbmsg">Connecting to the shared board…</span></div><button class="tb" type="button" id="reset-order" title="Default order and open cards on this device">Reset order</button></div>
+
+  <p class="hint">Tap a card to open it. Press and hold a card, then slide it up or down to reorder. Order is saved on this device.</p>
+<div id="deck" class="deck" aria-label="Board cards"></div>
+
+<nav class="site-nav" aria-label="Site"><a href="../">Hub</a><a href="../picks/week12.html" aria-current="page">Picks</a><a href="../power-rankings/">Power Rankings</a><a href="../standings.html">Standings</a><a href="../injuries.html">Injuries</a><a href="../leaders.html">Leaders</a><a href="../power-rankings/season.html">Season</a><a href="../broncos/week11.html">Broncos</a></nav>
+  <footer class="foot">
+    <p><b>How to read a card.</b> Lines are home-side, book sign: a negative number means the home team is favored by that much. <b>Mack</b> is his line after this week's verified injury hits. <b>Edge</b> is his line minus the market; he takes the side his line favors, and the further the edge is from zero the stronger the opinion. The win % is his straight-up confidence.</p>
+    <p><b>Key injuries</b> are the top three per team from the ESPN injury report (Out, IR, Doubtful, Questionable); the arrow shows the next healthy player at that spot on the ESPN depth chart. "Depth piece" means the injured player was not a starter. Players hurt in last week's games are included. Fetched Nov 24.</p>
+    <p><b>QB notes applied.</b> Chargers: Herbert expected to play. Patriots: Maye out, Tommy DeVito starts. Seahawks: Darnold expected to play. Ravens: Jackson out, Jacoby Brissett starts. Dolphins: Willis out, Kyle McCord starts. Eagles: Hurts out, Joe Milton III starts. Giants: Dart out, J.J. McCarthy starts. Colts: Jones out, Anthony Richardson starts. Raiders: Cousins out, Fernando Mendoza starts. Vikings: Murray out, Kirk Cousins starts. Cardinals: II out, Josh Johnson starts.</p>
+    <p><b>Card colors.</b> Before a game, a card wears the colors of the team Mack picked to win. Once the final is in, it switches to the colors of the team that actually won. The Broncos game stays in Broncos colours either way.</p>
+    <p><b>Picks lock at kickoff</b> (the Sunday 10 AM games lock at 10:15 AM Pacific). You can change a pick any time before then. After that, everyone's picks for that game are read-only; the scores can still be entered.</p>
+    <p><b>Points.</b> One point for each correct pick: winner, spread, and over/under, so up to three a game. A push or a blank pick scores nothing. Mack's picks sit in the row under yours on each card. Like everyone's, they can change until that game kicks off and not after. The tiles at the top show each person's total, with the three records underneath. Mack is scored the same way on the picks he made: a winner in every game, a spread pick in every game (the side his line favors against the market; where the two are equal, the side of his winner), and an over/under in every game. His totals come from each team's points scored and allowed so far this season, with a deduction for a missing starting quarterback.</p>
+    <p>Prepared by: Mack. Picks and finals are shared across devices (refreshes every 20 seconds); the ratings update uses the official finals. Mack's NFL Desk, a product of the Village v1.91 · v1.1.400 · © 2026 Fionn Rith / the Village · code PolyForm-NC 1.0 · writing CC BY-NC 4.0 · not affiliated with the NFL or ESPN · <a href="../NOTICE">notice</a></p>
+  </footer>
+</div>
+</main>
+</div>
+
+<script>
+// Game data: from Week12_Intel.json + ratings after Week 11, built by nfl_picks_board.py (Mack, 2026-11-24).
+// line = Mack's line with injuries, mkt = market, both home-side book sign. p = Mack's SU win% for his pick.
+const GAMES = [
+ {id:"g01",ko:"2026-11-26T01:00Z",inj:{"away": ["Kevin Zeitler (G, Q · starter) → Laken Tomlinson (G, 12 yr) ⟦LOSS⟧", "Sean Rhyan (G, Q · starter) → John Williams (G, 2 yr) ⟦LOSS⟧", "Skyy Moore (WR, Q · 2nd string · #254/441 catches) → depth piece ⟦EVEN⟧", "Bo Melton (WR, Q · 2nd string · #281/441 catches) → depth piece ⟦EVEN⟧"], "home": ["Myles Garrett (DE, Q · starter · #71/361 sacks) → Desjuan Johnson (DE, 4 yr) ⟦LOSS⟧", "Justin Dedich (G, IR · 3rd string) → depth piece ⟦EVEN⟧", "Kobie Turner (DE, IR · 3rd string · #381/500 tackles) → depth piece ⟦EVEN⟧", "Coleman Shelton (C, Out · 2nd string) → depth piece ⟦EVEN⟧"]},win:"Wednesday night",kick:"Wed Nov 25 · 5:00 PM PT",away:"Packers",home:"Rams",base:-6.1,line:-5.8,mkt:-2.5,ou:44.5,mou:"Under",su:"Rams",p:67,ats:"Rams",mu:{"rows":[{"k":"Passing","wa":"","wh":"Packers","ra":10,"rh":13},{"k":"Running","wa":"Rams","wh":"Rams","ra":32,"rh":7},{"k":"Sacks","wa":"Packers","wh":"Rams","ra":18,"rh":5},{"k":"Third down","wa":"Rams","wh":"Rams","ra":20,"rh":9},{"k":"Turnovers","wa":"Rams","wh":"Packers","ra":21,"rh":21}],"aw":3,"hm":6,"g":10},ar:"6-4 · #7 seed",hr:"6-4 · tied for #7 seed, out on tiebreak",al:"Wk 11: bye",hl:"Wk 11: bye",pm:{"Packers":[{"inj":"","injf":"","role":"QB","name":"Jordan Love","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4036378.png","stat":"96.9 rating","rank":9,"vs":"pass D","vrank":8,"res":"even"},{"inj":"","injf":"","role":"RB","name":"Kaleb Johnson","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4819231.png","stat":"214 rush yds","rank":32,"vs":"run D","vrank":11,"res":"loses"},{"inj":"","injf":"","role":"Target","name":"Christian Watson","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4248528.png","stat":"916 rec yds","rank":3,"vs":"pass D","vrank":8,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"Lukas Van Ness","pos":"DE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4686906.png","stat":"6 sacks","rank":14,"vs":"protection","vrank":5,"res":"loses"}],"Rams":[{"inj":"","injf":"","role":"QB","name":"Matthew Stafford","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/12483.png","stat":"92.8 rating","rank":14,"vs":"pass D","vrank":3,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"Kyren Williams","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4430737.png","stat":"616 rush yds","rank":15,"vs":"run D","vrank":14,"res":"even"},{"inj":"","injf":"","role":"Target","name":"Puka Nacua","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4426515.png","stat":"715 rec yds","rank":12,"vs":"pass D","vrank":3,"res":"loses"},{"inj":"","injf":"","role":"Rusher","name":"Byron Young","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4875196.png","stat":"5.5 sacks","rank":16,"vs":"protection","vrank":18,"res":"even"}]}},
+ {id:"g02",ko:"2026-11-26T18:00Z",inj:{"away": ["Kyler Gordon (CB, Q · starter · #393/478 PD) → no healthy backup listed ⟦LOSS⟧", "Theo Benedet (OT, Q · starter) → Ozzy Trapilo (OT, 2 yr) ⟦LOSS⟧", "Zavier Scott (RB, IR · 4th string) → depth piece ⟦EVEN⟧", "Kentavius Street (DT, IR · 3rd string · #202/361 sacks) → depth piece ⟦EVEN⟧"], "home": ["DJ Wonnum (LB, Q · starter · #16/361 sacks) → Tyler Lacy (DT, 4 yr) ⟦LOSS⟧", "Sam LaPorta (TE, Q · starter · #37/438 rec yds) → Brock Wright (TE, 6 yr) ⟦LOSS⟧", "Ennis Rakestraw Jr. (CB, Q · 2nd string · #294/478 PD) → depth piece ⟦EVEN⟧", "Chuck Clark (S, Q · 2nd string · #58/500 tackles) → depth piece ⟦EVEN⟧"]},win:"Thursday",kick:"Thu Nov 26 · 10:00 AM PT",away:"Bears",home:"Lions",base:-2.3,line:-1.5,mkt:2.5,ou:55.5,mou:"Under",su:"Lions",p:54,ats:"Lions",mu:{"rows":[{"k":"Passing","wa":"","wh":"Lions","ra":12,"rh":6},{"k":"Running","wa":"","wh":"Lions","ra":14,"rh":9},{"k":"Sacks","wa":"Lions","wh":"Bears","ra":13,"rh":13},{"k":"Third down","wa":"Bears","wh":"Bears","ra":5,"rh":11},{"k":"Turnovers","wa":"Lions","wh":"Lions","ra":28,"rh":2}],"aw":3,"hm":5,"g":10},ar:"8-2 · #5 seed",hr:"8-2 · #2 seed",al:"Wk 11: W 21-13 vs Saints",hl:"Wk 11: W 31-21 vs Buccaneers",pm:{"Bears":[{"inj":"","injf":"","role":"QB","name":"Caleb Williams","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4431611.png","stat":"95.9 rating","rank":11,"vs":"pass D","vrank":9,"res":"even"},{"inj":"","injf":"","role":"RB","name":"D'Andre Swift","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4259545.png","stat":"627 rush yds","rank":14,"vs":"run D","vrank":13,"res":"even"},{"inj":"","injf":"","role":"Target","name":"Luther Burden III","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4685278.png","stat":"654 rec yds","rank":16,"vs":"pass D","vrank":9,"res":"loses"},{"inj":"","injf":"","role":"Rusher","name":"Jeffery Simmons","pos":"DT","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4035369.png","stat":"5 sacks","rank":17,"vs":"protection","vrank":13,"res":"loses"}],"Lions":[{"inj":"","injf":"","role":"QB","name":"Jared Goff","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3046779.png","stat":"107.7 rating","rank":4,"vs":"pass D","vrank":22,"res":"wins"},{"inj":"","injf":"","role":"RB","name":"Jahmyr Gibbs","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4429795.png","stat":"1098 rush yds","rank":1,"vs":"run D","vrank":25,"res":"wins"},{"inj":"","injf":"","role":"Target","name":"Amon-Ra St. Brown","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4374302.png","stat":"792 rec yds","rank":7,"vs":"pass D","vrank":22,"res":"wins"},{"inj":"Q","injf":"Questionable","role":"Rusher","name":"DJ Wonnum","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4038849.png","stat":"7 sacks","rank":13,"vs":"protection","vrank":13,"res":"even"}]}},
+ {id:"g03",ko:"2026-11-26T21:30Z",inj:{"away": ["Jonathan Jones (CB, Q · starter · #112/478 PD) → Riq Woolen (CB, 5 yr) ⟦GAIN⟧", "Smael Mondon Jr. (LB, Q · 2nd string · #482/500 tackles) → depth piece ⟦EVEN⟧", "Will Shipley (RB, Q · 2nd string · #113/274 rush yds) → depth piece ⟦EVEN⟧", "Tanner McKee (QB, Q · 2nd string · #36/80 pass yds) → depth piece ⟦EVEN⟧"], "home": ["P.J. Locke (S, Q · starter · #245/478 PD) → Markquese Bell (S, 5 yr) ⟦GAIN⟧", "Dee Winters (LB, Q · starter · #120/500 tackles) → Justin Barron (LB, 1 yr) ⟦LOSS⟧", "Jake Ferguson (TE, Q · starter · #26/227 rec TD) → Brevyn Spann-Ford (TE, 3 yr) ⟦LOSS⟧", "Jonathan Mingo (WR, Q · 2nd string · #278/438 rec yds) → depth piece ⟦EVEN⟧"]},win:"Thursday",kick:"Thu Nov 26 · 1:30 PM PT",away:"Eagles",home:"Cowboys",base:-6.3,line:-10.1,mkt:-8.5,ou:47.5,mou:"Under",su:"Cowboys",p:77,ats:"Cowboys",mu:{"rows":[{"k":"Passing","wa":"Cowboys","wh":"Cowboys","ra":32,"rh":9},{"k":"Running","wa":"Eagles","wh":"","ra":28,"rh":17},{"k":"Sacks","wa":"Cowboys","wh":"Cowboys","ra":30,"rh":3},{"k":"Third down","wa":"Eagles","wh":"Cowboys","ra":26,"rh":3},{"k":"Turnovers","wa":"Eagles","wh":"Cowboys","ra":10,"rh":10}],"aw":3,"hm":6,"g":10},ar:"3-7 · 3 behind #7 seed",hr:"5-6 · 1.5 behind #7 seed",al:"Wk 11: W 19-16 vs Steelers",hl:"Wk 11: W 51-30 vs Titans",pm:{"Eagles":[{"inj":"","injf":"","role":"QB","name":"Jalen Hurts","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4040715.png","stat":"84.7 rating","rank":19,"vs":"pass D","vrank":25,"res":"wins"},{"inj":"","injf":"","role":"RB","name":"Saquon Barkley","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3929630.png","stat":"371 rush yds","rank":28,"vs":"run D","vrank":32,"res":"wins"},{"inj":"","injf":"","role":"Target","name":"DeVonta Smith","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4241478.png","stat":"351 rec yds","rank":31,"vs":"pass D","vrank":25,"res":"loses"},{"inj":"","injf":"","role":"Rusher","name":"Nolan Smith Jr.","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4426331.png","stat":"6 sacks","rank":14,"vs":"protection","vrank":3,"res":"loses"}],"Cowboys":[{"inj":"","injf":"","role":"QB","name":"Dak Prescott","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/2577417.png","stat":"101.0 rating","rank":8,"vs":"pass D","vrank":16,"res":"wins"},{"inj":"","injf":"","role":"RB","name":"Javonte Williams","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4361579.png","stat":"759 rush yds","rank":9,"vs":"run D","vrank":16,"res":"wins"},{"inj":"","injf":"","role":"Target","name":"CeeDee Lamb","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4241389.png","stat":"1108 rec yds","rank":2,"vs":"pass D","vrank":16,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"Quinnen Williams","pos":"DT","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4040982.png","stat":"8 sacks","rank":7,"vs":"protection","vrank":30,"res":"wins"}]},qb:true},
+ {id:"g04",ko:"2026-11-27T01:20Z",inj:{"away": ["Trey Smith (G, Q · starter) → Hunter Nourzad (C, 3 yr) ⟦LOSS⟧", "Jaylon Moore (OT, Q · starter) → Joshua Ezeudu (G, 5 yr) ⟦LOSS⟧", "Kenneth Walker III (RB, Q · starter · #5/274 rush yds) → Emmett Johnson (RB, rookie) ⟦EVEN⟧", "Ben VanSumeren (FB, Q · starter) → no healthy backup listed ⟦LOSS⟧"], "home": ["T.J. Sanders (DT, Q · starter) → Landon Jackson (DE, 2 yr) ⟦EVEN⟧", "Dorian Williams (LB, Q · starter · #64/500 tackles) → Kaleb Elarms-Orr (LB, rookie) ⟦LOSS⟧", "Greg Rousseau (LB, Q · starter · #2/361 sacks) → Michael Hoecht (DE, 6 yr) ⟦LOSS⟧", "Christian Benford (CB, Q · starter · #28/478 PD) → Dorian Strong (CB, 2 yr) ⟦LOSS⟧"]},win:"Thursday night",kick:"Thu Nov 26 · 5:20 PM PT",away:"Chiefs",home:"Bills",base:-3.3,line:-3.3,mkt:-3.0,ou:47.5,mou:"Over",su:"Bills",p:60,ats:"Bills",mu:{"rows":[{"k":"Passing","wa":"Chiefs","wh":"Bills","ra":3,"rh":4},{"k":"Running","wa":"Chiefs","wh":"","ra":2,"rh":8},{"k":"Sacks","wa":"Chiefs","wh":"Bills","ra":2,"rh":12},{"k":"Third down","wa":"Bills","wh":"","ra":9,"rh":8},{"k":"Turnovers","wa":"Chiefs","wh":"Chiefs","ra":2,"rh":25}],"aw":5,"hm":3,"g":10},ar:"8-2 · #5 seed",hr:"9-1 · #1 seed",al:"Wk 11: W 34-7 vs Cardinals",hl:"Wk 11: W 26-9 vs Dolphins",pm:{"Chiefs":[{"inj":"","injf":"","role":"QB","name":"Patrick Mahomes","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3139477.png","stat":"108.3 rating","rank":3,"vs":"pass D","vrank":10,"res":"wins"},{"inj":"Q","injf":"Questionable","role":"RB","name":"Kenneth Walker III","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4567048.png","stat":"872 rush yds","rank":5,"vs":"run D","vrank":15,"res":"wins"},{"inj":"","injf":"","role":"Target","name":"Travis Kelce","pos":"TE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/15847.png","stat":"586 rec yds","rank":18,"vs":"pass D","vrank":10,"res":"loses"},{"inj":"","injf":"","role":"Rusher","name":"George Karlaftis","pos":"DE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4426659.png","stat":"8 sacks","rank":7,"vs":"protection","vrank":12,"res":"wins"}],"Bills":[{"inj":"","injf":"","role":"QB","name":"Josh Allen","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3918298.png","stat":"93.5 rating","rank":13,"vs":"pass D","vrank":7,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"James Cook III","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4379399.png","stat":"1060 rush yds","rank":2,"vs":"run D","vrank":5,"res":"even"},{"inj":"","injf":"","role":"Target","name":"Khalil Shakir","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4373678.png","stat":"539 rec yds","rank":21,"vs":"pass D","vrank":7,"res":"loses"},{"inj":"Q","injf":"Questionable","role":"Rusher","name":"Greg Rousseau","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4362506.png","stat":"10 sacks","rank":2,"vs":"protection","vrank":2,"res":"even"}]}},
+ {id:"g05",ko:"2026-11-27T20:00Z",inj:{"away": ["Brandon Jones (S, Q · starter · #24/160 INT) → JL Skinner (S, 4 yr) ⟦LOSS⟧", "Caleb Lohner (TE, IR · 5th string) → depth piece ⟦EVEN⟧", "Eyioma Uwazurike (DE, IR · 3rd string · #223/361 sacks) → depth piece ⟦EVEN⟧", "RJ Harvey (RB, IR · 3rd string · #102/441 catches) → depth piece ⟦EVEN⟧"], "home": ["Alex Highsmith (LB, D · starter · #22/361 sacks) → Jack Sawyer (LB, 2 yr) ⟦LOSS⟧", "Michael Pittman Jr. (WR, IR · 2nd string · #219/438 rec yds) → depth piece ⟦EVEN⟧", "Gennings Dunker (G, IR · 3rd string) → depth piece ⟦EVEN⟧", "Mason McCormick (G, IR · 4th string) → depth piece ⟦EVEN⟧"]},win:"Friday",kick:"Fri Nov 27 · 12:00 PM PT",away:"Broncos",home:"Steelers",base:2.1,line:3.4,mkt:3.0,ou:38.5,mou:"Over",su:"Broncos",p:60,ats:"Broncos",mu:{"rows":[{"k":"Passing","wa":"Steelers","wh":"Broncos","ra":22,"rh":28},{"k":"Running","wa":"Steelers","wh":"Steelers","ra":28,"rh":5},{"k":"Sacks","wa":"Broncos","wh":"Broncos","ra":1,"rh":27},{"k":"Third down","wa":"Steelers","wh":"","ra":30,"rh":22},{"k":"Turnovers","wa":"Broncos","wh":"Steelers","ra":5,"rh":5}],"aw":4,"hm":5,"g":10},ar:"8-2 · #2 seed",hr:"6-4 · #7 seed",al:"Wk 11: W 38-24 vs Raiders",hl:"Wk 11: L 16-19 at Eagles",pm:{"Broncos":[{"inj":"","injf":"","role":"QB","name":"Bo Nix","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4426338.png","stat":"83.3 rating","rank":23,"vs":"pass D","vrank":17,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"J.K. Dobbins","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4241985.png","stat":"324 rush yds","rank":30,"vs":"run D","vrank":4,"res":"loses"},{"inj":"","injf":"","role":"Target","name":"Jaylen Waddle","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4372016.png","stat":"398 rec yds","rank":28,"vs":"pass D","vrank":17,"res":"loses"},{"inj":"","injf":"","role":"Rusher","name":"Zach Allen","pos":"DE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3915282.png","stat":"5 sacks","rank":17,"vs":"protection","vrank":27,"res":"wins"}],"Steelers":[{"inj":"","injf":"","role":"QB","name":"Aaron Rodgers","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/8439.png","stat":"86.6 rating","rank":18,"vs":"pass D","vrank":6,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"Jaylen Warren","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4569987.png","stat":"747 rush yds","rank":10,"vs":"run D","vrank":28,"res":"wins"},{"inj":"","injf":"","role":"Target","name":"DK Metcalf","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4047650.png","stat":"434 rec yds","rank":26,"vs":"pass D","vrank":6,"res":"loses"},{"inj":"","injf":"","role":"Rusher","name":"T.J. Watt","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3045282.png","stat":"7.5 sacks","rank":9,"vs":"protection","vrank":1,"res":"loses"}]},bron:true,px:{sk:10.5,td:["Jonah Coleman", "J.K. Dobbins", "Bo Nix", "RJ Harvey", "Jaylen Waddle", "Courtland Sutton", "Pat Bryant", "Evan Engram", "Adam Trautman", "Troy Franklin", "Marvin Mims Jr.", "Lil'Jordan Humphrey"],msk:"Over",mtd:"Jonah Coleman",tdc:[6, 3, 2, 2, 2, 2, 2, 1, 1, 0, 0, 0, 2]}},
+ {id:"g06",ko:"2026-11-29T18:00Z",inj:{"away": ["Pete Werner (LB, Q · starter · #35/500 tackles) → Danny Stutsman (LB, 2 yr) ⟦EVEN⟧", "Erik McCoy (C, Q · starter) → William Sherman (G, 2 yr) ⟦LOSS⟧", "Martin Emerson Jr. (CB, Q · starter · #32/160 INT) → Quincy Riley (CB, 2 yr) ⟦EVEN⟧", "Taliese Fuaga (OT, Q · starter) → Mason Murphy (OT, rookie) ⟦LOSS⟧"], "home": ["Dalton Risner (G, Q · starter) → Jalen Rivers (G, 2 yr) ⟦LOSS⟧", "Jalen Davis (CB, IR · 3rd string · #231/478 PD) → depth piece ⟦EVEN⟧", "Andrei Iosivas (WR, IR · 2nd string · #346/441 catches) → depth piece ⟦EVEN⟧", "Oren Burks (LB, IR · 2nd string · #488/500 tackles) → depth piece ⟦EVEN⟧"]},win:"Sunday 10 AM",kick:"Sun Nov 29 · 10:00 AM PT",away:"Saints",home:"Bengals",base:-12.4,line:-12.2,mkt:-9.5,ou:50.5,mou:"Under",su:"Bengals",p:82,ats:"Bengals",mu:{"rows":[{"k":"Passing","wa":"Bengals","wh":"Bengals","ra":25,"rh":5},{"k":"Running","wa":"Saints","wh":"","ra":27,"rh":26},{"k":"Sacks","wa":"Bengals","wh":"","ra":23,"rh":8},{"k":"Third down","wa":"Saints","wh":"Bengals","ra":7,"rh":2},{"k":"Turnovers","wa":"Bengals","wh":"Bengals","ra":28,"rh":10}],"aw":2,"hm":6,"g":10},ar:"3-7 · 3 behind #7 seed",hr:"7-3 · #4 seed",al:"Wk 11: L 13-21 at Bears",hl:"Wk 11: L 20-22 at Commanders",pm:{"Saints":[{"inj":"","injf":"","role":"QB","name":"Tyler Shough","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4360689.png","stat":"88.2 rating","rank":17,"vs":"pass D","vrank":13,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"Tyler Shough","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4360689.png","stat":"221 rush yds","rank":31,"vs":"run D","vrank":31,"res":"even"},{"inj":"","injf":"","role":"Target","name":"Chris Olave","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4361370.png","stat":"866 rec yds","rank":5,"vs":"pass D","vrank":13,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"Carl Granderson","pos":"DE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3918310.png","stat":"8.5 sacks","rank":5,"vs":"protection","vrank":8,"res":"even"}],"Bengals":[{"inj":"","injf":"","role":"QB","name":"Joe Burrow","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3915511.png","stat":"116.7 rating","rank":2,"vs":"pass D","vrank":23,"res":"wins"},{"inj":"","injf":"","role":"RB","name":"Chase Brown","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4362238.png","stat":"447 rush yds","rank":22,"vs":"run D","vrank":21,"res":"even"},{"inj":"","injf":"","role":"Target","name":"Ja'Marr Chase","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4362628.png","stat":"909 rec yds","rank":4,"vs":"pass D","vrank":23,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"Boye Mafe","pos":"DE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4240754.png","stat":"9.5 sacks","rank":3,"vs":"protection","vrank":23,"res":"wins"}]}},
+ {id:"g07",ko:"2026-11-29T18:00Z",inj:{"away": ["Greg Newsome II (CB, Out · starter · #26/478 PD) → Colton Hood (CB, rookie) ⟦LOSS⟧", "Tyrone Tracy Jr. (RB, IR · 4th string · #47/110 rush TD) → depth piece ⟦EVEN⟧", "Tremaine Edmunds (LB, IR · 3rd string · #98/500 tackles) → depth piece ⟦EVEN⟧", "Braxton Berrios (WR, IR · 3rd string) → depth piece ⟦EVEN⟧"], "home": ["Bernhard Raimann (OT, Q · starter) → Luke Tenuta (OT, 4 yr) ⟦LOSS⟧", "Jalen Travis (OT, Q · starter) → Matt Goncalves (G, 3 yr) ⟦LOSS⟧", "Charvarius Ward (CB, Q · starter · #22/478 PD) → Johnathan Edwards (CB, 2 yr) ⟦LOSS⟧", "Jerry Tillery (DT, Q · 2nd string · #208/361 sacks) → depth piece ⟦EVEN⟧"]},win:"Sunday 10 AM",kick:"Sun Nov 29 · 10:00 AM PT",away:"Giants",home:"Colts",base:4.1,line:5.0,mkt:6.5,ou:41.5,mou:"Under",su:"Giants",p:64,ats:"Colts",mu:{"rows":[{"k":"Passing","wa":"Giants","wh":"Giants","ra":21,"rh":31},{"k":"Running","wa":"","wh":"Colts","ra":24,"rh":16},{"k":"Sacks","wa":"Colts","wh":"Colts","ra":23,"rh":20},{"k":"Third down","wa":"Colts","wh":"Giants","ra":16,"rh":29},{"k":"Turnovers","wa":"Giants","wh":"Giants","ra":21,"rh":27}],"aw":5,"hm":4,"g":10},ar:"6-3-1 · #3 seed",hr:"3-8 · 3.5 behind #7 seed",al:"Wk 11: W 23-18 vs Jaguars",hl:"Wk 11: L 3-26 at Texans",pm:{"Giants":[{"inj":"","injf":"","role":"QB","name":"J.J. McCarthy","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4433970.png","stat":"84.5 rating","rank":20,"vs":"pass D","vrank":28,"res":"wins"},{"inj":"","injf":"","role":"RB","name":"Cam Skattebo","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4696981.png","stat":"530 rush yds","rank":20,"vs":"run D","vrank":29,"res":"wins"},{"inj":"","injf":"","role":"Target","name":"Malik Nabers","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4595348.png","stat":"747 rec yds","rank":10,"vs":"pass D","vrank":28,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"Arvell Reese","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4950400.png","stat":"4.5 sacks","rank":25,"vs":"protection","vrank":20,"res":"loses"}],"Colts":[{"inj":"","injf":"","role":"QB","name":"Daniel Jones","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3917792.png","stat":"65.4 rating","rank":30,"vs":"pass D","vrank":3,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"Jonathan Taylor","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4242335.png","stat":"760 rush yds","rank":8,"vs":"run D","vrank":24,"res":"wins"},{"inj":"","injf":"","role":"Target","name":"Josh Downs","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4688813.png","stat":"354 rec yds","rank":30,"vs":"pass D","vrank":3,"res":"loses"},{"inj":"","injf":"","role":"Rusher","name":"Adetomiwa Adebawore","pos":"DT","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4427635.png","stat":"5 sacks","rank":17,"vs":"protection","vrank":23,"res":"wins"}]},qb:true},
+ {id:"g08",ko:"2026-11-29T18:00Z",inj:{"away": ["Trevin Wallace (LB, Q · starter) → Kiko Mauigoa (LB, 2 yr) ⟦LOSS⟧", "Omar Cooper Jr. (WR, Q · starter · #87/438 rec yds) → Malik McClain (WR, rookie) ⟦LOSS⟧", "David Onyemata (DT, IR · 3rd string) → depth piece ⟦EVEN⟧", "Max Mitchell (OT, IR · 3rd string) → depth piece ⟦EVEN⟧"], "home": ["Dante Trader Jr. (S, Q · starter · #122/500 tackles) → Zayne Anderson (S, 4 yr) ⟦EVEN⟧", "Ronnie Harrison Jr. (LB, IR · 2nd string) → depth piece ⟦EVEN⟧", "Jaylin Simpson (S, Q · 3rd string · #437/478 PD) → depth piece ⟦EVEN⟧", "Jared Wayne (WR, Q · 2nd string · #254/438 rec yds) → depth piece ⟦EVEN⟧"]},win:"Sunday 10 AM",kick:"Sun Nov 29 · 10:00 AM PT",away:"Jets",home:"Dolphins",base:-2.3,line:2.0,mkt:3.5,ou:40.5,mou:"Under",su:"Jets",p:56,ats:"Dolphins",mu:{"rows":[{"k":"Passing","wa":"Jets","wh":"Jets","ra":16,"rh":24},{"k":"Running","wa":"","wh":"Dolphins","ra":15,"rh":12},{"k":"Sacks","wa":"Jets","wh":"Jets","ra":26,"rh":23},{"k":"Third down","wa":"Jets","wh":"","ra":18,"rh":19},{"k":"Turnovers","wa":"Jets","wh":"Dolphins","ra":7,"rh":15}],"aw":6,"hm":2,"g":11},ar:"3-8 · 3.5 behind #7 seed",hr:"1-9 · 5 behind #7 seed",al:"Wk 11: W 27-24 at Chargers",hl:"Wk 11: L 9-26 at Bills",pm:{"Jets":[{"inj":"","injf":"","role":"QB","name":"Geno Smith","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/15864.png","stat":"102.7 rating","rank":7,"vs":"pass D","vrank":27,"res":"wins"},{"inj":"","injf":"","role":"RB","name":"Braelon Allen","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4685247.png","stat":"713 rush yds","rank":12,"vs":"run D","vrank":10,"res":"even"},{"inj":"","injf":"","role":"Target","name":"Garrett Wilson","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4569618.png","stat":"672 rec yds","rank":15,"vs":"pass D","vrank":27,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"David Bailey","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4685248.png","stat":"9.5 sacks","rank":3,"vs":"protection","vrank":23,"res":"wins"}],"Dolphins":[{"inj":"","injf":"","role":"QB","name":"Kyle McCord","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4433971.png","stat":"52.8 rating","rank":32,"vs":"pass D","vrank":15,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"Ollie Gordon II","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4711533.png","stat":"608 rush yds","rank":16,"vs":"run D","vrank":22,"res":"wins"},{"inj":"","injf":"","role":"Target","name":"Malik Washington","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4569603.png","stat":"430 rec yds","rank":27,"vs":"pass D","vrank":15,"res":"loses"},{"inj":"","injf":"","role":"Rusher","name":"Chop Robinson","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4431586.png","stat":"5 sacks","rank":17,"vs":"protection","vrank":26,"res":"wins"}]},qb:true},
+ {id:"g09",ko:"2026-11-29T18:00Z",inj:{"away": ["Divine Deablo (LB, Q · starter · #261/500 tackles) → Harold Perkins Jr. (LB, rookie) ⟦GAIN⟧", "Brian Robinson Jr. (RB, IR · 3rd string · #20/110 rush TD) → depth piece ⟦EVEN⟧", "Samson Ebukam (DE, IR · 3rd string · #100/361 sacks) → depth piece ⟦EVEN⟧", "Anterio Thompson (DT, Out · 2nd string) → depth piece ⟦EVEN⟧"], "home": ["Jordan Addison (WR, D · starter · #99/438 rec yds) → Myles Price (WR, 2 yr) ⟦LOSS⟧", "Isaiah Rodgers (CB, Q · starter · #84/478 PD) → Charles Demmings (CB, rookie) ⟦LOSS⟧", "Bo Richter (LB, IR · 3rd string) → depth piece ⟦EVEN⟧", "Jay Ward (S, Q · 2nd string) → depth piece ⟦EVEN⟧"]},win:"Sunday 10 AM",kick:"Sun Nov 29 · 10:00 AM PT",away:"Falcons",home:"Vikings",base:-6.3,line:-1.4,mkt:-7.0,ou:42.5,mou:"Under",su:"Vikings",p:54,ats:"Falcons",mu:{"rows":[{"k":"Passing","wa":"Vikings","wh":"Falcons","ra":18,"rh":26},{"k":"Running","wa":"Falcons","wh":"","ra":4,"rh":22},{"k":"Sacks","wa":"Vikings","wh":"","ra":8,"rh":21},{"k":"Third down","wa":"Vikings","wh":"","ra":28,"rh":21},{"k":"Turnovers","wa":"Vikings","wh":"Vikings","ra":28,"rh":13}],"aw":2,"hm":5,"g":10},ar:"3-7 · 3 behind #7 seed",hr:"7-3 · #6 seed",al:"Wk 11: bye",hl:"Wk 11: L 10-35 at 49ers",pm:{"Falcons":[{"inj":"","injf":"","role":"QB","name":"Michael Penix Jr.","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4360423.png","stat":"84.2 rating","rank":21,"vs":"pass D","vrank":2,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"Bijan Robinson","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4430807.png","stat":"951 rush yds","rank":3,"vs":"run D","vrank":18,"res":"wins"},{"inj":"","injf":"","role":"Target","name":"Drake London","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4426502.png","stat":"801 rec yds","rank":6,"vs":"pass D","vrank":2,"res":"loses"},{"inj":"","injf":"","role":"Rusher","name":"Za'Darius Smith","pos":"DE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3043168.png","stat":"4.5 sacks","rank":25,"vs":"protection","vrank":21,"res":"loses"}],"Vikings":[{"inj":"","injf":"","role":"QB","name":"Kirk Cousins","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/14880.png","stat":"94.6 rating","rank":12,"vs":"pass D","vrank":21,"res":"wins"},{"inj":"","injf":"","role":"RB","name":"Aaron Jones Sr.","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3042519.png","stat":"551 rush yds","rank":19,"vs":"run D","vrank":23,"res":"wins"},{"inj":"","injf":"","role":"Target","name":"Justin Jefferson","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4262921.png","stat":"553 rec yds","rank":19,"vs":"pass D","vrank":21,"res":"even"},{"inj":"","injf":"","role":"Rusher","name":"Andrew Van Ginkel","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3133487.png","stat":"8.5 sacks","rank":5,"vs":"protection","vrank":8,"res":"even"}]},qb:true},
+ {id:"g10",ko:"2026-11-29T18:00Z",inj:{"away": ["Dan Moore Jr. (OT, Q · starter) → James Hudson III (OT, 6 yr) ⟦LOSS⟧", "Cor'Dale Flott (CB, Q · starter · #33/160 INT) → Micah Robinson (CB, 2 yr) ⟦LOSS⟧", "Tony Adams (S, Q · starter · #180/478 PD) → no healthy backup listed ⟦LOSS⟧", "Jaylen Harrell (LB, IR · 4th string) → depth piece ⟦EVEN⟧"], "home": ["Robert Hainsey (C, Q · starter) → Jonah Monheim (C, 2 yr) ⟦LOSS⟧", "Bhayshul Tuten (RB, Q · starter · #13/274 rush yds) → Chris Rodriguez Jr. (RB, 4 yr) ⟦EVEN⟧", "Walker Little (OT, Q · starter) → Wyatt Milum (G, 2 yr) ⟦LOSS⟧", "Danny Striggow (DE, Q · 2nd string · #273/361 sacks) → depth piece ⟦EVEN⟧"]},win:"Sunday 10 AM",kick:"Sun Nov 29 · 10:00 AM PT",away:"Titans",home:"Jaguars",base:-15.6,line:-16.3,mkt:-14.5,ou:47.5,mou:"Under",su:"Jaguars",p:89,ats:"Jaguars",mu:{"rows":[{"k":"Passing","wa":"Jaguars","wh":"Jaguars","ra":23,"rh":2},{"k":"Running","wa":"","wh":"","ra":11,"rh":20},{"k":"Sacks","wa":"Titans","wh":"Jaguars","ra":8,"rh":6},{"k":"Third down","wa":"Jaguars","wh":"Jaguars","ra":30,"rh":4},{"k":"Turnovers","wa":"Jaguars","wh":"Jaguars","ra":19,"rh":8}],"aw":1,"hm":7,"g":10},ar:"1-9 · 5 behind #7 seed",hr:"7-3 · #3 seed",al:"Wk 11: L 30-51 at Cowboys",hl:"Wk 11: L 18-23 at Giants",pm:{"Titans":[{"inj":"","injf":"","role":"QB","name":"Cam Ward","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4688380.png","stat":"84.1 rating","rank":22,"vs":"pass D","vrank":18,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"Tony Pollard","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3916148.png","stat":"738 rush yds","rank":11,"vs":"run D","vrank":7,"res":"loses"},{"inj":"","injf":"","role":"Target","name":"Carnell Tate","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4871023.png","stat":"471 rec yds","rank":23,"vs":"pass D","vrank":18,"res":"loses"},{"inj":"","injf":"","role":"Rusher","name":"Jacob Martin","pos":"DE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3138764.png","stat":"7.5 sacks","rank":9,"vs":"protection","vrank":6,"res":"even"}],"Jaguars":[{"inj":"","injf":"","role":"QB","name":"Trevor Lawrence","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4360310.png","stat":"105.1 rating","rank":5,"vs":"pass D","vrank":32,"res":"wins"},{"inj":"Q","injf":"Questionable","role":"RB","name":"Bhayshul Tuten","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4882093.png","stat":"642 rush yds","rank":13,"vs":"run D","vrank":19,"res":"wins"},{"inj":"","injf":"","role":"Target","name":"Parker Washington","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4432620.png","stat":"748 rec yds","rank":9,"vs":"pass D","vrank":32,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"Josh Hines-Allen","pos":"DE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3915239.png","stat":"3 sacks","rank":31,"vs":"protection","vrank":8,"res":"loses"}]}},
+ {id:"g11",ko:"2026-11-29T18:00Z",inj:{"away": ["Nnamdi Madubuike (DT, Q · starter · #218/361 sacks) → Aeneas Peebles (DT, 2 yr) ⟦LOSS⟧", "Jaylinn Hawkins (S, Q · starter · #257/500 tackles) → Keondre Jackson (S, 2 yr) ⟦LOSS⟧", "Marlon Humphrey (CB, Q · starter · #13/478 PD) → T.J. Tampa (CB, 3 yr) ⟦LOSS⟧", "Lamar Jackson (QB, IR · 3rd string · #3/83 QB rtg) → depth piece ⟦EVEN⟧"], "home": ["Danielle Hunter (DE, Q · starter · #45/361 sacks) → Jadeveon Clowney (DE, 13 yr) ⟦EVEN⟧", "Wyatt Teller (G, Q · 2nd string) → depth piece ⟦EVEN⟧", "Brevin Jordan (TE, Q · 3rd string · #374/441 catches) → depth piece ⟦EVEN⟧", "Marvin Harrison Jr. (WR, Q · 2nd string · #171/438 rec yds) → depth piece ⟦EVEN⟧"]},win:"Sunday 10 AM",kick:"Sun Nov 29 · 10:00 AM PT",away:"Ravens",home:"Texans",base:-8.4,line:-11.7,mkt:-6.5,ou:46.5,mou:"Under",su:"Texans",p:81,ats:"Texans",mu:{"rows":[{"k":"Passing","wa":"","wh":"Texans","ra":15,"rh":8},{"k":"Running","wa":"","wh":"Ravens","ra":6,"rh":28},{"k":"Sacks","wa":"Texans","wh":"Texans","ra":17,"rh":7},{"k":"Third down","wa":"Texans","wh":"","ra":16,"rh":12},{"k":"Turnovers","wa":"","wh":"Texans","ra":24,"rh":1}],"aw":1,"hm":5,"g":11},ar:"4-7 · 2.5 behind #7 seed",hr:"4-6 · 2 behind #7 seed",al:"Wk 11: L 33-35 at Panthers",hl:"Wk 11: W 26-3 vs Colts",pm:{"Ravens":[{"inj":"","injf":"","role":"QB","name":"Jacoby Brissett","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/2578570.png","stat":"80.0 rating","rank":26,"vs":"pass D","vrank":14,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"Derrick Henry","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3043078.png","stat":"793 rush yds","rank":7,"vs":"run D","vrank":8,"res":"even"},{"inj":"","injf":"","role":"Target","name":"Zay Flowers","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4429615.png","stat":"785 rec yds","rank":8,"vs":"pass D","vrank":14,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"Mike Green","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4683188.png","stat":"7.5 sacks","rank":9,"vs":"protection","vrank":7,"res":"even"}],"Texans":[{"inj":"","injf":"","role":"QB","name":"C.J. Stroud","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4432577.png","stat":"103.6 rating","rank":6,"vs":"pass D","vrank":24,"res":"wins"},{"inj":"Q","injf":"Questionable","role":"RB","name":"Woody Marks","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4429059.png","stat":"391 rush yds","rank":27,"vs":"run D","vrank":6,"res":"loses"},{"inj":"","injf":"","role":"Target","name":"Nico Collins","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4258173.png","stat":"536 rec yds","rank":22,"vs":"pass D","vrank":24,"res":"even"},{"inj":"","injf":"","role":"Rusher","name":"Will Anderson Jr.","pos":"DE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4685724.png","stat":"11.5 sacks","rank":1,"vs":"protection","vrank":17,"res":"wins"}]},qb:true},
+ {id:"g12",ko:"2026-11-29T21:05Z",inj:{"away": ["Carlton Davis III (CB, Q · starter · #240/478 PD) → Charles Woods (CB, 3 yr) ⟦GAIN⟧", "Alijah Vera-Tucker (G, IR · 3rd string) → depth piece ⟦EVEN⟧", "Walter Rouse (OL, Q · 2nd string) → depth piece ⟦EVEN⟧", "Brenden Schooler (S, Q · 3rd string) → depth piece ⟦EVEN⟧"], "home": ["Justin Herbert (QB, Q · starter · #22/80 pass yds) → expected to start ⟦EVEN⟧", "Tarheeb Still (CB, Q · starter · #99/478 PD) → no healthy backup listed ⟦LOSS⟧", "Daiyan Henley (LB, Q · starter · #55/500 tackles) → Troy Dye (LB, 7 yr) ⟦LOSS⟧", "Kendall Williamson (S, Q · 2nd string) → depth piece ⟦EVEN⟧"]},win:"Sunday afternoon",kick:"Sun Nov 29 · 1:05 PM PT",away:"Patriots",home:"Chargers",base:2.6,line:-2.2,mkt:-1.5,ou:35.5,mou:"Over",su:"Chargers",p:56,ats:"Chargers",mu:{"rows":[{"k":"Passing","wa":"Patriots","wh":"","ra":7,"rh":27},{"k":"Running","wa":"Chargers","wh":"","ra":19,"rh":12},{"k":"Sacks","wa":"Patriots","wh":"Patriots","ra":18,"rh":31},{"k":"Third down","wa":"","wh":"Patriots","ra":14,"rh":27},{"k":"Turnovers","wa":"Chargers","wh":"Patriots","ra":32,"rh":28}],"aw":5,"hm":2,"g":10},ar:"5-5 · 1 behind #7 seed",hr:"1-9 · 5 behind #7 seed",al:"Wk 11: bye",hl:"Wk 11: L 24-27 vs Jets",pm:{"Patriots":[{"inj":"","injf":"","role":"QB","name":"Tommy DeVito","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4240391.png","stat":"58.3 rating","rank":31,"vs":"pass D","vrank":29,"res":"even"},{"inj":"","injf":"","role":"RB","name":"Rhamondre Stevenson","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4569173.png","stat":"403 rush yds","rank":25,"vs":"run D","vrank":12,"res":"loses"},{"inj":"","injf":"","role":"Target","name":"DeMario Douglas","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4427095.png","stat":"438 rec yds","rank":25,"vs":"pass D","vrank":29,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"Elijah Ponder","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4688432.png","stat":"7.5 sacks","rank":9,"vs":"protection","vrank":31,"res":"wins"}],"Chargers":[{"inj":"Q","injf":"Questionable","role":"QB","name":"Justin Herbert","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4038941.png","stat":"75.2 rating","rank":29,"vs":"pass D","vrank":26,"res":"even"},{"inj":"","injf":"","role":"RB","name":"Omarion Hampton","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4685382.png","stat":"563 rush yds","rank":18,"vs":"run D","vrank":17,"res":"even"},{"inj":"","injf":"","role":"Target","name":"Tre' Harris","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4686612.png","stat":"376 rec yds","rank":29,"vs":"pass D","vrank":26,"res":"even"},{"inj":"","injf":"","role":"Rusher","name":"Khalil Mack","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/16710.png","stat":"3 sacks","rank":31,"vs":"protection","vrank":18,"res":"loses"}]},qb:true},
+ {id:"g13",ko:"2026-11-29T21:25Z",inj:{"away": ["Amik Robertson (CB, Q · starter · #11/478 PD) → Mike Sainristil (CB, 3 yr) ⟦LOSS⟧", "Laremy Tunsil (OT, IR · 3rd string) → depth piece ⟦EVEN⟧", "Dyami Brown (WR, IR · 2nd string · #212/438 rec yds) → depth piece ⟦EVEN⟧", "Daron Payne (DT, IR · 3rd string · #212/361 sacks) → depth piece ⟦EVEN⟧"], "home": ["Carson Beck (QB, Q · starter · #51/83 QB rtg) → Josh Johnson (QB, 13 yr) ⟦GAIN⟧", "Jeremiyah Love (RB, IR · 4th string · #47/274 rush yds) → depth piece ⟦EVEN⟧", "Zachary Carter (DT, IR · 3rd string) → depth piece ⟦EVEN⟧", "Jon Gaines II (G, Q · 2nd string) → depth piece ⟦EVEN⟧"]},win:"Sunday afternoon",kick:"Sun Nov 29 · 1:25 PM PT",away:"Commanders",home:"Cardinals",base:8.0,line:12.7,mkt:7.5,ou:42.5,mou:"Under",su:"Commanders",p:83,ats:"Commanders",mu:{"rows":[{"k":"Passing","wa":"Commanders","wh":"Commanders","ra":19,"rh":29},{"k":"Running","wa":"Commanders","wh":"Commanders","ra":10,"rh":20},{"k":"Sacks","wa":"Commanders","wh":"","ra":16,"rh":22},{"k":"Third down","wa":"Cardinals","wh":"Commanders","ra":32,"rh":24},{"k":"Turnovers","wa":"Commanders","wh":"Cardinals","ra":2,"rh":9}],"aw":7,"hm":2,"g":10},ar:"4-5-1 · 1.5 behind #7 seed",hr:"3-8 · 3.5 behind #7 seed",al:"Wk 11: W 22-20 vs Bengals",hl:"Wk 11: L 7-34 at Chiefs",pm:{"Commanders":[{"inj":"","injf":"","role":"QB","name":"Jayden Daniels","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4426348.png","stat":"96.3 rating","rank":10,"vs":"pass D","vrank":30,"res":"wins"},{"inj":"","injf":"","role":"RB","name":"Jayden Daniels","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4426348.png","stat":"335 rush yds","rank":29,"vs":"run D","vrank":20,"res":"loses"},{"inj":"","injf":"","role":"Target","name":"Antonio Williams","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/5081432.png","stat":"448 rec yds","rank":24,"vs":"pass D","vrank":30,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"Odafe Oweh","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4361422.png","stat":"5 sacks","rank":17,"vs":"protection","vrank":22,"res":"wins"}],"Cardinals":[{"inj":"","injf":"","role":"QB","name":"Josh Johnson","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/11394.png","stat":"82.1 rating","rank":24,"vs":"pass D","vrank":20,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"Tyler Allgeier","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4373626.png","stat":"406 rush yds","rank":24,"vs":"run D","vrank":8,"res":"loses"},{"inj":"","injf":"","role":"Target","name":"Trey McBride","pos":"TE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4361307.png","stat":"689 rec yds","rank":13,"vs":"pass D","vrank":20,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"Budda Baker","pos":"S","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3127287.png","stat":"3.5 sacks","rank":29,"vs":"protection","vrank":16,"res":"loses"}]},qb:true},
+ {id:"g14",ko:"2026-11-29T21:25Z",inj:{"away": ["Sam Darnold (QB, Q · starter · #26/80 pass yds) → expected to start ⟦EVEN⟧", "Quenton Nelson (G, D · starter) → Grey Zabel (G, 2 yr) ⟦LOSS⟧", "Leonard Williams (DT, Q · starter · #70/361 sacks) → Mike Morris (DE, 4 yr) ⟦LOSS⟧", "Charles Cross (OT, Q · starter) → Josh Jones (G, 7 yr) ⟦LOSS⟧"], "home": ["Dre Greenlaw (LB, Q · starter · #44/500 tackles) → Garret Wallow (LB, 6 yr) ⟦LOSS⟧", "Deommodore Lenoir (CB, Q · starter · #45/478 PD) → no healthy backup listed ⟦LOSS⟧", "Colton McKivitz (OT, Out · 3rd string) → depth piece ⟦EVEN⟧", "Nate Hobbs (CB, IR · 2nd string) → depth piece ⟦EVEN⟧"]},win:"Sunday afternoon",kick:"Sun Nov 29 · 1:25 PM PT",away:"Seahawks",home:"49ers",base:-4.9,line:-4.8,mkt:-3.0,ou:46.5,mou:"Under",su:"49ers",p:64,ats:"49ers",mu:{"rows":[{"k":"Passing","wa":"","wh":"49ers","ra":11,"rh":1},{"k":"Running","wa":"49ers","wh":"","ra":23,"rh":3},{"k":"Sacks","wa":"Seahawks","wh":"49ers","ra":13,"rh":4},{"k":"Third down","wa":"Seahawks","wh":"49ers","ra":13,"rh":1},{"k":"Turnovers","wa":"49ers","wh":"49ers","ra":25,"rh":13}],"aw":2,"hm":6,"g":10},ar:"6-4 · tied for #7 seed, out on tiebreak",hr:"9-1 · #1 seed",al:"Wk 11: bye",hl:"Wk 11: W 35-10 vs Vikings",pm:{"Seahawks":[{"inj":"Q","injf":"Questionable","role":"QB","name":"Sam Darnold","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3912547.png","stat":"79.5 rating","rank":27,"vs":"pass D","vrank":12,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"Emanuel Wilson","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4887558.png","stat":"403 rush yds","rank":25,"vs":"run D","vrank":2,"res":"loses"},{"inj":"","injf":"","role":"Target","name":"Jaxon Smith-Njigba","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4430878.png","stat":"1207 rec yds","rank":1,"vs":"pass D","vrank":12,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"Byron Murphy II","pos":"DT","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4570040.png","stat":"5 sacks","rank":17,"vs":"protection","vrank":4,"res":"loses"}],"49ers":[{"inj":"","injf":"","role":"QB","name":"Brock Purdy","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4361741.png","stat":"118.2 rating","rank":1,"vs":"pass D","vrank":1,"res":"even"},{"inj":"","injf":"","role":"RB","name":"Christian McCaffrey","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3117251.png","stat":"568 rush yds","rank":17,"vs":"run D","vrank":1,"res":"loses"},{"inj":"","injf":"","role":"Target","name":"George Kittle","pos":"TE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3040151.png","stat":"591 rec yds","rank":17,"vs":"pass D","vrank":1,"res":"loses"},{"inj":"","injf":"","role":"Rusher","name":"Keion White","pos":"DE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4243493.png","stat":"3.5 sacks","rank":29,"vs":"protection","vrank":13,"res":"loses"}]}},
+ {id:"g15",ko:"2026-11-30T01:20Z",inj:{"away": ["Tonka Hemingway (DT, Q · starter · #255/361 sacks) → Thomas Booker IV (DT, 4 yr) ⟦LOSS⟧", "Brock Bowers (TE, Q · starter · #17/438 rec yds) → Michael Mayer (TE, 4 yr) ⟦EVEN⟧", "Adam Butler (DT, Q · starter · #392/500 tackles) → no healthy backup listed ⟦LOSS⟧", "JJ Pegues (DT, Q · 3rd string) → depth piece ⟦EVEN⟧"], "home": ["Michael Burton (FB, IR · starter · #252/274 rush yds) → no healthy backup listed ⟦LOSS⟧", "Ronnie Hickman (S, Q · starter · #72/500 tackles) → Daniel Thomas (S, 7 yr) ⟦LOSS⟧", "Raheim Sanders (RB, IR · 4th string · #206/441 catches) → depth piece ⟦EVEN⟧", "Kalia Davis (DT, IR · 3rd string) → depth piece ⟦EVEN⟧"]},win:"Sunday night",kick:"Sun Nov 29 · 5:20 PM PT",away:"Raiders",home:"Browns",base:-1.6,line:-5.4,mkt:-4.5,ou:41.5,mou:"Over",su:"Browns",p:65,ats:"Browns",mu:{"rows":[{"k":"Passing","wa":"Browns","wh":"Browns","ra":14,"rh":20},{"k":"Running","wa":"Browns","wh":"Browns","ra":31,"rh":25},{"k":"Sacks","wa":"","wh":"Raiders","ra":11,"rh":32},{"k":"Third down","wa":"Raiders","wh":"","ra":6,"rh":25},{"k":"Turnovers","wa":"","wh":"Raiders","ra":17,"rh":15}],"aw":3,"hm":4,"g":11},ar:"4-7 · 2.5 behind #7 seed",hr:"6-4 · #6 seed",al:"Wk 11: L 24-38 at Broncos",hl:"Wk 11: bye",pm:{"Raiders":[{"inj":"","injf":"","role":"QB","name":"Fernando Mendoza","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4837248.png","stat":"81.9 rating","rank":25,"vs":"pass D","vrank":5,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"Ashton Jeanty","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4890973.png","stat":"459 rush yds","rank":21,"vs":"run D","vrank":27,"res":"wins"},{"inj":"Q","injf":"Questionable","role":"Target","name":"Brock Bowers","pos":"TE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4432665.png","stat":"676 rec yds","rank":14,"vs":"pass D","vrank":5,"res":"loses"},{"inj":"","injf":"","role":"Rusher","name":"Maxx Crosby","pos":"DE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3916655.png","stat":"5 sacks","rank":17,"vs":"protection","vrank":32,"res":"wins"}],"Browns":[{"inj":"","injf":"","role":"QB","name":"Deshaun Watson","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3122840.png","stat":"89.1 rating","rank":16,"vs":"pass D","vrank":31,"res":"wins"},{"inj":"","injf":"","role":"RB","name":"Quinshon Judkins","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4685702.png","stat":"423 rush yds","rank":23,"vs":"run D","vrank":30,"res":"wins"},{"inj":"","injf":"","role":"Target","name":"Harold Fannin Jr.","pos":"TE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/5083076.png","stat":"544 rec yds","rank":20,"vs":"pass D","vrank":31,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"Isaiah McGuire","pos":"DE","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4427963.png","stat":"4 sacks","rank":28,"vs":"protection","vrank":11,"res":"loses"}]},qb:true},
+ {id:"g16",ko:"2026-12-01T01:15Z",inj:{"away": ["Bobby Okereke (LB, Q · starter · #105/500 tackles) → Tyrel Dodson (LB) ⟦LOSS⟧", "Jaycee Horn (CB, IR · 2nd string · #278/478 PD) → depth piece ⟦EVEN⟧", "Brady Christensen (G, IR · 4th string) → depth piece ⟦EVEN⟧", "Isaiah Simmons (S, IR · 3rd string) → depth piece ⟦EVEN⟧"], "home": ["Antoine Winfield Jr. (S, Q · starter · #204/500 tackles) → Ifeatu Melifonwu (S, 6 yr) ⟦LOSS⟧", "Jacob Parrish (CB, Q · starter · #2/478 PD) → no healthy backup listed ⟦LOSS⟧", "Josh Hayes (CB, IR · 3rd string) → depth piece ⟦EVEN⟧", "Elijah Simmons (DT, Q · 2nd string) → depth piece ⟦EVEN⟧"]},win:"Monday night",kick:"Mon Nov 30 · 5:15 PM PT",away:"Panthers",home:"Buccaneers",base:-5.3,line:-6.3,mkt:-3.0,ou:43.5,mou:"Over",su:"Buccaneers",p:68,ats:"Buccaneers",mu:{"rows":[{"k":"Passing","wa":"","wh":"Panthers","ra":17,"rh":30},{"k":"Running","wa":"Buccaneers","wh":"Buccaneers","ra":17,"rh":1},{"k":"Sacks","wa":"Buccaneers","wh":"","ra":29,"rh":27},{"k":"Third down","wa":"Buccaneers","wh":"Buccaneers","ra":22,"rh":15},{"k":"Turnovers","wa":"Buccaneers","wh":"Panthers","ra":18,"rh":19}],"aw":2,"hm":6,"g":10},ar:"5-5 · #4 seed",hr:"3-7 · 3 behind #7 seed",al:"Wk 11: W 35-33 vs Ravens",hl:"Wk 11: L 21-31 at Lions",pm:{"Panthers":[{"inj":"","injf":"","role":"QB","name":"Bryce Young","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4685720.png","stat":"91.4 rating","rank":15,"vs":"pass D","vrank":19,"res":"wins"},{"inj":"","injf":"","role":"RB","name":"Chuba Hubbard","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4241416.png","stat":"831 rush yds","rank":6,"vs":"run D","vrank":3,"res":"even"},{"inj":"","injf":"","role":"Target","name":"Tetairoa McMillan","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4685472.png","stat":"731 rec yds","rank":11,"vs":"pass D","vrank":19,"res":"wins"},{"inj":"","injf":"","role":"Rusher","name":"Princely Umanmielen","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4429166.png","stat":"4.5 sacks","rank":25,"vs":"protection","vrank":27,"res":"even"}],"Buccaneers":[{"inj":"","injf":"","role":"QB","name":"Baker Mayfield","pos":"QB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/3052587.png","stat":"79.0 rating","rank":28,"vs":"pass D","vrank":11,"res":"loses"},{"inj":"","injf":"","role":"RB","name":"Bucky Irving","pos":"RB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4596448.png","stat":"893 rush yds","rank":4,"vs":"run D","vrank":26,"res":"wins"},{"inj":"","injf":"","role":"Target","name":"Emeka Egbuka","pos":"WR","head":"https://a.espncdn.com/i/headshots/nfl/players/full/4567750.png","stat":"296 rec yds","rank":32,"vs":"pass D","vrank":11,"res":"loses"},{"inj":"","injf":"","role":"Rusher","name":"David Walker","pos":"LB","head":"https://a.espncdn.com/i/headshots/nfl/players/full/5085355.png","stat":"5 sacks","rank":17,"vs":"protection","vrank":29,"res":"wins"}]}},
+];
+const HS = {"Tyler Lacy":"https://a.espncdn.com/i/headshots/nfl/players/full/4361861.png","Riq Woolen":"https://a.espncdn.com/i/headshots/nfl/players/full/4245185.png","Isaiah Rodgers":"https://a.espncdn.com/i/headshots/nfl/players/full/4044540.png","Laken Tomlinson":"https://a.espncdn.com/i/headshots/nfl/players/full/2512477.png","Zachary Carter":"https://a.espncdn.com/i/headshots/nfl/players/full/4240619.png","Myles Price":"https://a.espncdn.com/i/headshots/nfl/players/full/4430656.png","Brian Robinson Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/4241474.png","Kenneth Walker III":"https://a.espncdn.com/i/headshots/nfl/players/full/4567048.png","Bernhard Raimann":"https://a.espncdn.com/i/headshots/nfl/players/full/4362580.png","Ozzy Trapilo":"https://a.espncdn.com/i/headshots/nfl/players/full/4432595.png","Ben VanSumeren":"https://a.espncdn.com/i/headshots/nfl/players/full/4372070.png","Anterio Thompson":"https://a.espncdn.com/i/headshots/nfl/players/full/5150660.png","James Hudson III":"https://a.espncdn.com/i/headshots/nfl/players/full/4258181.png","Sean Rhyan":"https://a.espncdn.com/i/headshots/nfl/players/full/4426411.png","Jeremiyah Love":"https://a.espncdn.com/i/headshots/nfl/players/full/4870808.png","Caleb Lohner":"https://a.espncdn.com/i/headshots/nfl/players/full/4432208.png","Sam LaPorta":"https://a.espncdn.com/i/headshots/nfl/players/full/4430027.png","Troy Dye":"https://a.espncdn.com/i/headshots/nfl/players/full/4038946.png","David Onyemata":"https://a.espncdn.com/i/headshots/nfl/players/full/4002046.png","Hunter Nourzad":"https://a.espncdn.com/i/headshots/nfl/players/full/4367645.png","Nnamdi Madubuike":"https://a.espncdn.com/i/headshots/nfl/players/full/4035245.png","Danielle Hunter":"https://a.espncdn.com/i/headshots/nfl/players/full/2976560.png","Myles Garrett":"https://a.espncdn.com/i/headshots/nfl/players/full/3122132.png","Tremaine Edmunds":"https://a.espncdn.com/i/headshots/nfl/players/full/3929950.png","Johnathan Edwards":"https://a.espncdn.com/i/headshots/nfl/players/full/4695991.png","Jaycee Horn":"https://a.espncdn.com/i/headshots/nfl/players/full/4362847.png","Amik Robertson":"https://a.espncdn.com/i/headshots/nfl/players/full/4239694.png","Mike Sainristil":"https://a.espncdn.com/i/headshots/nfl/players/full/4428414.png","Taliese Fuaga":"https://a.espncdn.com/i/headshots/nfl/players/full/4606711.png","Josh Hayes":"https://a.espncdn.com/i/headshots/nfl/players/full/4248533.png","Kiko Mauigoa":"https://a.espncdn.com/i/headshots/nfl/players/full/4700136.png","Braxton Berrios":"https://a.espncdn.com/i/headshots/nfl/players/full/3123075.png","Nate Hobbs":"https://a.espncdn.com/i/headshots/nfl/players/full/4240542.png","Jacob Parrish":"https://a.espncdn.com/i/headshots/nfl/players/full/4912847.png","Jonah Monheim":"https://a.espncdn.com/i/headshots/nfl/players/full/4430481.png","Charles Woods":"https://a.espncdn.com/i/headshots/nfl/players/full/4368113.png","Garret Wallow":"https://a.espncdn.com/i/headshots/nfl/players/full/4241807.png","Deommodore Lenoir":"https://a.espncdn.com/i/headshots/nfl/players/full/4242488.png","Skyy Moore":"https://a.espncdn.com/i/headshots/nfl/players/full/4430191.png","Max Mitchell":"https://a.espncdn.com/i/headshots/nfl/players/full/4373656.png","Kalia Davis":"https://a.espncdn.com/i/headshots/nfl/players/full/4243541.png","Lamar Jackson":"https://a.espncdn.com/i/headshots/nfl/players/full/3916387.png","Theo Benedet":"https://a.espncdn.com/i/headshots/nfl/players/full/5125873.png","Christian Benford":"https://a.espncdn.com/i/headshots/nfl/players/full/4379778.png","Wyatt Teller":"https://a.espncdn.com/i/headshots/nfl/players/full/3045474.png","Charvarius Ward":"https://a.espncdn.com/i/headshots/nfl/players/full/4037361.png","JJ Pegues":"https://a.espncdn.com/i/headshots/nfl/players/full/4430896.png","Coleman Shelton":"https://a.espncdn.com/i/headshots/nfl/players/full/3052180.png","Smael Mondon Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/4431573.png","Jordan Addison":"https://a.espncdn.com/i/headshots/nfl/players/full/4429205.png","Jadeveon Clowney":"https://a.espncdn.com/i/headshots/nfl/players/full/16734.png","Carlton Davis III":"https://a.espncdn.com/i/headshots/nfl/players/full/3916923.png","Kyler Gordon":"https://a.espncdn.com/i/headshots/nfl/players/full/4361093.png","Bobby Okereke":"https://a.espncdn.com/i/headshots/nfl/players/full/3117253.png","Markquese Bell":"https://a.espncdn.com/i/headshots/nfl/players/full/4241921.png","Luke Tenuta":"https://a.espncdn.com/i/headshots/nfl/players/full/4361979.png","Danny Striggow":"https://a.espncdn.com/i/headshots/nfl/players/full/4573319.png","Bo Richter":"https://a.espncdn.com/i/headshots/nfl/players/full/4875564.png","Bhayshul Tuten":"https://a.espncdn.com/i/headshots/nfl/players/full/4882093.png","Trevin Wallace":"https://a.espncdn.com/i/headshots/nfl/players/full/4683815.png","Jalen Travis":"https://a.espncdn.com/i/headshots/nfl/players/full/4892240.png","Jaylinn Hawkins":"https://a.espncdn.com/i/headshots/nfl/players/full/3858276.png","Michael Hoecht":"https://a.espncdn.com/i/headshots/nfl/players/full/4033234.png","Dan Moore Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/4240920.png","Jaylon Moore":"https://a.espncdn.com/i/headshots/nfl/players/full/4043041.png","Jay Ward":"https://a.espncdn.com/i/headshots/nfl/players/full/4568007.png","Jonathan Jones":"https://a.espncdn.com/i/headshots/nfl/players/full/2971027.png","Mason McCormick":"https://a.espncdn.com/i/headshots/nfl/players/full/4368304.png","Kendall Williamson":"https://a.espncdn.com/i/headshots/nfl/players/full/4360745.png","Robert Hainsey":"https://a.espncdn.com/i/headshots/nfl/players/full/4242391.png","Dorian Williams":"https://a.espncdn.com/i/headshots/nfl/players/full/4568624.png","T.J. Tampa":"https://a.espncdn.com/i/headshots/nfl/players/full/4575483.png","Micah Robinson":"https://a.espncdn.com/i/headshots/nfl/players/full/4695280.png","Michael Mayer":"https://a.espncdn.com/i/headshots/nfl/players/full/4429086.png","Kentavius Street":"https://a.espncdn.com/i/headshots/nfl/players/full/3116726.png","Will Shipley":"https://a.espncdn.com/i/headshots/nfl/players/full/4431545.png","Andrei Iosivas":"https://a.espncdn.com/i/headshots/nfl/players/full/4368003.png","T.J. Sanders":"https://a.espncdn.com/i/headshots/nfl/players/full/4684527.png","Colton Hood":"https://a.espncdn.com/i/headshots/nfl/players/full/4921249.png","Omar Cooper Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/4723820.png","Carson Beck":"https://a.espncdn.com/i/headshots/nfl/players/full/4430841.png","RJ Harvey":"https://a.espncdn.com/i/headshots/nfl/players/full/4568490.png","Dre Greenlaw":"https://a.espncdn.com/i/headshots/nfl/players/full/3916903.png","Gennings Dunker":"https://a.espncdn.com/i/headshots/nfl/players/full/4431258.png","Keondre Jackson":"https://a.espncdn.com/i/headshots/nfl/players/full/4878287.png","Dyami Brown":"https://a.espncdn.com/i/headshots/nfl/players/full/4361577.png","John Williams":"https://a.espncdn.com/i/headshots/nfl/players/full/2312707.png","Isaiah Simmons":"https://a.espncdn.com/i/headshots/nfl/players/full/4035462.png","Raheim Sanders":"https://a.espncdn.com/i/headshots/nfl/players/full/4601080.png","Justin Herbert":"https://a.espncdn.com/i/headshots/nfl/players/full/4038941.png","Thomas Booker IV":"https://a.espncdn.com/i/headshots/nfl/players/full/4360749.png","Michael Pittman Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/4035687.png","Walter Rouse":"https://a.espncdn.com/i/headshots/nfl/players/full/4428394.png","Justin Dedich":"https://a.espncdn.com/i/headshots/nfl/players/full/4360859.png","Samson Ebukam":"https://a.espncdn.com/i/headshots/nfl/players/full/3045527.png","Jaylen Harrell":"https://a.espncdn.com/i/headshots/nfl/players/full/4429058.png","Leonard Williams":"https://a.espncdn.com/i/headshots/nfl/players/full/2971622.png","Jared Wayne":"https://a.espncdn.com/i/headshots/nfl/players/full/4430681.png","Brady Christensen":"https://a.espncdn.com/i/headshots/nfl/players/full/4256062.png","Chris Rodriguez Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/4362619.png","Mike Morris":"https://a.espncdn.com/i/headshots/nfl/players/full/4572055.png","Jalen Rivers":"https://a.espncdn.com/i/headshots/nfl/players/full/4429010.png","Chuck Clark":"https://a.espncdn.com/i/headshots/nfl/players/full/3045463.png","Eyioma Uwazurike":"https://a.espncdn.com/i/headshots/nfl/players/full/4066109.png","Tonka Hemingway":"https://a.espncdn.com/i/headshots/nfl/players/full/4429109.png","Landon Jackson":"https://a.espncdn.com/i/headshots/nfl/players/full/4432715.png","Harold Perkins Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/4685502.png","Quenton Nelson":"https://a.espncdn.com/i/headshots/nfl/players/full/3129308.png","Pete Werner":"https://a.espncdn.com/i/headshots/nfl/players/full/4241993.png","Alex Highsmith":"https://a.espncdn.com/i/headshots/nfl/players/full/4037333.png","Jerry Tillery":"https://a.espncdn.com/i/headshots/nfl/players/full/3863182.png","Michael Burton":"https://a.espncdn.com/i/headshots/nfl/players/full/2515270.png","Jon Gaines II":"https://a.espncdn.com/i/headshots/nfl/players/full/4367199.png","Jack Sawyer":"https://a.espncdn.com/i/headshots/nfl/players/full/4431590.png","Josh Jones":"https://a.espncdn.com/i/headshots/nfl/players/full/3914630.png","DJ Wonnum":"https://a.espncdn.com/i/headshots/nfl/players/full/4038849.png","Antoine Winfield Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/4034790.png","Greg Rousseau":"https://a.espncdn.com/i/headshots/nfl/players/full/4362506.png","P.J. Locke":"https://a.espncdn.com/i/headshots/nfl/players/full/3929850.png","Jake Ferguson":"https://a.espncdn.com/i/headshots/nfl/players/full/4242355.png","Dee Winters":"https://a.espncdn.com/i/headshots/nfl/players/full/4428914.png","William Sherman":"https://a.espncdn.com/i/headshots/nfl/players/full/4243186.png","Dalton Risner":"https://a.espncdn.com/i/headshots/nfl/players/full/3125082.png","Trey Smith":"https://a.espncdn.com/i/headshots/nfl/players/full/4242459.png","Dante Trader Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/4431664.png","Sam Darnold":"https://a.espncdn.com/i/headshots/nfl/players/full/3912547.png","Kobie Turner":"https://a.espncdn.com/i/headshots/nfl/players/full/4250621.png","Ennis Rakestraw Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/4566092.png","Oren Burks":"https://a.espncdn.com/i/headshots/nfl/players/full/3051746.png","Emmett Johnson":"https://a.espncdn.com/i/headshots/nfl/players/full/4832955.png","Erik McCoy":"https://a.espncdn.com/i/headshots/nfl/players/full/3917331.png","Daniel Thomas":"https://a.espncdn.com/i/headshots/nfl/players/full/4035505.png","Mason Murphy":"https://a.espncdn.com/i/headshots/nfl/players/full/4682479.png","Jalen Davis":"https://a.espncdn.com/i/headshots/nfl/players/full/3125356.png","Colton McKivitz":"https://a.espncdn.com/i/headshots/nfl/players/full/3916075.png","Laremy Tunsil":"https://a.espncdn.com/i/headshots/nfl/players/full/3051890.png","Daron Payne":"https://a.espncdn.com/i/headshots/nfl/players/full/3925354.png","Justin Barron":"https://a.espncdn.com/i/headshots/nfl/players/full/4429249.png","Alijah Vera-Tucker":"https://a.espncdn.com/i/headshots/nfl/players/full/4259646.png","Danny Stutsman":"https://a.espncdn.com/i/headshots/nfl/players/full/4683215.png","Ronnie Harrison Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/3859006.png","Kevin Zeitler":"https://a.espncdn.com/i/headshots/nfl/players/full/14931.png","Joshua Ezeudu":"https://a.espncdn.com/i/headshots/nfl/players/full/4373280.png","Marlon Humphrey":"https://a.espncdn.com/i/headshots/nfl/players/full/3126356.png","Dorian Strong":"https://a.espncdn.com/i/headshots/nfl/players/full/4568703.png","Cor'Dale Flott":"https://a.espncdn.com/i/headshots/nfl/players/full/4429607.png","Tanner McKee":"https://a.espncdn.com/i/headshots/nfl/players/full/4685201.png","Wyatt Milum":"https://a.espncdn.com/i/headshots/nfl/players/full/4431463.png","Adam Butler":"https://a.espncdn.com/i/headshots/nfl/players/full/2972342.png","Zavier Scott":"https://a.espncdn.com/i/headshots/nfl/players/full/4257364.png","Tony Adams":"https://a.espncdn.com/i/headshots/nfl/players/full/4240532.png","Daiyan Henley":"https://a.espncdn.com/i/headshots/nfl/players/full/4241597.png","Charles Demmings":"https://a.espncdn.com/i/headshots/nfl/players/full/5091793.png","Tyrel Dodson":"https://a.espncdn.com/i/headshots/nfl/players/full/4035232.png","Matt Goncalves":"https://a.espncdn.com/i/headshots/nfl/players/full/4427298.png","Brevin Jordan":"https://a.espncdn.com/i/headshots/nfl/players/full/4362504.png","Tarheeb Still":"https://a.espncdn.com/i/headshots/nfl/players/full/4432571.png","Brandon Jones":"https://a.espncdn.com/i/headshots/nfl/players/full/4039059.png","Brenden Schooler":"https://a.espncdn.com/i/headshots/nfl/players/full/4047941.png","Brock Bowers":"https://a.espncdn.com/i/headshots/nfl/players/full/4432665.png","Greg Newsome II":"https://a.espncdn.com/i/headshots/nfl/players/full/4361266.png","Martin Emerson Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/4429568.png","Grey Zabel":"https://a.espncdn.com/i/headshots/nfl/players/full/4693346.png","Jaylin Simpson":"https://a.espncdn.com/i/headshots/nfl/players/full/4567225.png","Malik McClain":"https://a.espncdn.com/i/headshots/nfl/players/full/4682509.png","Bo Melton":"https://a.espncdn.com/i/headshots/nfl/players/full/4259305.png","Ifeatu Melifonwu":"https://a.espncdn.com/i/headshots/nfl/players/full/4240401.png","Desjuan Johnson":"https://a.espncdn.com/i/headshots/nfl/players/full/4362294.png","Charles Cross":"https://a.espncdn.com/i/headshots/nfl/players/full/4426376.png","Kaleb Elarms-Orr":"https://a.espncdn.com/i/headshots/nfl/players/full/4594321.png","Brevyn Spann-Ford":"https://a.espncdn.com/i/headshots/nfl/players/full/4360967.png","Tyrone Tracy Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/4360516.png","Elijah Simmons":"https://a.espncdn.com/i/headshots/nfl/players/full/4430478.png","Ronnie Hickman":"https://a.espncdn.com/i/headshots/nfl/players/full/4569620.png","JL Skinner":"https://a.espncdn.com/i/headshots/nfl/players/full/4428503.png","Brock Wright":"https://a.espncdn.com/i/headshots/nfl/players/full/4242392.png","Quincy Riley":"https://a.espncdn.com/i/headshots/nfl/players/full/4428350.png","Divine Deablo":"https://a.espncdn.com/i/headshots/nfl/players/full/4037626.png","Zayne Anderson":"https://a.espncdn.com/i/headshots/nfl/players/full/3932335.png","Marvin Harrison Jr.":"https://a.espncdn.com/i/headshots/nfl/players/full/4432708.png","Walker Little":"https://a.espncdn.com/i/headshots/nfl/players/full/4242554.png","Aeneas Peebles":"https://a.espncdn.com/i/headshots/nfl/players/full/4565311.png","Josh Johnson":"https://a.espncdn.com/i/headshots/nfl/players/full/11394.png","Jonathan Mingo":"https://a.espncdn.com/i/headshots/nfl/players/full/4426485.png"};   // headshots for the key-injury lines   // headshots for the key-injury lines   // headshots for the key-injury lines   // headshots for the key-injury lines   // headshots for the key-injury lines   // headshots for the key-injury lines   // headshots for the key-injury lines   // headshots for the key-injury lines   // headshots for the key-injury lines   // headshots for the key-injury lines   // headshots for the key-injury lines   // headshots for the key-injury lines
+const RETRO_D = "../img/broncos-d-logo.png";   // the classic 1970–1992 "D" (orange D, white bronco), background keyed out 2026-10-19
+const LOGO={"Cardinals":"https://a.espncdn.com/i/teamlogos/nfl/500/ari.png","Falcons":"https://a.espncdn.com/i/teamlogos/nfl/500/atl.png","Ravens":"https://a.espncdn.com/i/teamlogos/nfl/500/bal.png","Bills":"https://a.espncdn.com/i/teamlogos/nfl/500/buf.png","Panthers":"https://a.espncdn.com/i/teamlogos/nfl/500/car.png","Bears":"https://a.espncdn.com/i/teamlogos/nfl/500/chi.png","Bengals":"https://a.espncdn.com/i/teamlogos/nfl/500/cin.png","Browns":"https://a.espncdn.com/i/teamlogos/nfl/500/cle.png","Cowboys":"https://a.espncdn.com/i/teamlogos/nfl/500/dal.png","Broncos":"https://a.espncdn.com/i/teamlogos/nfl/500/den.png","Lions":"https://a.espncdn.com/i/teamlogos/nfl/500/det.png","Packers":"https://a.espncdn.com/i/teamlogos/nfl/500/gb.png","Texans":"https://a.espncdn.com/i/teamlogos/nfl/500/hou.png","Colts":"https://a.espncdn.com/i/teamlogos/nfl/500/ind.png","Jaguars":"https://a.espncdn.com/i/teamlogos/nfl/500/jax.png","Chiefs":"https://a.espncdn.com/i/teamlogos/nfl/500/kc.png","Raiders":"https://a.espncdn.com/i/teamlogos/nfl/500/lv.png","Chargers":"https://a.espncdn.com/i/teamlogos/nfl/500/lac.png","Rams":"https://a.espncdn.com/i/teamlogos/nfl/500/lar.png","Dolphins":"https://a.espncdn.com/i/teamlogos/nfl/500/mia.png","Vikings":"https://a.espncdn.com/i/teamlogos/nfl/500/min.png","Patriots":"https://a.espncdn.com/i/teamlogos/nfl/500/ne.png","Saints":"https://a.espncdn.com/i/teamlogos/nfl/500/no.png","Giants":"https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png","Jets":"https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png","Eagles":"https://a.espncdn.com/i/teamlogos/nfl/500/phi.png","Steelers":"https://a.espncdn.com/i/teamlogos/nfl/500/pit.png","49ers":"https://a.espncdn.com/i/teamlogos/nfl/500/sf.png","Seahawks":"https://a.espncdn.com/i/teamlogos/nfl/500/sea.png","Buccaneers":"https://a.espncdn.com/i/teamlogos/nfl/500/tb.png","Titans":"https://a.espncdn.com/i/teamlogos/nfl/500/ten.png","Commanders":"https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"};
+LOGO.Broncos = RETRO_D;
+const VSLOGO = t => t === "Broncos" ? "https://a.espncdn.com/i/teamlogos/nfl/500/den.png" : LOGO[t];   // scouting vs box keeps the modern logo (Scott 10/22)
+const state = {};   // id -> {as, hs, pick, note}
+let db = null, canWrite = true;
+const lockAt = g => Date.parse(g.ko) + (g.win === "Sunday 10 AM" ? 15*60000 : 0);   // Sunday 10 AM games lock at 10:15 (Scott 10/4); all others at kickoff (Scott 10/1)
+const started = g => Date.now() >= lockAt(g);   // scores stay editable
+const $ = (s, r=document) => r.querySelector(s);
+const fm = v => v === null || v === undefined ? "—" : (v > 0 ? "+" : "") + v.toFixed(1);
+const num = v => (v === "" || v === null || v === undefined) ? null : Number(v);
+
+function grade(g, s){
+  const as = num(s.as), hs = num(s.hs);
+  if (as === null || hs === null) return null;
+  const margin = hs - as;                       // home margin
+  const winner = margin > 0 ? g.home : margin < 0 ? g.away : "Tie";
+  const su = winner === "Tie" ? "push" : (winner === g.su ? "ok" : "no");
+  let ats = null;
+  if (g.ats){ const cover = margin + g.mkt;    // home covers if margin + mkt > 0
+    ats = cover === 0 ? "push" : ((cover > 0) === (g.ats === g.home) ? "ok" : "no"); }
+  const cover = margin + g.mkt, ppl = {};
+  // props game (g.px): su = total sacks O/U, ats = total takeaways O/U; finals for both kept under store row g99 (as = sacks, hs = takeaways)
+  const X = state.g99 || {}, sk = g.px ? num(X.as) : null, tk = g.px && !g.px.td ? num(X.hs) : null;
+  const TD = !!(g.px && g.px.td), td1 = TD && X.hs ? String(X.hs) : null;   // 1st Broncos TD scorer replaces takeaways from Week 12 (Scott 2026-11-18); hs = scorer name
+  const tdv = pick => !pick || td1 === null ? null : (pick === td1 ? "ok" : "no");
+  const ouv = (pick, val, line) => !pick || val === null ? null : val === line ? "push" : ((val > line) === (pick === "Over") ? "ok" : "no");
+  for (const p of PEOPLE){ const pk = (s.picks||{})[p] || {};
+    if (g.px){ ppl[p] = { su: ouv(pk.su, sk, g.px.sk), ats: TD ? tdv(pk.ats) : ouv(pk.ats, tk, g.px.tk), ou: ouv(pk.ou, as+hs, g.ou) }; continue; }
+    ppl[p] = { su: pk.su ? (winner==="Tie" ? "push" : (winner===pk.su ? "ok":"no")) : null,
+               ats: pk.ats ? (cover===0 ? "push" : ((cover>0)===(pk.ats===g.home) ? "ok":"no")) : null,
+               ou: pk.ou ? (as+hs===g.ou ? "push" : (((as+hs)>g.ou)===(pk.ou==="Over") ? "ok":"no")) : null }; }
+  const mou = g.mou ? (as+hs===g.ou ? "push" : (((as+hs)>g.ou)===(g.mou==="Over") ? "ok":"no")) : null;   // Mack's over/under
+  return {margin, winner, su: g.px ? ouv(g.px.msk, sk, g.px.sk) : su, ats: g.px ? (TD ? tdv(g.px.mtd) : ouv(g.px.mtk, tk, g.px.tk)) : ats, mou, ppl, total: as + hs};
+}
+
+const LIVE = {};   // live scores from ESPN, by game id (Scott 10/11: "put a live score on the picks page")
+function leadInfo(g){
+  const lv = LIVE[g.id], s = state[g.id] || {};
+  let as, hs, final;
+  if (num(s.as) !== null && num(s.hs) !== null) { as = s.as; hs = s.hs; final = true; }          // entered final wins
+  else if (lv && lv.state !== "pre") { as = lv.as; hs = lv.hs; final = lv.state === "post"; }
+  else return null;
+  return { r: grade(g, { as, hs, picks: s.picks }), final };
+}
+function leadText(g){
+  const li = leadInfo(g); if (!li || !li.r) return ""; const r = li.r, verb = li.final ? "won" : "leads", verbs = li.final ? "won" : "lead";
+  const pts = {}; for (const p of PEOPLE) pts[p] = ["su","ats","ou"].filter(k => r.ppl[p][k] === "ok").length;
+  pts.Mack = [r.su, r.ats, r.mou].filter(x => x === "ok").length;
+  const top = Math.max(...Object.values(pts)); if (top === 0) return li.final ? "nobody scored" : "nobody leads yet";
+  const who = Object.keys(pts).filter(p => pts[p] === top);
+  return `${who.join(" & ")} ${who.length > 1 ? verbs : verb} · ${top} pt${top === 1 ? "" : "s"}`;
+}
+function slateInfo(w){
+  const gs = GAMES.filter(g => g.win === w); const pts = {}; let started = 0, finals = 0;
+  for (const g of gs) { const li = leadInfo(g); if (!li || !li.r) continue; started++; if (li.final) finals++;
+    for (const p of PEOPLE) pts[p] = (pts[p]||0) + ["su","ats","ou"].filter(k => li.r.ppl[p][k] === "ok").length;
+    pts.Mack = (pts.Mack||0) + [li.r.su, li.r.ats, li.r.mou].filter(x => x === "ok").length; }
+  if (!started) return null;
+  const top = Math.max(...Object.values(pts)); const who = Object.keys(pts).filter(p => pts[p] === top);
+  return { done: finals === gs.length, top, who, pts, finals };
+}
+function slateText(w){ const si = slateInfo(w); if (!si) return "";
+  if (si.done) return `🏆 ${si.who.join(" & ")} ${si.who.length > 1 ? "share the slate" : "wins the slate"} · ${si.top} pt${si.top === 1 ? "" : "s"}`;
+  return si.top === 0 ? "nobody leads yet" : `${si.who.join(" & ")} ${si.who.length > 1 ? "lead" : "leads"} · ${si.top} pt${si.top === 1 ? "" : "s"}`; }
+function slateClass(w){ const si = slateInfo(w); return "lead slate" + (si && si.done ? " won" : ""); }
+const slateId = w => "sl-" + w.replace(/[^A-Za-z0-9]/g, "");
+function leadClass(g){ const li = leadInfo(g); return "lead" + (li && li.final ? " won" : ""); }
+// ---- deck helpers (Mack 2026-10-19). Pure string/number work only: the Tuesday harness evals this block without a DOM. ----
+const deck = { order: [], open: {} };   // per-device arrangement, filled by deckLoad() before render(); never touches the store
+const defaultOpen = id => id === "week";
+const isOpen = id => id in deck.open ? !!deck.open[id] : defaultOpen(id);
+const ctlHTML = id => `<div class="ctl"><button class="ib" type="button" data-act="top" aria-label="Move to top" title="Move to top">⤒</button><details class="menu"><summary class="ib" aria-label="More options" role="button">⋯</summary><div class="mn" role="menu"><button type="button" role="menuitem" data-act="top">Move to top</button><button type="button" role="menuitem" data-act="up">Move up</button><button type="button" role="menuitem" data-act="down">Move down</button><hr><button type="button" role="menuitem" data-act="collapse">Collapse all</button><button type="button" role="menuitem" data-act="expand">Expand all</button></div></details><span class="ib handle" role="button" aria-label="Drag to reorder" tabindex="-1">≡</span></div>`;
+const hdHTML = (id, s1, s2) => `<div class="hd"><button class="strip" type="button" id="st-${id}" aria-expanded="${isOpen(id)}" aria-controls="bd-${id}"><span class="s1">${s1}</span><span class="s2">${s2}</span></button>${ctlHTML(id)}</div>`;
+const bodyHTML = (id, inner) => `<div class="body" id="bd-${id}"><div class="bi"><div class="bc">${inner}</div></div></div>`;
+function tally(){   // the one place points are counted; tiles() and the strips both read it
+  let finals=0, su=[0,0], ats=[0,0], mou=[0,0]; const rec={}; for(const p of PEOPLE) rec[p]={su:[0,0],ats:[0,0],ou:[0,0],x:[0,0]}; const mx=[0,0];
+  for (const g of GAMES){ const r = grade(g, state[g.id]||{}); if(!r) continue; finals++;
+    if(g.px){ for(const v of [r.su,r.ats]) if(v&&v!=="push"){mx[1]++; if(v==="ok")mx[0]++;} }   // props game: sacks + takeaways count as "Props"
+    else { if(r.su!=="push"){su[1]++; if(r.su==="ok")su[0]++;}
+    if(r.ats&&r.ats!=="push"){ats[1]++; if(r.ats==="ok")ats[0]++;} }
+    if(r.mou&&r.mou!=="push"){mou[1]++; if(r.mou==="ok")mou[0]++;}
+    for(const p of PEOPLE) for(const k of ["su","ats","ou"]){ const v=r.ppl[p][k], kk=g.px&&k!=="ou"?"x":k; if(v&&v!=="push"){rec[p][kk][1]++; if(v==="ok")rec[p][kk][0]++;} } }
+  const pts = {}; for (const p of PEOPLE) pts[p] = rec[p].su[0] + rec[p].ats[0] + rec[p].ou[0] + rec[p].x[0];   // 1 point per correct pick (winner, spread, total)
+  pts.Mack = su[0] + ats[0] + mou[0] + mx[0];   // Mack: winner on every game, spread only where he leaned, totals from g.mou
+  return { finals, su, ats, mou, mx, rec, pts };
+}
+const boardStrip = sec => [...sec.querySelectorAll(".sb-row, tr.sb-lead, tr:not(:first-child)")].filter((r, i, a) => a.indexOf(r) === i && r.querySelector(".sb-nm"))   // same look as the tally strip: everyone, rank order (Scott 2026-11-13)
+  .map(r => `${r.classList.contains("sb-lead") ? "★ " : ""}${r.querySelector(".sb-nm").textContent.replace("★", "").trim()} ${r.querySelector(".sb-pt").textContent.replace(/\s*pts?\s*$/, "").trim()}`).join(" · ");
+const weekStripText = () => { const T = tally(); return Object.keys(T.pts).sort((a,b) => T.pts[b]-T.pts[a]).map(p => `${CHAMP.includes(p)?"👑 ":""}${p} ${T.pts[p]}`).join(" · "); };
+function slateBody(w){
+  const si = slateInfo(w), gs = GAMES.filter(g => g.win === w), pts = si ? si.pts : {};
+  const row = p => `<tr class="${p==="Mack"?"mack":""}"><td>${CHAMP.includes(p)?"👑 ":""}${p}</td><td>${pts[p]||0} pt${(pts[p]||0)===1?"":"s"}</td></tr>`;
+  return `<div class="sb"><table><tbody>${[...PEOPLE].sort((a,b)=>(pts[b]||0)-(pts[a]||0)).map(row).join("")}${row("Mack")}</tbody></table><div class="fin">Finals in ${si ? si.finals : 0} / ${gs.length}${gs.length && gs[0].kick ? ` · first kick ${gs[0].kick}` : ""}</div></div>`;
+}
+function refreshStrips(){   // patch strip text in place (textContent): never rebuilds a card, so an open dropdown is safe (Safari rule)
+  if (typeof document === "undefined") return;
+  const put = (sel, txt) => { const el = document.querySelector(sel); if (el && el.textContent !== txt) el.textContent = txt; };
+  put("#wk-strip", weekStripText());
+  for (const w of new Set(GAMES.map(g => g.win))) { const el = document.querySelector("#" + slateId(w)); if (el) { const t = slateText(w); if (el.textContent !== t) el.textContent = t; el.className = slateClass(w); }
+    const b = document.querySelector("#sb-" + slateId(w)); if (b) { const h = slateBody(w); if (b.innerHTML !== h) b.innerHTML = h; } }
+}
+function preBtn(g){ if (!g.pre) return "";   // Mack's pre-game page as an ad box (Scott 10/21: "a type of advertisement box instead of a basic link")
+  return `<a class="prebtn" href="${g.pre}"><span class="pr">📋 Mack's scouting report</span>
+    <span class="pl2"><img src="${VSLOGO(g.away)}" alt=""><b>vs</b><img src="${VSLOGO(g.home)}" alt=""></span>
+    <span class="pq">${g.preq || "Who has the edge?"}</span>${g.pret ? `<span class="pt">“${g.pret}”</span>` : ""}
+    <span class="pc">Read it before kickoff <b>→</b></span><span class="pf">Player matchups · injuries · the read</span></a>`; }
+function render(){   // runs once; afterwards cards are patched (renderCard, textContent) or moved (appendChild), never rebuilt as a deck
+  const wins = [...new Set(GAMES.map(g => g.win))], wl = (document.title.match(/Week \d+/) || ["This week"])[0];
+  deckLoad();
+  const tallyCard = (id, s1, s2, inner) => `<article class="dk tally ${isOpen(id)?"open":""}" data-id="${id}">${hdHTML(id, `<span class="tt">${s1}</span>`, s2)}${bodyHTML(id, inner)}</article>`;
+  const slateCard = w => { const gs = GAMES.filter(g => g.win === w), id = slateId(w);
+    return `<article data-win="${w.replace(/"/g,"&quot;")}" class="dk slate ${isOpen(id)?"open":""}" data-id="${id}">${hdHTML(id, `<span class="tt">${w}<small>${gs.length} game${gs.length>1?"s":""}</small></span>`,
+      `<span class="${slateClass(w)}" id="${id}">${slateText(w)}</span><span class="st0">nobody leads yet · first kick ${gs[0].kick}</span>`)}${bodyHTML(id, `<div id="sb-${id}">${slateBody(w)}</div>`)}</article>`; };
+  $("#deck").innerHTML = tallyCard("week", `${wl} tally`, `<span id="wk-strip">${weekStripText()}</span>`, `<div class="tiles" id="tiles"></div>`)
+    + tallyCard("season", "Season standings", `<span id="season-strip"></span>`, "")   // season + same-picks boards roll up here (Scott 2026-11-13)
+    + tallyCard("made", "Made picks only, missed thrown out", `<span id="made-strip"></span>`, "")   // own card (Scott 2026-11-13)
+    + tallyCard("props", "Broncos props game", `<span id="props-strip"></span>`, "")   // props record card (Scott 2026-11-13)
+    + tallyCard("kings", "Most king titles", `<span id="kings-strip"></span>`, "")   // weekly crowns (Scott 2026-11-13)
+    + tallyCard("last", "Last week", `<span id="last-strip"></span>`, "")
+    + tallyCard("mack", "Mack's record so far", `<span id="mack-strip"></span>`, "")
+    + PEOPLE.map(p => tallyCard("rec-" + p, `${p}'s record so far`, `<span id="rec-strip-${p}"></span>`, "")).join("")   // one record card per player (Scott 10/21)
+    + tallyCard("about", "About this board", "how to read a card · picks lock · points", "")
+    + wins.map(w => slateCard(w) + GAMES.filter(g => g.win === w).map(card).join("")).join("");
+  // the two static sections keep their place in the HTML for the Tuesday scripts' regexes; at runtime they live inside their cards
+  { const kb = document.querySelector('.wrap > section.sboard[aria-label="King titles"]'), kc = $("#bd-kings .bc");
+    if (kb && kc) { kc.appendChild(kb); $("#kings-strip").textContent = boardStrip(kb).replace(/ (\d+) 👑/g, " $1 👑"); }
+    else if (kc) kc.closest(".dk, article, section")?.remove(); }
+  { const pb = document.querySelector('.wrap > section.sboard[aria-label="Props standings"]'), pc = $("#bd-props .bc");
+    if (pb && pc) { pc.appendChild(pb); const ld = [...pb.querySelectorAll("tr.sb-lead")].map(r => r.querySelector(".sb-nm").textContent.replace("★", "").trim()), rc = pb.querySelector("tr.sb-lead .sb-pt");
+      $("#props-strip").textContent = boardStrip(pb); }
+    else if (pc) pc.closest(".dk, article, section")?.remove(); }
+  { const mb = document.querySelector('.wrap > section.sboard[aria-label="Common picks standings"]'), mc = $("#bd-made .bc");
+    if (mb && mc) { mc.appendChild(mb); const ld = [...mb.querySelectorAll(".sb-lead .sb-nm")].map(x => x.textContent.replace("★", "").trim()), pt = mb.querySelector(".sb-lead .sb-pt"), n = mb.querySelector(".sb-note");
+      $("#made-strip").textContent = boardStrip(mb); }
+    else if (mc) mc.closest(".dk, article, section")?.remove(); }
+  { const sbs = document.querySelectorAll(".wrap > section.sboard, .wrap > details.sb-how"), bc = $("#bd-season .bc");
+    if (bc && sbs.length) { sbs.forEach(x => bc.appendChild(x));
+      const lead = [...(sbs[0].querySelectorAll(".sb-lead"))].map(r => r.querySelector(".sb-nm").textContent.replace("★", "").trim()), pt = sbs[0].querySelector(".sb-lead .sb-pt");
+      $("#season-strip").textContent = boardStrip(sbs[0]); }
+    else if (bc) bc.closest(".dk, article, section")?.remove(); }
+  const recs = document.querySelectorAll(".wrap > section.rec"), last = recs[0], mack = recs[1];
+  if (last) { $("#bd-last .bc").appendChild(last); const t = last.textContent.replace(/\s+/g, " ");
+    const m = t.match(/(Week \d+)\s+Final\s*—\s*(.*?)\.\s*(\S+) took the week/); const pts = m && (m[2].match(new RegExp(m[3] + "\\s+(\\d+) pts")) || [])[1];
+    $("#last-strip").textContent = m ? m[2].split(" · ").map(x => { const q = x.match(/^(\S+)\s+(\d+)/); return q ? `${CHAMP.includes(q[1]) ? "👑 " : ""}${q[1]} ${q[2]}` : x; }).join(" · ") : "last week's board"; }   // tally-style strip (Scott 2026-11-13)
+  if (mack) { $("#bd-mack .bc").appendChild(mack); const m = mack.textContent.match(/Season\s+([\d-]+) straight up · ([\d-]+) against the spread/);
+    $("#mack-strip").textContent = m ? `${m[1]} SU · ${m[2]} ATS` : "Mack's record so far"; }
+  for (const sec of document.querySelectorAll(".wrap > section.prec")) { const p = sec.dataset.who, bc = $(`#bd-rec-${p} .bc`), st = $(`#rec-strip-${p}`); if (!bc) continue; bc.appendChild(sec);
+    const m = sec.textContent.match(/Season\s+([\d-]+) winners · ([\d-]+) against the spread · ([\d-]+) over\/under.*?· (\d+) pts?/); if (st) st.textContent = m ? `${m[1]} SU · ${m[2]} ATS · ${m[3]} O/U · ${m[4]} pts` : "no graded picks yet"; }
+  // the header paragraph and the footer notes keep their place in the HTML for the Tuesday scripts' regexes; at runtime they live in the About card (Scott 10/19)
+  const sub = $("header .sub"), foot = $("footer.foot"); if (sub) $("#bd-about .bc").appendChild(sub); if (foot) $("#bd-about .bc").appendChild(foot);
+  applyOrder(); normalizeDeck(); readOrder();
+  tiles();
+}
+function card(g){
+  // key-injury lines with headshots (Scott 10/14): the injured player and whoever steps in
+  const injFace = e => { const f = n => HS[n] ? `<span class="ihp"><img src="${HS[n]}" alt="" loading="lazy">${n}</span>` : n;
+    const bm = e.match(/ ⟦(LOSS|EVEN|GAIN)⟧$/), bdg = bm ? `<span class="ivb iv-${bm[1].toLowerCase()}">${bm[1]}</span>` : "";   // LOSS/EVEN/GAIN badge (Scott 2026-11-17)
+    e = e.replace(/ ⟦(LOSS|EVEN|GAIN)⟧$/, "");
+    return bdg + e.replace(/^([^(]+?) \(/, (m, n) => f(n) + " (").replace(/→ ([^(]+?) \(/, (m, n) => "→ " + f(n) + " ("); };
+  const s = state[g.id] || {}; const r = grade(g, s);
+  const chip = (t, k) => `<span class="chip ${k||""}">${t}</span>`;
+  const verdict = r ? [
+    r.su ? chip(`Mack ${g.px?(g.px.td?"TFL":"Sacks"):"SU"} ${r.su==="ok"?"✓":r.su==="no"?"✗":"push"}`, r.su) : "",
+    r.ats ? chip(`${g.px?(g.px.td?"Mack TD":"Mack TA"):"ATS"} ${r.ats==="ok"?"✓":r.ats==="no"?"✗":"push"}`, r.ats) : "",
+    r.mou ? chip(`Mack O/U ${r.mou==="ok"?"✓":r.mou==="no"?"✗":"push"}`, r.mou) : "",
+    ...PEOPLE.map(p => ["su","ats","ou"].map(k => r.ppl[p][k] ? chip(`${p} ${g.px?{su:g.px.td?"TFL":"Sacks",ats:g.px.td?"TD":"TA",ou:"O/U"}[k]:k==="su"?"W":k.toUpperCase()} ${r.ppl[p][k]==="ok"?"✓":r.ppl[p][k]==="no"?"✗":"push"}`, r.ppl[p][k]) : "").join("")),
+    chip(`Total ${r.total} ${r.total>g.ou?"over":r.total<g.ou?"under":"push"}`, r.total===g.ou?"push":"")
+  ].join("") : "";
+  // card colour: Mack's pick before the game; once final, the team that won outright (Scott 10/1). A tie keeps the pick's colours.
+  const won = r && r.winner !== "Tie" ? r.winner : null, tint = g.bron ? "Broncos" : (won || g.su);   // Broncos game keeps its highlight regardless (Scott 10/2)
+  // strip scores: a typed final first, else ESPN's live score (placeholder only, never overwrites typed scores), else blank
+  const lv = LIVE[g.id] && LIVE[g.id].state !== "pre" ? LIVE[g.id] : null, sa = r ? s.as : (lv ? lv.as : ""), sh = r ? s.hs : (lv ? lv.hs : "");
+  const atTxt = r ? "Final" : (LIVE[g.id]?.clock||"at");
+  const strip = hdHTML(g.id,
+    `<span class="side away"><img class="logo ${g.away==="Broncos"?"retro":""}" src="${LOGO[g.away]}" alt="" loading="lazy"><span class="tn">${g.away}${g.ar?`<small>${g.ar}</small>`:""}</span><span class="poss" id="pa-${g.id}">${LIVE[g.id]?.poss==="away"?"🏈":""}</span><b class="sc" id="sa-${g.id}">${sa ?? ""}</b></span><span class="at ${r?"lv post":LIVE[g.id]?"lv "+LIVE[g.id].state:""}" id="at-${g.id}">${atTxt}${!r&&LIVE[g.id]?.dd?`<small class="dd ${LIVE[g.id].rz?"rz":""}">${LIVE[g.id].dd}</small>`:""}</span><span class="side home"><b class="sc" id="sh-${g.id}">${sh ?? ""}</b><span class="poss" id="ph-${g.id}">${LIVE[g.id]?.poss==="home"?"🏈":""}</span><span class="tn">${g.home}${g.hr?`<small>${g.hr}</small>`:""}</span><img class="logo ${g.home==="Broncos"?"retro":""}" src="${LOGO[g.home]}" alt="" loading="lazy"></span>`,
+    `<span class="kick">${g.kick}${g.qb?" · QB change":""}</span>${g.pre?`<a class="prechip" href="${g.pre}" onclick="event.stopPropagation()">📋 Pre-game</a>`:""}<span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span><span class="${leadClass(g)}" id="ld-${g.id}">${leadText(g)}</span>`);
+  return `<article class="g dk pick-${tint.replace(/[^A-Za-z0-9]/g,"")} ${g.bron?"bron":""} ${r?"final":""} ${g.mu?"has-mu":""} ${isOpen(g.id)?"open":""}" data-id="${g.id}">
+    <span class="saved" id="sv-${g.id}">saved</span>${strip}<div class="body" id="bd-${g.id}"><div class="bi"><div class="bc">
+    <div class="teams">
+      <div class="team away"><span class="nm">${g.away}</span>${g.al?`<small class="lw">${g.al}</small>`:""}</div><div class="at">final score</div><div class="team home"><span class="nm">${g.home}</span>${g.hl?`<small class="lw">${g.hl}</small>`:""}</div>
+      <input class="score ${LIVE[g.id]?"lv":""}" id="as-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="${LIVE[g.id]?.as ?? "–"}" value="${s.as ?? ""}" aria-label="${g.away} score" ${canWrite?"":"disabled"}>
+      <div></div>
+      <input class="score ${LIVE[g.id]?"lv":""}" id="hs-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="${LIVE[g.id]?.hs ?? "–"}" value="${s.hs ?? ""}" aria-label="${g.home} score" ${canWrite?"":"disabled"}>
+    </div>
+    <div class="numbers">
+      <div><span class="lbl">Mack</span><b>${fm(g.line)}</b></div>
+      <div><span class="lbl">Market</span><b>${fm(g.mkt)}</b></div>
+      <div><span class="lbl">Edge</span><b>${fm(g.line-g.mkt)}</b></div>
+      <div><span class="lbl">O/U</span><b>${g.ou}</b></div>
+    </div>
+    ${g.px ? (() => { const sp = g.ats===g.home ? `${g.home} ${fm(g.mkt)}` : `${g.away} ${fm(-g.mkt)}`;   // Mack's own game pick on the props game (Scott 10/14): shown for the record, scores no points
+      const ok = r && r.winner !== "Tie" ? (r.winner === g.su ? " ✓" : " ✗") : "", c = r ? r.margin + g.mkt : null;
+      const ac = r ? (c === 0 ? " push" : ((c > 0) === (g.ats === g.home) ? " ✓" : " ✗")) : "";
+      return `<div class="mpk"><span class="lbl">Mack's pick</span><b>${g.su} ${g.p}%${ok}</b><b>${sp}${ac}</b><small>for the record, no points</small></div>`; })() : ""}
+    ${preBtn(g)}
+    ${g.mu ? `<div class="mu"><table>
+      <thead><tr><th><span class="lbl">Matchup</span></th><th class="col">${g.away}<small>offense (NFL rank)</small></th><th class="col">${g.home}<small>offense (NFL rank)</small></th></tr></thead>
+      <tbody>${g.mu.rows.map(r => `<tr><th>${r.k}</th><td class="${r.wa?(r.wa===g.away?"win":"lose"):""}">${r.wa?(r.wa===g.away?"wins":"loses"):"even"}${r.ra?` <small class="nrk">(#${r.ra})</small>`:""}</td><td class="${r.wh?(r.wh===g.home?"win":"lose"):""}">${r.wh?(r.wh===g.home?"wins":"loses"):"even"}${r.rh?` <small class="nrk">(#${r.rh})</small>`:""}</td></tr>`).join("")}</tbody></table>${g.pm ? `<div class="pm"><span class="lbl">Playmakers Matchup <small>NFL rank among the 32 teams' leaders · vs the other defense's rank</small></span><div class="pmg">${[g.away,g.home].map(t => `<div class="pmc"><b class="pmt">${t}</b>${(g.pm[t]||[]).map(x => `<div class="pmr ${x.res}">${x.head?`<img src="${x.head}" alt="" loading="lazy">`:"<i></i>"}<div class="pmn"><b>${x.name}</b>${x.inj?` <span class="pinj" title="${x.injf}${x.inj==="D"?" (treated as out)":""}">${x.inj}</span>`:""} <small>${x.pos}</small><small class="pms">${x.stat} · <b>#${x.rank}</b> ${({QB:"QB",RB:"rusher",Target:"receiver",Rusher:"pass rusher"})[x.role]} · vs ${x.vs} #${x.vrank}</small></div><span class="pmv">${x.res}</span></div>`).join("")}</div>`).join("")}</div></div>` : ""}</div>` : ""}
+    ${[].concat(g.yt || []).map(v => `<div class="ytv"><span class="lbl">Video</span><a class="ytb" href="https://www.youtube.com/watch?v=${v.id}" target="_blank" rel="noopener" aria-label="Watch on YouTube: ${v.t}" onclick="event.stopPropagation()"><img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="" loading="lazy"><span class="ytp">▶</span></a><small>${v.t} · opens on YouTube (the NFL blocks playback on other sites)</small></div>`).join("")}
+    <div class="inj"><span class="lbl">Key injuries → who steps in</span>
+      <div class="it"><b>${g.away}</b>${g.inj.away.length?g.inj.away.map(e=>`<div class="ir">${injFace(e)}</div>`).join(""):`<div class="ir">none listed</div>`}</div>
+      <div class="it"><b>${g.home}</b>${g.inj.home.length?g.inj.home.map(e=>`<div class="ir">${injFace(e)}</div>`).join(""):`<div class="ir">none listed</div>`}</div></div>
+    <div class="pick">${chip(g.px ? (g.px.td ? `Mack: TFL ${g.px.msk} · 1st TD ${g.px.mtd} · total ${g.mou}` : `Mack: sacks ${g.px.msk} · takeaways ${g.px.mtk} · total ${g.mou}`) : `Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
+    ${g.px?`<div class="pxf"><span class="lbl">Finals</span> ${g.px.td?"TFL":"Sacks"} <input id="sk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).as??""}" aria-label="Total sacks" ${canWrite?"":"disabled"}> ${g.px.td ? `1st TD <input id="tk-${g.id}" class="tdres" readonly placeholder="–" value="${(state.g99||{}).hs??""}" aria-label="First Broncos touchdown scorer (filled automatically after the game)">` : `Takeaways <input id="tk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).hs??""}" aria-label="Total takeaways" ${canWrite?"":"disabled"}>`}</div>`:""}
+    <div class="you">
+      ${g.px ? `<div class="px-note">Broncos game: no winner or spread pick. ${g.px.td ? "Over/Under on total tackles for loss and total points (both teams; a sack counts as a TFL), plus the first Broncos player to score a touchdown (rushing or receiving; a passing TD counts for the catcher; any return score — interception, fumble, punt or kick — is Defense TD)." : "Over/Under on total sacks, total takeaways (interceptions + fumbles recovered) and total points, both teams combined."}</div>` : ""}
+      <span class="lbl"></span><span class="lbl">${g.px?`${g.px.td?"TFL":"Sacks"} ${g.px.sk}`:"Winner"}</span><span class="lbl">${g.px?(g.px.td?"1st Broncos TD":`Takeaways ${g.px.tk}`):"Spread"}</span><span class="lbl">Total ${g.ou}</span>
+      ${PEOPLE.map(p => { const pk=(s.picks||{})[p]||{}; const sel=(v,x)=>v===x?"selected":""; const ou2=v=>`<option ${sel(v,"Over")}>Over</option><option ${sel(v,"Under")}>Under</option>`;
+        const sp = g.mkt<0 ? [[g.away, `${g.away} +${-g.mkt}`],[g.home, `${g.home} ${g.mkt}`]] : [[g.away, `${g.away} ${g.mkt===0?"PK":"-"+g.mkt}`],[g.home, `${g.home} ${g.mkt===0?"PK":"+"+g.mkt}`]];
+        return `<label class="lbl">${p}</label>
+        <select id="su-${p}-${g.id}" aria-label="${p} winner" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option>${g.px?ou2(pk.su):`<option ${sel(pk.su,g.away)}>${g.away}</option><option ${sel(pk.su,g.home)}>${g.home}</option>`}</select>
+        <select id="ats-${p}-${g.id}" aria-label="${p} spread" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option>${g.px?(g.px.td?g.px.td.concat(["Defense TD"]).map((n,i)=>[n,g.px.tdc&&i<g.px.tdc.length?g.px.tdc[i]:null]).sort((x,y)=>(y[1]??-1)-(x[1]??-1)).map(([n,c])=>`<option value="${n}" ${sel(pk.ats,n)}>${n}${c!==null?` · ${c} TD`:""}</option>`).join(""):ou2(pk.ats)):sp.map(([v,l])=>`<option value="${v}" ${sel(pk.ats,v)}>${l}</option>`).join("")}</select>
+        <select id="ou-${p}-${g.id}" aria-label="${p} total" ${canWrite&&!started(g)?"":"disabled"}><option value="">—</option><option ${sel(pk.ou,"Over")}>Over</option><option ${sel(pk.ou,"Under")}>Under</option></select>`; }).join("")}
+      ${(() => { const sp = g.mkt<0 ? {[g.away]:`${g.away} +${-g.mkt}`,[g.home]:`${g.home} ${g.mkt}`} : {[g.away]:`${g.away} ${g.mkt===0?"PK":"-"+g.mkt}`,[g.home]:`${g.home} ${g.mkt===0?"PK":"+"+g.mkt}`};
+        const cell = (v, what) => `<select class="mk" disabled aria-label="Mack ${what}"><option>${v||"—"}</option></select>`;   // Mack's picks: fixed at publish, read-only
+        return `<label class="lbl">Mack</label>${g.px?cell(g.px.msk,"sacks")+(g.px.td?cell(g.px.mtd,"first TD"):cell(g.px.mtk,"takeaways")):cell(g.su,"winner")+cell(g.ats?sp[g.ats]:"","spread")}${cell(g.mou,"total")}`; })()}
+    </div>
+    <div class="savebar" id="sb-${g.id}" aria-live="polite">${saveText(g.id)}</div>
+  </div></div></div></article>`;
+}
+function tiles(){
+  const T = tally(), {finals, su, ats, mou, mx, rec} = T;
+  const t = (l,v,s,c) => `<div class="tile${c?" champ":""}"${c?` title="${l} won last week"`:""}><div class="lbl">${l}</div><div class="v">${v}${s?`<small>${s}</small>`:""}</div></div>`;
+  const mpts = T.pts.Mack; const px = a => a[1] ? ` · Props ${a[0]}-${a[1]-a[0]}` : "";
+  // picks in = every winner / spread / over-under filled, three per game, so a card with two of three made counts two (Scott 11/1)
+  const maxIn = GAMES.length * 3, pin = p => GAMES.reduce((n, g) => { const k = ((state[g.id]||{}).picks||{})[p]||{}; return n + ["su","ats","ou"].filter(x => k[x]).length; }, 0);
+  $("#tiles").innerHTML = t("Finals in", finals, "/ " + GAMES.length) + PEOPLE.map(p => { const pts = T.pts[p];
+    return t(p, `${pts} pt${pts===1?"":"s"}`, `${pin(p)}/${maxIn} picks in · W ${rec[p].su[0]}-${rec[p].su[1]-rec[p].su[0]} · ATS ${rec[p].ats[0]}-${rec[p].ats[1]-rec[p].ats[0]} · O/U ${rec[p].ou[0]}-${rec[p].ou[1]-rec[p].ou[0]}${px(rec[p].x)}`, CHAMP.includes(p)); }).join("")
+    + t("Mack", `${mpts} pt${mpts===1?"":"s"}`, `W ${su[0]}-${su[1]-su[0]} · ATS ${ats[0]}-${ats[1]-ats[0]} · O/U ${mou[0]}-${mou[1]-mou[0]}${px(mx)}`, CHAMP.includes("Mack"));
+  refreshStrips();
+}
+
+// ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
+const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
+const WEEK = 12, KEY = "wk12-cache", BOARD_VER = "v191";
+const PEOPLE = ["Todd","Ryota","Scott"];
+const CHAMP = ["Mack"];   // last week's winner(s) wear the crown — a tie is a shared crown (Scott 11/3); set by nfl_site_week.py each Tuesday
+function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
+function saveCache(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+function setDb(k,msg){ $("#dbdot").className="dot "+k; $("#dbmsg").textContent=msg; }
+// ---- Saving picks (Mack 2026-11-13, Scott: "it doesn't always take the first time") ----
+// Old flow lost picks: a board refresh landing while a pick was still waiting (0.5 s debounce) or in flight overwrote it with the
+// server's older copy, and the pending save then saw "no change" and sent nothing (reproduced on sandbox week 99: 5 fast picks -> 1 stored).
+// Now: (1) a refresh never overwrites a card with an unconfirmed pick; (2) every save is read back and retried until the board matches;
+// (3) "saved" shows only once confirmed; (4) unconfirmed cards persist on this device and resend on reload / every 20 s.
+const timers = {}, srv = {}, inflight = new Set(), again = new Set();
+const PKEY = KEY + "-pending";
+const pending = new Set((() => { try { return JSON.parse(localStorage.getItem(PKEY) || "[]"); } catch(e) { return []; } })());
+function savePending(){ try{ localStorage.setItem(PKEY, JSON.stringify([...pending])); }catch(e){} }
+function saveText(id){   // status line under the picks, until kickoff (Scott 2026-11-13: "make the saved under the picks")
+  const G = GAMES.find(x => x.id === id); if (!G) return "";
+  if (started(G)) return `<span class="sv-lock">Picks locked at kickoff</span>`;
+  const st = saveState[id];
+  if (st === "wait") return `<span class="sv-wait">Saving…</span>`;
+  if (st === "bad") return `<span class="sv-bad">Not saved yet · retrying</span>`;
+  const row = srv[id] || {picks:{}};
+  const n = p => { const v = (row.picks||{})[p] || {}; return ["su","ats","ou"].filter(k => v[k]).length; };
+  return `<span class="sv-ok">${st === "ok" ? "✓ Saved" : "Saved on the board"}</span> · ` + PEOPLE.map(p => `${p} ${n(p)}/3${n(p) === 3 ? " ✓" : ""}`).join(" · ");
+}
+const saveState = {};
+function markCard(id, cls, txt){ saveState[id] = cls === "show" ? "ok" : cls; const sb = $("#sb-"+id); if (sb) sb.innerHTML = saveText(id); const el = $("#sv-"+id); if (!el) return; el.textContent = txt; el.classList.remove("show","wait","bad"); if (cls) el.classList.add(cls); if (cls === "show") setTimeout(() => el.classList.remove("show"), 1500); }
+function queueSave(id){
+  const s = state[id] = state[id] || {};
+  s.as = $("#as-"+id).value.trim(); s.hs = $("#hs-"+id).value.trim();
+  if ($("#sk-"+id)){ const X = state.g99 = state.g99 || {}; X.as = $("#sk-"+id).value.trim(); X.hs = $("#tk-"+id).value.trim(); }   // props game finals
+  s.picks = {}; for (const p of PEOPLE) if ($("#su-"+p+"-"+id)) s.picks[p] = { su: $("#su-"+p+"-"+id).value, ats: $("#ats-"+p+"-"+id).value, ou: $("#ou-"+p+"-"+id).value };
+  pending.add(id); savePending(); saveCache(); tiles(); markCard(id, "wait", "saving…");
+  clearTimeout(timers[id]); timers[id] = setTimeout(() => push(id), 500);
+}
+function diffCalls(id){   // what this device has that the board does not, compared with the board's last known row
+  const s = state[id] || {}, prev = srv[id] || {}, G = GAMES.find(x => x.id === id), calls = [];
+  if (G && !started(G)) for (const p of PEOPLE){ const v = (s.picks||{})[p]; if (!v) continue; const o = (prev.picks||{})[p] || {};
+    if (v.su !== (o.su||"") || v.ats !== (o.ats||"") || v.ou !== (o.ou||"")) calls.push({week:WEEK, game:id, person:p, su:v.su, ats:v.ats, ou:v.ou}); }
+  if ((s.as||"") !== (prev.as||"") || (s.hs||"") !== (prev.hs||"")) calls.push({week:WEEK, game:id, as:s.as||"", hs:s.hs||""});
+  if (G && G.px){ const X = state.g99 || {}, P = srv.g99 || {}; if ((X.as||"") !== (P.as||"") || (X.hs||"") !== (P.hs||"")) calls.push({week:WEEK, game:"g99", as:X.as||"", hs:X.hs||""}); }
+  return calls;
+}
+async function push(id){
+  if (inflight.has(id)) { again.add(id); return; }   // one save per card at a time; a change made meanwhile goes in the next round
+  inflight.add(id);
+  try {
+    for (let attempt = 0; attempt < 5; attempt++){
+      again.delete(id);
+      try {
+        for (const body of diffCalls(id)){ const q = new URLSearchParams(body).toString(); const r = await fetch(STORE + "?" + q, {cache:"no-store"}); const j = await r.json(); if (!j.ok) throw new Error(j.error||"store refused"); }
+        await pull(true);   // read back what the board stored
+      } catch(e){ ping("savefail:" + id + ":" + String(e).slice(0,30)); }
+      if (diffCalls(id).length === 0 && !again.has(id)){
+        pending.delete(id); savePending(); markCard(id, "show", "saved ✓"); ping("saved:" + id);
+        setDb("on","Saved to the shared board at " + new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit"}) + ". Everyone sees the same picks and scores. Board " + BOARD_VER + ".");
+        return;
+      }
+      if (!again.has(id)) await new Promise(r => setTimeout(r, 1000 * 2 ** attempt));   // 1, 2, 4, 8 s
+    }
+    markCard(id, "bad", "not saved yet · retrying");
+    setDb("off","A pick has not reached the shared board yet. It is kept on this device and will keep retrying; leave the page open or come back to it.");
+  } finally { inflight.delete(id); }
+}
+async function pull(quiet){
+  try {
+    const r = await fetch(STORE + "?week=" + WEEK, {cache:"no-store"}); const j = await r.json();
+    if (!j.ok) throw new Error(j.error||"store error");
+    let changed=false;
+    for (const k of Object.keys(srv)) if (!(k in (j.data||{}))) delete srv[k];
+    for (const [id,row] of Object.entries(j.data||{})){
+      const nxt = {as: row.as||"", hs: row.hs||"", picks:{}};
+      for (const p of PEOPLE){ const pk=(row.picks||{})[p]||{}; nxt.picks[p] = {su: pk.su||"", ats: pk.ats||"", ou: pk.ou||""}; }
+      srv[id] = nxt;
+      if (pending.has(id) || (id === "g99" && GAMES.some(g => g.px && pending.has(g.id)))) continue;   // never overwrite an unconfirmed pick
+      const cur = state[id] || {};
+      if (JSON.stringify(cur.as||"")!==JSON.stringify(nxt.as) || JSON.stringify(cur.hs||"")!==JSON.stringify(nxt.hs) || JSON.stringify(cur.picks||{})!==JSON.stringify(nxt.picks)){ state[id]=JSON.parse(JSON.stringify(nxt)); changed=true; dirty.add(id); }
+    }
+    saveCache();
+    if (changed) dirty.forEach(id => renderCard(id)); else tiles();
+    for (const g of GAMES){ const sb = $("#sb-"+g.id); if (sb) sb.innerHTML = saveText(g.id); }
+    if (!quiet) setDb("on","Connected to the shared board. Picks and scores are the same on every device. Board " + BOARD_VER + ".");
+    return true;
+  } catch(e){ if(!quiet) setDb("off","Shared board not reachable right now; showing what this device last saw."); return false; }
+}
+setInterval(() => { for (const id of pending) if (!inflight.has(id)) push(id); }, 20000);   // keep retrying anything unconfirmed
+document.addEventListener("input", e => { const a = e.target.closest?.(".g"); if(a) queueSave(a.dataset.id); });
+document.addEventListener("change", e => { const a = e.target.closest?.(".g"); if(a) queueSave(a.dataset.id); });
+// Re-render ONE card, and never while a dropdown is in use (Scott 10/17: Safari flickered on every team pick, then
+// "A problem repeatedly occurred" — the whole board was rebuilt with innerHTML from focusout/pull while the native
+// <select> popup was open; WebKit crashed on the destroyed element, Firefox just closed the menu). A card whose
+// dropdown is open stays dirty and is redrawn after focus leaves it.
+const dirty = new Set();
+function renderCard(id){
+  const g = GAMES.find(x => x.id === id), el = document.querySelector(`.g[data-id="${id}"]`); if (!g || !el) { dirty.delete(id); return; }
+  const ae = document.activeElement; if (ae && el.contains(ae)) { dirty.add(id); return; }   // someone is typing/choosing in this card
+  el.outerHTML = card(g); dirty.delete(id); tiles();
+}
+document.addEventListener("focusout", e => { const a = e.target.closest?.(".g"); if (!a) return; const id = a.dataset.id;
+  if (e.target.tagName === "INPUT") dirty.add(id);   // a typed score regrades the card; a pick change is already shown by the dropdown itself; a strip/menu button is not a regrade
+  setTimeout(() => { for (const d of [...dirty]) renderCard(d); }, 150); });
+// ---- deck arrangement (Mack 2026-10-19): order + open state per device in localStorage; nodes are MOVED, never rebuilt ----
+// Slate order flips an hour before the Sunday night kickoff (Scott 10/19, "do it before the Sunday night game"): until then the slates run
+// in kickoff order; from then on they run in reverse so the Monday night game is on top, then Sunday night, and so on down to Thursday.
+// Each mode keeps its own saved arrangement on this device. No Sunday night slate → flips on Monday.
+const REV = (() => { const sn = GAMES.filter(g => /sunday night/i.test(g.win)).map(g => Date.parse(g.ko)); if (sn.length) return Date.now() >= Math.min(...sn) - 3600000;
+  return /^(Mon|Tue)/.test(new Date().toLocaleString("en-US", {timeZone: "America/Los_Angeles", weekday: "short"})); })();
+const DECK_KEY = () => KEY.replace("-cache", "-deck") + (REV ? "-rev" : "");
+function deckLoad(){ try{ const d = JSON.parse(localStorage.getItem(DECK_KEY())||"{}"); if (Array.isArray(d.order)) deck.order = d.order.filter(x => typeof x === "string"); if (d.open && typeof d.open === "object") deck.open = d.open; }catch(e){ deck.order = []; deck.open = {}; } }
+function deckSave(){ try{ localStorage.setItem(DECK_KEY(), JSON.stringify({ order: deck.order, open: deck.open, v: 1 })); }catch(e){} }
+function defaultOrder(){ let wins = [...new Set(GAMES.map(g => g.win))]; if (REV) wins = wins.slice().reverse(); return ["week","last","mack", ...PEOPLE.map(p => "rec-" + p),"about", ...wins.flatMap(w => [slateId(w), ...GAMES.filter(g => g.win === w).map(g => g.id)])]; }
+function applyOrder(){   // saved order; unknown ids dropped, missing ids slotted after their default-order predecessor
+  const def = defaultOrder(), known = new Set(def); let order = [...new Set(deck.order.filter(id => known.has(id)))];
+  for (let i = 0; i < def.length; i++) { const id = def[i]; if (order.includes(id)) continue; const p = i ? order.indexOf(def[i-1]) : -1; order.splice(p + 1, 0, id); }
+  deck.order = order; const dk = $("#deck");
+  for (const id of order) { const el = dk.querySelector(`.dk[data-id="${id}"]`); if (el) dk.appendChild(el); }
+}
+const readOrder = () => { deck.order = [...$("#deck").children].map(c => c.dataset.id); deckSave(); };
+function setOpen(id, v, save = true){ const el = $(`#deck .dk[data-id="${id}"]`); if (!el) return; el.classList.toggle("open", v); const b = el.querySelector(".strip"); if (b) b.setAttribute("aria-expanded", String(v)); deck.open[id] = v; if (save) deckSave(); }
+function groupOf(id){   // a slate card carries the game cards that follow it (until the next non-game card)
+  const el = $(`#deck .dk[data-id="${id}"]`); if (!el) return []; const nodes = [el];
+  if (el.classList.contains("slate")) for (let n = el.nextElementSibling; n && n.classList.contains("g"); n = n.nextElementSibling) nodes.push(n);
+  return nodes;
+}
+// Zones (Scott 10/19 "only let the games be organized per slate"): tally cards stay at the top among themselves, slate cards (with their
+// games) reorder among slates, and a game card can only move within its own slate. allowedBefore(nodes) = the siblings a drop may land in front of.
+function slateOf(el){ for (let n = el.previousElementSibling; n; n = n.previousElementSibling) if (n.classList.contains("slate")) return n; return null; }
+function allowedBefore(nodes){
+  const dk = $("#deck"), kids = [...dk.children].filter(c => !nodes.includes(c)), head = nodes[0];
+  if (head.classList.contains("g")) { const S = slateOf(head); const out = []; let n = S ? S.nextElementSibling : null;
+    for (; n && n.classList.contains("g"); n = n.nextElementSibling) if (!nodes.includes(n)) out.push(n); out.push(n || null); return out; }   // games of this slate, then the slot after the last one
+  if (head.classList.contains("slate")) return [...kids.filter(c => c.classList.contains("slate")), null];
+  const firstSlate = kids.find(c => c.classList.contains("slate")) || null; return [...kids.filter(c => c.classList.contains("tally")), firstSlate];
+}
+function normalizeDeck(){   // make any saved order obey the zones: tallies first, then each slate followed by its own games (relative order kept)
+  const dk = $("#deck"), kids = [...dk.children]; const tallies = kids.filter(c => c.classList.contains("tally")), slates = kids.filter(c => c.classList.contains("slate"));
+  const games = kids.filter(c => c.classList.contains("g")); const frag = document.createDocumentFragment();
+  for (const t of tallies) frag.appendChild(t);
+  for (const sl of slates) { frag.appendChild(sl); const w = sl.dataset.win; for (const g of games) if ((GAMES.find(x => x.id === g.dataset.id) || {}).win === w) frag.appendChild(g); }
+  for (const g of games) if (!frag.contains(g)) frag.appendChild(g);
+  dk.appendChild(frag);
+}
+function clampBefore(nodes, before){   // a drop outside the card's zone lands at the nearest slot inside it
+  const dk = $("#deck"), kids = [...dk.children].filter(c => !nodes.includes(c)), allowed = allowedBefore(nodes);
+  const ix = x => x === null ? kids.length : kids.indexOf(x); const want = ix(before);
+  const sorted = allowed.slice().sort((a, b) => ix(a) - ix(b)); return sorted.find(x => ix(x) >= want) ?? sorted[sorted.length - 1];
+}
+function moveBefore(nodes, before){ before = clampBefore(nodes, before); const dk = $("#deck");
+  if ((nodes[nodes.length - 1].nextElementSibling || null) === before) return; for (const n of nodes) dk.insertBefore(n, before); readOrder(); }
+function act(what, id){
+  const dk = $("#deck"), kids = [...dk.children];
+  if (what === "collapse") { for (const k of kids) if (!k.contains(document.activeElement) || document.activeElement === document.body) setOpen(k.dataset.id, false, false); deckSave(); return; }   // a card with a focused input never collapses by itself
+  if (what === "expand") { for (const k of kids) setOpen(k.dataset.id, true, false); deckSave(); return; }
+  const nodes = groupOf(id); if (!nodes.length) return; const pos = kids.indexOf(nodes[0]);
+  const rest = kids.filter(c => !nodes.includes(c)), ix = x => x === null ? rest.length : rest.indexOf(x);
+  const slots = allowedBefore(nodes).slice().sort((a, b) => ix(a) - ix(b)), here = slots.indexOf(nodes[nodes.length - 1].nextElementSibling || null);
+  if (what === "top") moveBefore(nodes, slots[0]);
+  else if (what === "up") { if (here > 0) moveBefore(nodes, slots[here - 1]); }
+  else if (what === "down") { if (here >= 0 && here < slots.length - 1) moveBefore(nodes, slots[here + 1]); }
+  if (what === "top" || what === "up") nodes[0].scrollIntoView({ block: "nearest", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+}
+(() => {
+  const dk = $("#deck");
+  dk.addEventListener("click", e => {
+    const strip = e.target.closest(".strip"); if (strip) { const a = strip.closest(".dk"); setOpen(a.dataset.id, !a.classList.contains("open")); return; }
+    const btn = e.target.closest("button[data-act]"); if (btn) { const d = btn.closest("details.menu"); if (d) d.open = false; act(btn.dataset.act, btn.closest(".dk").dataset.id); }
+  });
+  dk.addEventListener("toggle", e => { if (e.target.open) for (const d of dk.querySelectorAll("details.menu[open]")) if (d !== e.target) d.open = false; }, true);
+  document.addEventListener("click", e => { if (!e.target.closest("details.menu")) for (const d of dk.querySelectorAll("details.menu[open]")) d.open = false; });
+  $("#reset-order").addEventListener("click", () => { deck.order = []; deck.open = {}; try{ localStorage.removeItem(DECK_KEY()); }catch(e){} applyOrder(); normalizeDeck(); for (const k of dk.children) setOpen(k.dataset.id, defaultOpen(k.dataset.id), false); deck.open = {}; });
+  // drag to reorder: pointer events (iOS Safari's native drag-and-drop is unreliable). Mouse lifts at once; touch/pen after a 250 ms hold.
+  let drag = null, raf = 0;
+  const place = y => { if (!drag || !drag.active) return;
+    const kids = [...dk.children].filter(c => !drag.nodes.includes(c)); let before = null;
+    for (const c of kids) { const r = c.getBoundingClientRect(); if (y < r.top + r.height / 2) { before = c; break; } }
+    const cur = drag.nodes[drag.nodes.length - 1].nextElementSibling; if ((before || null) === (cur || null)) return;
+    before = clampBefore(drag.nodes, before); if ((cur || null) === before) return;   // outside this card's zone: nearest slot inside it
+    for (const n of drag.nodes) dk.insertBefore(n, before); };
+  const loop = () => { if (!drag || !drag.active) { raf = 0; return; }
+    const y = drag.cy, m = 70; if (y < m) scrollBy(0, -Math.ceil((m - y) / 4)); else if (y > innerHeight - m) scrollBy(0, Math.ceil((y - innerHeight + m) / 4));
+    place(y); raf = requestAnimationFrame(loop); };
+  const lift = () => { if (!drag) return; drag.active = true; drag.nodes.forEach(n => n.classList.add("lift")); document.body.classList.add("dragging"); if (!raf) raf = requestAnimationFrame(loop); };
+  const end = () => { if (!drag) return; clearTimeout(drag.hold); try{ drag.h.releasePointerCapture(drag.pid); }catch(e){}
+    if (drag.active) { drag.nodes.forEach(n => n.classList.remove("lift")); document.body.classList.remove("dragging"); readOrder(); dragged = Date.now(); } drag = null; };
+  let dragged = 0;
+  dk.addEventListener("click", e => { if (Date.now() - dragged < 400 && e.target.closest(".strip")) { e.stopPropagation(); e.preventDefault(); } }, true);
+  // iOS keeps scrolling the page unless touchmove is cancelled from a non-passive listener while a card is lifted
+  dk.addEventListener("touchmove", e => { if (drag && drag.active) e.preventDefault(); }, {passive:false});
+  dk.addEventListener("pointerdown", e => {
+    // Scott 10/19 "each box can be dragged up and down": any strip drags, not just the ≡ handle. Touch: press and hold ~350 ms, then slide
+    // (a plain tap still expands the card; a finger that moves before the hold is a scroll). Mouse: press and move 6 px on a strip, or press the handle.
+    const h = e.target.closest(".handle, .strip"); if (!h || (e.pointerType === "mouse" && e.button !== 0)) return;
+    const a = h.closest(".dk"); end(); const onHandle = h.classList.contains("handle");
+    drag = { h, pid: e.pointerId, nodes: groupOf(a.dataset.id), y0: e.clientY, cy: e.clientY, active: false, hold: 0, onHandle };
+    try{ h.setPointerCapture(e.pointerId); }catch(e){}
+    if (e.pointerType === "mouse") { if (onHandle) lift(); } else drag.hold = setTimeout(lift, onHandle ? 250 : 300);
+    if (onHandle) e.preventDefault();
+  });
+  dk.addEventListener("pointermove", e => { if (!drag || e.pointerId !== drag.pid) return; drag.cy = e.clientY;
+    if (!drag.active) { const dy = Math.abs(e.clientY - drag.y0); if (e.pointerType === "mouse") { if (dy > 6) lift(); } else if (dy > 8) end(); return; } e.preventDefault(); place(e.clientY); });
+  dk.addEventListener("pointerup", e => { if (drag && e.pointerId === drag.pid) end(); });
+  dk.addEventListener("pointercancel", e => { if (drag && e.pointerId === drag.pid) end(); });
+  dk.addEventListener("dragstart", e => { if (e.target.closest(".handle,.strip")) e.preventDefault(); });   // no native DnD ghost
+})();
+loadCache(); render(); setDb("", "Connecting to the shared board…"); pull(false).then(() => { for (const id of pending) push(id); });   // resend anything this device never got confirmed
+// Tell the store which version/browser loaded (diagnostic), and self-refresh if a newer board is published.
+function ping(ev){ try{ fetch(STORE + "?ping=1&ver=" + BOARD_VER + "&ev=" + encodeURIComponent(ev) + "&ua=" + encodeURIComponent(navigator.userAgent.slice(0,160)), {cache:"no-store"}).catch(()=>{}); }catch(e){} }
+ping("load");
+(async () => { try { const r = await fetch("../version.txt?t=" + Date.now(), {cache:"no-store"}); const v = (await r.text()).trim(); if (v && v !== BOARD_VER && !location.search.includes("v=" + v)) location.replace(location.pathname + "?v=" + v); } catch(e){} })();
+setInterval(() => { if (!document.activeElement?.closest?.(".g")) pull(true); }, 20000);
+// lock a game's pick dropdowns the moment it kicks off, even on a page left open
+function lockStarted(){ for (const g of GAMES) if (started(g)) { const lk = $("#lk-"+g.id); if (lk && !lk.textContent) lk.textContent = " · picks locked";
+  for (const p of PEOPLE) for (const k of ["su","ats","ou"]) { const el = $("#"+k+"-"+p+"-"+g.id); if (el && !el.disabled) { el.blur(); el.disabled = true; } } } }
+setInterval(lockStarted, 15000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) pull(true); });
+// Live scores (Scott 10/11). ESPN's public scoreboard sends Access-Control-Allow-Origin: * so the viewer's browser fetches it
+// directly; nothing runs on a home computer. Polls every 30 s while any game is in progress, every 5 min otherwise.
+// Matches on away/home team names, the same key nfl_finals_post.py uses. Any failure leaves the line as it was.
+const ESPN_SB = "https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?seasontype=2&week=" + WEEK;
+let liveTimer = null;
+async function liveScores(){
+  let anyLive = false, ok = false; clearTimeout(liveTimer);
+  try {
+    const sb = await (await fetch(ESPN_SB, {cache:"no-store"})).json();
+    for (const e of sb.events || []) {
+      const c = e.competitions?.[0]; if (!c) continue;
+      const t = {}; for (const x of c.competitors) t[x.homeAway] = x;
+      const g = GAMES.find(g => g.away === t.away?.team?.name && g.home === t.home?.team?.name); if (!g) continue;
+      const st = e.status?.type?.state;                       // pre | in | post
+      if (st === "pre") { LIVE[g.id] = null; continue; }
+      const sd = e.status.type.shortDetail || "";                   // "13:10 - 3rd", "Halftime", "Final"
+      const clock = st === "post" ? "Final" : sd === "Halftime" ? "Half" : sd.replace(" - ", " ");
+      const sit = c.situation || {};                                  // down/distance + possession (Scott 10/11); absent between plays
+      const poss = st !== "in" ? "" : sit.possession === t.away.id ? "away" : sit.possession === t.home.id ? "home" : "";
+      const dd = st === "in" ? (sit.downDistanceText || "").replace(" at ", "<br>at ") : "";
+      LIVE[g.id] = { state: st, as: t.away.score, hs: t.home.score, clock, poss, dd, rz: !!sit.isRedZone };
+      if (st === "in") anyLive = true;
+      // placeholder only — a score someone typed (or nfl_finals_post wrote) is never touched
+      for (const [k, v] of [["as", t.away.score], ["hs", t.home.score]]) { const el = $("#" + k + "-" + g.id); if (el) { el.placeholder = v; el.classList.add("lv"); } }
+      const at = $("#at-" + g.id); if (at) { at.innerHTML = clock + (dd ? `<small class="dd ${LIVE[g.id].rz?"rz":""}">${dd}</small>` : ""); at.className = "at lv " + st; }
+      const ld = $("#ld-" + g.id); if (ld) { ld.textContent = leadText(g); ld.className = leadClass(g); }
+      const pa = $("#pa-" + g.id), ph = $("#ph-" + g.id); if (pa) pa.textContent = poss === "away" ? "🏈" : ""; if (ph) ph.textContent = poss === "home" ? "🏈" : "";
+      // strip scores: placeholder only — a typed final (state) already shows there and is never touched
+      const S = state[g.id] || {}; if (num(S.as) === null || num(S.hs) === null) { const sa = $("#sa-" + g.id), sh = $("#sh-" + g.id); if (sa) sa.textContent = t.away.score; if (sh) sh.textContent = t.home.score; }
+    }
+    for (const w of new Set(GAMES.map(g => g.win))) { const el = $("#" + slateId(w)); if (el) { el.textContent = slateText(w); el.className = slateClass(w); } }
+    refreshStrips();
+    ok = true;
+  } catch (e) {}
+  // a failed fetch retries in 30 s (was 5 min — a single bad first fetch left the page on dashes, Scott 10/11)
+  liveTimer = setTimeout(liveScores, (anyLive || !ok) ? 30000 : 300000);
+}
+liveScores();
+document.addEventListener("visibilitychange", () => { if (!document.hidden) liveScores(); });
+</script>
+</body></html>
