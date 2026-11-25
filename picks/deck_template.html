@@ -379,6 +379,7 @@ h2 small{font-family:Barlow;font-size:13px;color:var(--muted);font-weight:500}
 .saved{display:none}.savebar{margin-top:8px;padding-top:6px;border-top:1px dashed var(--line);font-size:13px;color:var(--muted)}.savebar:empty{display:none}.sv-ok{color:var(--good);font-weight:700}.sv-wait{font-weight:700}.sv-bad{color:var(--bad);font-weight:700}.sv-lock{font-style:italic}.saved.show,.saved.wait,.saved.bad{opacity:1}.saved.wait{color:var(--muted)}.saved.bad{color:var(--bad);font-weight:700}
 .foot{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 .foot p{margin:0 0 6px}
+footer.pagefoot{font-size:13px;color:var(--muted);border-top:1px solid var(--line);margin-top:24px;padding:12px 0 24px}footer.pagefoot p{margin:0}footer.pagefoot a{color:inherit}
 @media (prefers-reduced-motion:reduce){.saved{transition:none}}
 @media (max-width:420px){h1{font-size:36px}.team{font-size:22px}.numbers{grid-template-columns:repeat(2,1fr)}}
 
@@ -539,7 +540,7 @@ header .mascot{grid-column:2;grid-row:1/span 2;width:96px;height:auto;filter:dro
     <p><b>Card colors.</b> Before a game, a card wears the colors of the team Mack picked to win. Once the final is in, it switches to the colors of the team that actually won. The Broncos game stays in Broncos colours either way.</p>
     <p><b>Picks lock at kickoff</b> (the Sunday 10 AM games lock at 10:15 AM Pacific). You can change a pick any time before then. After that, everyone's picks for that game are read-only; the scores can still be entered.</p>
     <p><b>Points.</b> One point for each correct pick: winner, spread, and over/under, so up to three a game. A push or a blank pick scores nothing. Mack's picks sit in the row under yours on each card. Like everyone's, they can change until that game kicks off and not after. The tiles at the top show each person's total, with the three records underneath. Mack is scored the same way on the picks he made: a winner in every game, a spread pick in every game (the side his line favors against the market; where the two are equal, the side of his winner), and an over/under in every game. His totals come from each team's points scored and allowed so far this season, with a deduction for a missing starting quarterback.</p>
-    <p>Prepared by Mack (400). Ratings and picks are Mack's; market lines from DraftKings via ESPN; scores and logos from ESPN. Updated Nov 24, 2026. Picks and finals are shared across devices (refreshes every 20 seconds). Mack's NFL Desk, a product of the Village v1.91 · v1.2.400 · © 2026 Fionn Rith / the Village · code PolyForm-NC 1.0 · writing CC BY-NC 4.0 · not affiliated with the NFL or ESPN · <a href="../NOTICE">notice</a></p>
+    <p class="credit">Prepared by Mack (400). Ratings and picks are Mack's; market lines from DraftKings via ESPN; scores and logos from ESPN. Updated Nov 24, 2026. Picks and finals are shared across devices (refreshes every 20 seconds). Mack's NFL Desk, a product of the Village v1.91 · v1.2.400 · © 2026 Fionn Rith / the Village · code PolyForm-NC 1.0 · writing CC BY-NC 4.0 · not affiliated with the NFL or ESPN · <a href="../NOTICE">notice</a></p>
   </footer>
 </div>
 </main>
@@ -730,7 +731,8 @@ function render(){   // runs once; afterwards cards are patched (renderCard, tex
   for (const sec of document.querySelectorAll(".wrap > section.prec")) { const p = sec.dataset.who, bc = $(`#bd-rec-${p} .bc`), st = $(`#rec-strip-${p}`); if (!bc) continue; bc.appendChild(sec);
     const m = sec.textContent.match(/Season\s+([\d-]+) winners · ([\d-]+) against the spread · ([\d-]+) over\/under.*?· (\d+) pts?/); if (st) st.textContent = m ? `${m[1]} SU · ${m[2]} ATS · ${m[3]} O/U · ${m[4]} pts` : "no graded picks yet"; }
   // the header paragraph and the footer notes keep their place in the HTML for the Tuesday scripts' regexes; at runtime they live in the About card (Scott 10/19)
-  const sub = $("header .sub"), foot = $("footer.foot"); if (sub) $("#bd-about .bc").appendChild(sub); if (foot) $("#bd-about .bc").appendChild(foot);
+  const sub = $("header .sub"), foot = $("footer.foot"); if (sub) $("#bd-about .bc").appendChild(sub);
+  if (foot) { const cr = foot.querySelector("p.credit"); if (cr) { const pf = document.createElement("footer"); pf.className = "pagefoot"; pf.appendChild(cr); foot.after(pf); } $("#bd-about .bc").appendChild(foot); }   // credit line stays at the bottom of the page like every other page (Scott 2026-11-24)
   applyOrder(); normalizeDeck(); readOrder();
   tiles();
 }
