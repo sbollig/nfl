@@ -34,7 +34,7 @@ h1 span{color:var(--orange)}
 .you .px-note{grid-column:1/-1;color:var(--muted);font-style:italic}
 .pm{margin:10px 0 4px}
 .mu th .lbl,.pm>.lbl,.ijbox>.lbl{display:block;font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:700;letter-spacing:.04em;line-height:1.15;color:var(--ink);margin-bottom:6px}.pm>.lbl small,.ijbox>.lbl small{display:block;font-family:Barlow,sans-serif;font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--muted)}   /* section titles bigger (Scott 2026-11-24) */
-.mub{margin-top:0}.mub .pmn>b{text-decoration:none;cursor:default}.mui{width:32px;height:32px;flex:none;display:grid;place-items:center;font-size:18px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid var(--line)}.pmr.wins .mui{border-color:var(--good)}.pmr .mui{overflow:hidden}.pmr .mui img{width:100%;height:100%;border:0;border-radius:50%;background:none;display:block}
+.mub{margin-top:0}.mub .pmn>b{text-decoration:none;cursor:default}.mui{width:40px;height:40px;flex:none;display:grid;place-items:center;font-size:18px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid var(--line)}.pmr.wins .mui{border-color:var(--good)}.pmr .mui{overflow:hidden;background:#0b2a5c;box-sizing:border-box}.pmr .mui img{width:100%;height:100%;box-sizing:border-box;padding:8%;border:0;border-radius:0;background:none;display:block}
 .ijbox{border-left:4px solid #d93a2b;padding-left:10px}.ijbox .lbl small{font-weight:400;text-transform:none;letter-spacing:0}
 .ijr{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:5px;margin-bottom:4px;border:1px solid var(--line);background:var(--paper)}
 .ijr img,.ijr>i{width:32px;height:32px;border-radius:50%;object-fit:cover;object-position:top;background:#fff;border:2px solid var(--line);flex:none}
@@ -470,8 +470,8 @@ details.tlbox ul{margin:0;padding:0 14px 4px 32px;display:grid;gap:6px;font-size
 dialog.pkdlg{border:0;border-radius:10px;padding:0;background:#000;width:min(1100px,calc(100vw - 24px));max-height:calc(100vh - 24px);overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,.5)}dialog.pkdlg::backdrop{background:rgba(0,10,25,.7)}
 dialog.pkdlg img{display:block;width:100%;height:auto}dialog.pkdlg button{position:absolute;top:8px;right:8px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(0,0,0,.72);color:#fff;font-size:20px;cursor:pointer}
 .ytp{position:absolute;inset:0;margin:auto;width:64px;height:44px;border-radius:12px;background:rgba(200,0,0,.9);color:#fff;font-size:22px;display:grid;place-items:center}.ytv iframe{width:100%;max-width:560px;aspect-ratio:16/9;border:0;border-radius:8px}.pxf input.tdres{width:9.5em;text-align:left;cursor:default}</style>
-<link rel="stylesheet" href="../theme.css?v=208">
-<link rel="stylesheet" href="../deck.css?v=208">
+<link rel="stylesheet" href="../theme.css?v=209">
+<link rel="stylesheet" href="../deck.css?v=209">
 <style>
 /* Retro Broncos (Scott 10/19): 1977 "Orange Crush" throwback — Legacy Blue + orange + white, the 1968 "D" on the helmet.
    The team publishes no hex values (denverbroncos.com/uniforms/throwback, read 2026-10-19); these are blue sampled from the
@@ -494,8 +494,8 @@ header .mascot{grid-column:2;grid-row:1/span 2;width:96px;height:auto;filter:dro
 .dk.tally[data-id="about"]{background:#061d4a;border:1px solid #2d63c7;color:#fff}.dk.tally[data-id="about"]::before{background:#fff}
 .dk.tally[data-id="about"] .sub{color:#fff;margin:0 0 10px;font-size:14px}.dk.tally[data-id="about"] .foot{border-top:0;padding-top:0;color:#fff;font-size:14px}.dk.tally[data-id="about"] .foot p{margin:0 0 8px}
 .tb{color:#fe5200;border-color:#fe5200}
-</style><link rel="stylesheet" href="../players.css?v=208"><script src="../players.js?v=208" defer></script>
-<script src="../faces.js?v=208" defer></script>
+</style><link rel="stylesheet" href="../players.css?v=209"><script src="../players.js?v=209" defer></script>
+<script src="../faces.js?v=209" defer></script>
 </head><body>
 
 <div class="layout"><main>
@@ -831,7 +831,7 @@ function card(g){
     ${preBtn(g)}
     ${g.mu ? `<div class="mu"><div class="pm mub"><span class="lbl">⚔️ Matchup <small>each offense's NFL rank vs the other defense's rank</small></span><div class="pmg">${[["a",g.away],["h",g.home]].map(([k,t]) => `<div class="pmc"><b class="pmt">${t} offense</b>${g.mu.rows.map(r => { const w = r["w"+k], res = !w ? "even" : w === t ? "wins" : "loses", ro = r["r"+k], rd = r["d"+k];
           const D = {Passing:"pass defense", Running:"run defense", Sacks:"pass rush", "Third down":"3rd-down defense", Turnovers:"takeaway defense"}[r.k] || "defense", O = {Passing:"passing", Running:"rushing", Sacks:"protection", "Third down":"3rd-down offense", Turnovers:"ball security"}[r.k] || "offense";
-          return `<div class="pmr ${res}"><span class="mui">${(n => n ? `<img src="../img/stats/${n}.png" alt="" loading="lazy">` : "•")({Passing:"passing",Running:"running",Sacks:"sacks","Third down":"third-down",Turnovers:"turnovers"}[r.k])}</span><div class="pmn"><b>${r.k}</b><small class="pms">${ro?`<b>#${ro}</b> ${O}`:O}${rd?` · vs <b>#${rd}</b> ${D}`:""}</small></div><span class="pmv">${res}</span></div>`; }).join("")}</div>`).join("")}</div></div>${g.pm ? `<div class="pm"><span class="lbl">⭐ Playmakers Matchup <small>NFL rank among the 32 teams' leaders · vs the other defense's rank</small></span><div class="pmg">${[g.away,g.home].map(t => `<div class="pmc"><b class="pmt">${t}</b>${(g.pm[t]||[]).map(x => `<div class="pmr ${x.res}">${x.head?`<img src="${x.head}" alt="" loading="lazy">`:"<i></i>"}<div class="pmn"><b>${x.name}</b>${x.inj?` <span class="pinj" title="${x.injf}${x.inj==="D"?" (treated as out)":""}">${x.inj}</span>`:""} <small>${x.pos}</small><small class="pms">${x.stat} · <b>#${x.rank}</b> ${({QB:"QB",RB:"rusher",Target:"receiver",Rusher:"pass rusher"})[x.role]} · vs ${x.vs} #${x.vrank}</small></div><span class="pmv">${x.res}</span></div>`).join("")}</div>`).join("")}</div></div>` : ""}</div>` : ""}
+          return `<div class="pmr ${res}"><span class="mui">${(n => n ? `<img src="../img/stats/${n}.svg" alt="" loading="lazy">` : "•")({Passing:"passing",Running:"running",Sacks:"sacks","Third down":"third-down",Turnovers:"turnovers"}[r.k])}</span><div class="pmn"><b>${r.k}</b><small class="pms">${ro?`<b>#${ro}</b> ${O}`:O}${rd?` · vs <b>#${rd}</b> ${D}`:""}</small></div><span class="pmv">${res}</span></div>`; }).join("")}</div>`).join("")}</div></div>${g.pm ? `<div class="pm"><span class="lbl">⭐ Playmakers Matchup <small>NFL rank among the 32 teams' leaders · vs the other defense's rank</small></span><div class="pmg">${[g.away,g.home].map(t => `<div class="pmc"><b class="pmt">${t}</b>${(g.pm[t]||[]).map(x => `<div class="pmr ${x.res}">${x.head?`<img src="${x.head}" alt="" loading="lazy">`:"<i></i>"}<div class="pmn"><b>${x.name}</b>${x.inj?` <span class="pinj" title="${x.injf}${x.inj==="D"?" (treated as out)":""}">${x.inj}</span>`:""} <small>${x.pos}</small><small class="pms">${x.stat} · <b>#${x.rank}</b> ${({QB:"QB",RB:"rusher",Target:"receiver",Rusher:"pass rusher"})[x.role]} · vs ${x.vs} #${x.vrank}</small></div><span class="pmv">${x.res}</span></div>`).join("")}</div>`).join("")}</div></div>` : ""}</div>` : ""}
     ${[].concat(g.yt || []).map(v => `<div class="ytv"><span class="lbl">Video</span><a class="ytb" href="https://www.youtube.com/watch?v=${v.id}" target="_blank" rel="noopener" aria-label="Watch on YouTube: ${v.t}" onclick="event.stopPropagation()"><img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="" loading="lazy"><span class="ytp">▶</span></a><small>${v.t} · opens on YouTube (the NFL blocks playback on other sites)</small></div>${v.pk ? `<div class="ytv"><span class="lbl">Analysts' picks</span><button type="button" class="ytb pkb" aria-label="Open the NFL analysts' picks for this game" onclick="event.stopPropagation();pkOpen('${v.pk}')"><img src="${v.pk}" alt="NFL analysts' score predictions" loading="lazy"><span class="pkz">⤢ Open</span></button><small>The NFL preview's closing picks panel · click to open</small></div>` : ""}`).join("")}
     <div class="inj ijbox"><span class="lbl">🚑 Key injuries <small>who's missing · who steps in</small></span><div class="pmg">${injCol(g.away, g.inj.away)}${injCol(g.home, g.inj.home)}</div></div>
     <div class="fin" id="fin-${g.id}">
@@ -869,7 +869,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 12, KEY = "wk12-cache", BOARD_VER = "v208";
+const WEEK = 12, KEY = "wk12-cache", BOARD_VER = "v209";
 const PEOPLE = ["Todd","Ryota","Scott"];
 const CHAMP = ["Mack"];   // last week's winner(s) wear the crown — a tie is a shared crown (Scott 11/3); set by nfl_site_week.py each Tuesday
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
