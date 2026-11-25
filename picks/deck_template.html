@@ -771,7 +771,6 @@ function card(g){
       const ok = r && r.winner !== "Tie" ? (r.winner === g.su ? " ✓" : " ✗") : "", c = r ? r.margin + g.mkt : null;
       const ac = r ? (c === 0 ? " push" : ((c > 0) === (g.ats === g.home) ? " ✓" : " ✗")) : "";
       return `<div class="mpk"><span class="lbl">Mack's pick</span><b>${g.su} ${g.p}%${ok}</b><b>${sp}${ac}</b><small>for the record, no points</small></div>`; })() : ""}
-    ${g.tl ? `<details class="tlbox" ${TLO[g.id]?"open":""} onclick="event.stopPropagation()" ontoggle="TLO['${g.id}']=this.open"><summary><span class="tk">⚡ TL;DR</span><span class="th">${g.tl[0]}</span><span class="tm"></span></summary><ul>${g.tl.slice(1).map(x => `<li>${x}</li>`).join("")}</ul>${g.pre ? `<a href="${g.pre}">Full analysis →</a>` : ""}</details>` : ""}
     ${preBtn(g)}
     ${g.mu ? `<div class="mu"><table>
       <thead><tr><th><span class="lbl">Matchup</span></th><th class="col">${g.away}<small>offense (NFL rank)</small></th><th class="col">${g.home}<small>offense (NFL rank)</small></th></tr></thead>
@@ -780,6 +779,7 @@ function card(g){
     <div class="inj"><span class="lbl">Key injuries → who steps in</span>
       <div class="it"><b>${g.away}</b>${g.inj.away.length?g.inj.away.map(e=>`<div class="ir">${injFace(e)}</div>`).join(""):`<div class="ir">none listed</div>`}</div>
       <div class="it"><b>${g.home}</b>${g.inj.home.length?g.inj.home.map(e=>`<div class="ir">${injFace(e)}</div>`).join(""):`<div class="ir">none listed</div>`}</div></div>
+    ${g.tl ? `<details class="tlbox" ${TLO[g.id]?"open":""} onclick="event.stopPropagation()" ontoggle="TLO['${g.id}']=this.open"><summary><span class="tk">⚡ TL;DR</span><span class="th">${g.tl[0]}</span><span class="tm"></span></summary><ul>${g.tl.slice(1).map(x => `<li>${x}</li>`).join("")}</ul>${g.pre ? `<a href="${g.pre}">Full analysis →</a>` : ""}</details>` : ""}
     <div class="pick">${chip(g.px ? (g.px.td ? `Mack: TFL ${g.px.msk} · 1st TD ${g.px.mtd} · total ${g.mou}` : `Mack: sacks ${g.px.msk} · takeaways ${g.px.mtk} · total ${g.mou}`) : `Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
     ${g.px?`<div class="pxf"><span class="lbl">Finals</span> ${g.px.td?"TFL":"Sacks"} <input id="sk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).as??""}" aria-label="Total sacks" ${canWrite?"":"disabled"}> ${g.px.td ? `1st TD <input id="tk-${g.id}" class="tdres" readonly placeholder="–" value="${(state.g99||{}).hs??""}" aria-label="First Broncos touchdown scorer (filled automatically after the game)">` : `Takeaways <input id="tk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).hs??""}" aria-label="Total takeaways" ${canWrite?"":"disabled"}>`}</div>`:""}
     <div class="you">
