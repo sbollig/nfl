@@ -5,7 +5,7 @@
   const FACES = { Ryota: "img/ryota.svg", Scott: "img/scott.svg", Todd: "img/todd.svg", Mack: "img/mack.svg" };   // caricatures (Scott 10/14: "draw the caricatures"); photo crops kept as img/*.jpg   // Mack = robot coach (Scott 10/14: "make your pic a robot pic")   // Todd pending Scott's confirmation of the photo
   const only = (document.currentScript.dataset.only || "").split(",").filter(Boolean);   // e.g. data-only="Todd": limit a page to these faces
   if (only.length) for (const k of Object.keys(FACES)) if (!only.includes(k)) delete FACES[k];
-  const SKIP = "script,style,title,textarea,select,option,input,.who,dialog,.inj,.mu,.pm,.pmr,.ihp,.pl,.numbers,.chip,footer,.byline,h1,h2";   // player areas: an NFL player named Scott must not get the face
+  const SKIP = "script,style,title,textarea,select,option,input,.who,dialog,.tlbox,.inj,.mu,.pm,.pmr,.ihp,.pl,.numbers,.chip,footer,.byline,h1,h2";   // player areas: an NFL player named Scott must not get the face
   const re = new RegExp("\\b(" + Object.keys(FACES).join("|") + ")\\b");
   const css = document.createElement("style");
   css.textContent = ".who{white-space:nowrap}.who img{width:1.9em;height:1.9em;border-radius:50%;object-fit:cover;vertical-align:-.55em;margin-right:.35em;border:2px solid #FB4F14;background:#fff;cursor:zoom-in}"
