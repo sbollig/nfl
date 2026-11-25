@@ -34,7 +34,7 @@ h1 span{color:var(--orange)}
 .you .px-note{grid-column:1/-1;color:var(--muted);font-style:italic}
 .pm{margin:10px 0 4px}
 .mu th .lbl,.pm>.lbl,.ijbox>.lbl{display:block;font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:700;letter-spacing:.04em;line-height:1.15;color:var(--ink);margin-bottom:6px}.pm>.lbl small,.ijbox>.lbl small{display:block;font-family:Barlow,sans-serif;font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--muted)}   /* section titles bigger (Scott 2026-11-24) */
-.mub{margin-top:0}.mub .pmn>b{text-decoration:none;cursor:default}.mui{width:40px;height:40px;flex:none;display:grid;place-items:center;font-size:18px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid var(--line)}.pmr.wins .mui{border-color:var(--good)}.lbl .lic{height:1.5em;width:auto;vertical-align:-.4em;margin-right:6px}.pmr .mui{overflow:hidden;background:#0b2a5c;box-sizing:border-box}.pmr .mui img{width:100%;height:100%;box-sizing:border-box;padding:8%;border:0;border-radius:0;background:none;display:block}
+.mub{margin-top:0}.mub .pmn>b{text-decoration:none;cursor:default}.mui{width:40px;height:40px;flex:none;display:grid;place-items:center;font-size:18px;border-radius:50%;background:rgba(255,255,255,.08);border:2px solid var(--line)}.pmr.wins .mui{border-color:var(--good)}.tlg{width:22px;height:22px;box-sizing:border-box;padding:2px;border-radius:50%;background:#fff;object-fit:contain;vertical-align:-6px;margin-right:6px}.tlg.retro{padding:0;border-radius:0;background:none;filter:drop-shadow(0 0 1px rgba(255,255,255,.6))}.nml{white-space:nowrap}.s1 .logo[src*="/lar.png"]{background:#fff;border-radius:50%;padding:2px;box-sizing:border-box;filter:none}.chip .tlg{width:16px;height:16px;padding:1px;vertical-align:-3px;margin-right:4px}@media (max-width:700px){.team .tlg{display:none}}.lbl .lic{height:1.5em;width:auto;vertical-align:-.4em;margin-right:6px}.pmr .mui{overflow:hidden;background:#0b2a5c;box-sizing:border-box}.pmr .mui img{width:100%;height:100%;box-sizing:border-box;padding:8%;border:0;border-radius:0;background:none;display:block}
 .ijbox{border-left:4px solid #d93a2b;padding-left:10px}.ijbox .lbl small{font-weight:400;text-transform:none;letter-spacing:0}
 .ijr{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:5px;margin-bottom:4px;border:1px solid var(--line);background:var(--paper)}
 .ijr img,.ijr>i{width:32px;height:32px;border-radius:50%;object-fit:cover;object-position:top;background:#fff;border:2px solid var(--line);flex:none}
@@ -470,8 +470,8 @@ details.tlbox ul{margin:0;padding:0 14px 4px 32px;display:grid;gap:6px;font-size
 dialog.pkdlg{border:0;border-radius:10px;padding:0;background:#000;width:min(1100px,calc(100vw - 24px));max-height:calc(100vh - 24px);overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,.5)}dialog.pkdlg::backdrop{background:rgba(0,10,25,.7)}
 dialog.pkdlg img{display:block;width:100%;height:auto}dialog.pkdlg button{position:absolute;top:8px;right:8px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(0,0,0,.72);color:#fff;font-size:20px;cursor:pointer}
 .ytp{position:absolute;inset:0;margin:auto;width:64px;height:44px;border-radius:12px;background:rgba(200,0,0,.9);color:#fff;font-size:22px;display:grid;place-items:center}.ytv iframe{width:100%;max-width:560px;aspect-ratio:16/9;border:0;border-radius:8px}.pxf input.tdres{width:9.5em;text-align:left;cursor:default}</style>
-<link rel="stylesheet" href="../theme.css?v=210">
-<link rel="stylesheet" href="../deck.css?v=210">
+<link rel="stylesheet" href="../theme.css?v=211">
+<link rel="stylesheet" href="../deck.css?v=211">
 <style>
 /* Retro Broncos (Scott 10/19): 1977 "Orange Crush" throwback — Legacy Blue + orange + white, the 1968 "D" on the helmet.
    The team publishes no hex values (denverbroncos.com/uniforms/throwback, read 2026-10-19); these are blue sampled from the
@@ -494,8 +494,8 @@ header .mascot{grid-column:2;grid-row:1/span 2;width:96px;height:auto;filter:dro
 .dk.tally[data-id="about"]{background:#061d4a;border:1px solid #2d63c7;color:#fff}.dk.tally[data-id="about"]::before{background:#fff}
 .dk.tally[data-id="about"] .sub{color:#fff;margin:0 0 10px;font-size:14px}.dk.tally[data-id="about"] .foot{border-top:0;padding-top:0;color:#fff;font-size:14px}.dk.tally[data-id="about"] .foot p{margin:0 0 8px}
 .tb{color:#fe5200;border-color:#fe5200}
-</style><link rel="stylesheet" href="../players.css?v=210"><script src="../players.js?v=210" defer></script>
-<script src="../faces.js?v=210" defer></script>
+</style><link rel="stylesheet" href="../players.css?v=211"><script src="../players.js?v=211" defer></script>
+<script src="../faces.js?v=211" defer></script>
 </head><body>
 
 <div class="layout"><main>
@@ -791,7 +791,7 @@ function card(g){
     const next = !nx || depth ? "" : /expected to start/.test(nx) ? `<small class="ijx">expected to start</small>` : `<small class="ijx">→ next up: ${nx.replace(/ \(([^)]*)\)$/, " <i>($1)</i>")}${sw ? ` <span class="ivb iv-${sw.toLowerCase()}">${sw}</span>` : ""}</small>`;
     return { depth, html: `<div class="ijr ij-${k}">${HS[nm] ? `<img src="${HS[nm]}" alt="" loading="lazy">` : "<i></i>"}<div class="pmn"><b>${nm}</b> <small>${pos}</small>${rk ? `<small class="pms">${rk.replace(/(starter|\w+ string)/, "$1")}</small>` : ""}${next}</div><span class="ijs">${lab}</span></div>` }; };
   const injCol = (t, list) => { const R = list.map(injRow).map(x => typeof x === "string" ? {depth:false, html:x} : x), key = R.filter(x => !x.depth), dp = R.filter(x => x.depth);
-    return `<div class="pmc"><b class="pmt">${t}</b>${key.map(x => x.html).join("") || `<div class="ijn">no key injuries</div>`}${dp.length ? `<details class="ijd" onclick="event.stopPropagation()"><summary>+${dp.length} depth piece${dp.length > 1 ? "s" : ""}</summary>${dp.map(x => x.html).join("")}</details>` : ""}</div>`; };
+    return `<div class="pmc"><b class="pmt">${TL(t)}${t}</b>${key.map(x => x.html).join("") || `<div class="ijn">no key injuries</div>`}${dp.length ? `<details class="ijd" onclick="event.stopPropagation()"><summary>+${dp.length} depth piece${dp.length > 1 ? "s" : ""}</summary>${dp.map(x => x.html).join("")}</details>` : ""}</div>`; };
   const s = state[g.id] || {}; const r = grade(g, s);
   const chip = (t, k) => `<span class="chip ${k||""}">${t}</span>`;
   const verdict = r ? [
@@ -813,7 +813,7 @@ function card(g){
     <span class="saved" id="sv-${g.id}">saved</span>${strip}<div class="body" id="bd-${g.id}"><div class="bi"><div class="bc">
     <button type="button" class="pkjump" onclick="event.stopPropagation();jumpPicks('${g.id}')">${started(g) ? "See the picks ↓" : "✏️ Make your picks ↓"}</button>
     <div class="teams">
-      <div class="team away"><span class="nm">${g.away}</span>${g.al?`<small class="lw">${g.al}</small>`:""}</div><div class="at">final score</div><div class="team home"><span class="nm">${g.home}</span>${g.hl?`<small class="lw">${g.hl}</small>`:""}</div>
+      <div class="team away"><span class="nm"><span class="nml">${TL(g.away)}${g.away}</span></span>${g.al?`<small class="lw">${g.al}</small>`:""}</div><div class="at">final score</div><div class="team home"><span class="nm"><span class="nml">${TL(g.home)}${g.home}</span></span>${g.hl?`<small class="lw">${g.hl}</small>`:""}</div>
       <input class="score ${LIVE[g.id]?"lv":""}" id="as-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="${LIVE[g.id]?.as ?? "–"}" value="${s.as ?? ""}" aria-label="${g.away} score" ${canWrite?"":"disabled"}>
       <div></div>
       <input class="score ${LIVE[g.id]?"lv":""}" id="hs-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="${LIVE[g.id]?.hs ?? "–"}" value="${s.hs ?? ""}" aria-label="${g.home} score" ${canWrite?"":"disabled"}>
@@ -827,16 +827,16 @@ function card(g){
     ${g.px ? (() => { const sp = g.ats===g.home ? `${g.home} ${fm(g.mkt)}` : `${g.away} ${fm(-g.mkt)}`;   // Mack's own game pick on the props game (Scott 10/14): shown for the record, scores no points
       const ok = r && r.winner !== "Tie" ? (r.winner === g.su ? " ✓" : " ✗") : "", c = r ? r.margin + g.mkt : null;
       const ac = r ? (c === 0 ? " push" : ((c > 0) === (g.ats === g.home) ? " ✓" : " ✗")) : "";
-      return `<div class="mpk"><span class="lbl">Mack's pick</span><b>${g.su} ${g.p}%${ok}</b><b>${sp}${ac}</b><small>for the record, no points</small></div>`; })() : ""}
+      return `<div class="mpk"><span class="lbl">Mack's pick</span><b>${TL(g.su)}${g.su} ${g.p}%${ok}</b><b>${TL(g.ats)}${sp}${ac}</b><small>for the record, no points</small></div>`; })() : ""}
     ${preBtn(g)}
-    ${g.mu ? `<div class="mu"><div class="pm mub"><span class="lbl"><img class="lic" src="../img/stats/matchup.svg" alt="">Matchup <small>each offense's NFL rank vs the other defense's rank</small></span><div class="pmg">${[["a",g.away],["h",g.home]].map(([k,t]) => `<div class="pmc"><b class="pmt">${t} offense</b>${g.mu.rows.map(r => { const w = r["w"+k], res = !w ? "even" : w === t ? "wins" : "loses", ro = r["r"+k], rd = r["d"+k];
+    ${g.mu ? `<div class="mu"><div class="pm mub"><span class="lbl"><img class="lic" src="../img/stats/matchup.svg" alt="">Matchup <small>each offense's NFL rank vs the other defense's rank</small></span><div class="pmg">${[["a",g.away],["h",g.home]].map(([k,t]) => `<div class="pmc"><b class="pmt">${TL(t)}${t} offense</b>${g.mu.rows.map(r => { const w = r["w"+k], res = !w ? "even" : w === t ? "wins" : "loses", ro = r["r"+k], rd = r["d"+k];
           const D = {Passing:"pass defense", Running:"run defense", Sacks:"pass rush", "Third down":"3rd-down defense", Turnovers:"takeaway defense"}[r.k] || "defense", O = {Passing:"passing", Running:"rushing", Sacks:"protection", "Third down":"3rd-down offense", Turnovers:"ball security"}[r.k] || "offense";
-          return `<div class="pmr ${res}"><span class="mui">${(n => n ? `<img src="../img/stats/${n}.svg" alt="" loading="lazy">` : "•")({Passing:"passing",Running:"running",Sacks:"sacks","Third down":"third-down",Turnovers:"turnovers"}[r.k])}</span><div class="pmn"><b>${r.k}</b><small class="pms">${ro?`<b>#${ro}</b> ${O}`:O}${rd?` · vs <b>#${rd}</b> ${D}`:""}</small></div><span class="pmv">${res}</span></div>`; }).join("")}</div>`).join("")}</div></div>${g.pm ? `<div class="pm"><span class="lbl"><img class="lic" src="../img/stats/playmakers.svg" alt="">Playmakers Matchup <small>NFL rank among the 32 teams' leaders · vs the other defense's rank</small></span><div class="pmg">${[g.away,g.home].map(t => `<div class="pmc"><b class="pmt">${t}</b>${(g.pm[t]||[]).map(x => `<div class="pmr ${x.res}">${x.head?`<img src="${x.head}" alt="" loading="lazy">`:"<i></i>"}<div class="pmn"><b>${x.name}</b>${x.inj?` <span class="pinj" title="${x.injf}${x.inj==="D"?" (treated as out)":""}">${x.inj}</span>`:""} <small>${x.pos}</small><small class="pms">${x.stat} · <b>#${x.rank}</b> ${({QB:"QB",RB:"rusher",Target:"receiver",Rusher:"pass rusher"})[x.role]} · vs ${x.vs} #${x.vrank}</small></div><span class="pmv">${x.res}</span></div>`).join("")}</div>`).join("")}</div></div>` : ""}</div>` : ""}
+          return `<div class="pmr ${res}"><span class="mui">${(n => n ? `<img src="../img/stats/${n}.svg" alt="" loading="lazy">` : "•")({Passing:"passing",Running:"running",Sacks:"sacks","Third down":"third-down",Turnovers:"turnovers"}[r.k])}</span><div class="pmn"><b>${r.k}</b><small class="pms">${ro?`<b>#${ro}</b> ${O}`:O}${rd?` · vs <b>#${rd}</b> ${D}`:""}</small></div><span class="pmv">${res}</span></div>`; }).join("")}</div>`).join("")}</div></div>${g.pm ? `<div class="pm"><span class="lbl"><img class="lic" src="../img/stats/playmakers.svg" alt="">Playmakers Matchup <small>NFL rank among the 32 teams' leaders · vs the other defense's rank</small></span><div class="pmg">${[g.away,g.home].map(t => `<div class="pmc"><b class="pmt">${TL(t)}${t}</b>${(g.pm[t]||[]).map(x => `<div class="pmr ${x.res}">${x.head?`<img src="${x.head}" alt="" loading="lazy">`:"<i></i>"}<div class="pmn"><b>${x.name}</b>${x.inj?` <span class="pinj" title="${x.injf}${x.inj==="D"?" (treated as out)":""}">${x.inj}</span>`:""} <small>${x.pos}</small><small class="pms">${x.stat} · <b>#${x.rank}</b> ${({QB:"QB",RB:"rusher",Target:"receiver",Rusher:"pass rusher"})[x.role]} · vs ${x.vs} #${x.vrank}</small></div><span class="pmv">${x.res}</span></div>`).join("")}</div>`).join("")}</div></div>` : ""}</div>` : ""}
     ${[].concat(g.yt || []).map(v => `<div class="ytv"><span class="lbl">Video</span><a class="ytb" href="https://www.youtube.com/watch?v=${v.id}" target="_blank" rel="noopener" aria-label="Watch on YouTube: ${v.t}" onclick="event.stopPropagation()"><img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="" loading="lazy"><span class="ytp">▶</span></a><small>${v.t} · opens on YouTube (the NFL blocks playback on other sites)</small></div>${v.pk ? `<div class="ytv"><span class="lbl">Analysts' picks</span><button type="button" class="ytb pkb" aria-label="Open the NFL analysts' picks for this game" onclick="event.stopPropagation();pkOpen('${v.pk}')"><img src="${v.pk}" alt="NFL analysts' score predictions" loading="lazy"><span class="pkz">⤢ Open</span></button><small>The NFL preview's closing picks panel · click to open</small></div>` : ""}`).join("")}
     <div class="inj ijbox"><span class="lbl">🚑 Key injuries <small>who's missing · who steps in</small></span><div class="pmg">${injCol(g.away, g.inj.away)}${injCol(g.home, g.inj.home)}</div></div>
     <div class="fin" id="fin-${g.id}">
     ${g.tl ? `<details class="tlbox" id="tl-${g.id}" ${TLO[g.id]?"open":""} onclick="event.stopPropagation()" ontoggle="TLO['${g.id}']=this.open"><summary><span class="tk">⚡ TL;DR</span><span class="th">${g.tl[0]}</span><span class="tm"></span></summary><ul>${g.tl.slice(1).map(x => `<li>${x}</li>`).join("")}</ul>${g.pre ? `<a href="${g.pre}">Full analysis →</a>` : ""}</details>` : ""}
-    <div class="pick" id="pk-${g.id}">${chip(g.px ? (g.px.td ? `Mack: TFL ${g.px.msk} · 1st TD ${g.px.mtd} · total ${g.mou}` : `Mack: sacks ${g.px.msk} · takeaways ${g.px.mtk} · total ${g.mou}`) : `Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
+    <div class="pick" id="pk-${g.id}">${chip(g.px ? (g.px.td ? `Mack: TFL ${g.px.msk} · 1st TD ${g.px.mtd} · total ${g.mou}` : `Mack: sacks ${g.px.msk} · takeaways ${g.px.mtk} · total ${g.mou}`) : `Mack: ${TL(g.su)}${g.su} ${g.p}%`, "mack")}${verdict}</div>
     ${g.px?`<div class="pxf"><span class="lbl">Finals</span> ${g.px.td?"TFL":"Sacks"} <input id="sk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).as??""}" aria-label="Total sacks" ${canWrite?"":"disabled"}> ${g.px.td ? `1st TD <input id="tk-${g.id}" class="tdres" readonly placeholder="–" value="${(state.g99||{}).hs??""}" aria-label="First Broncos touchdown scorer (filled automatically after the game)">` : `Takeaways <input id="tk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).hs??""}" aria-label="Total takeaways" ${canWrite?"":"disabled"}>`}</div>`:""}
     <div class="you" id="you-${g.id}">
       ${g.px ? `<div class="px-note">Broncos game: no winner or spread pick. ${g.px.td ? "Over/Under on total tackles for loss and total points (both teams; a sack counts as a TFL), plus the first Broncos player to score a touchdown (rushing or receiving; a passing TD counts for the catcher; any return score — interception, fumble, punt or kick — is Defense TD)." : "Over/Under on total sacks, total takeaways (interceptions + fumbles recovered) and total points, both teams combined."}</div>` : ""}
@@ -855,6 +855,7 @@ function card(g){
     </div>
   </div></div></div></article>`;
 }
+function TL(t){ return LOGO[t] ? `<img class="tlg${t==="Broncos"?" retro":""}" src="${LOGO[t]}" alt="" loading="lazy">` : ""; }   // small team logo beside a team name (Scott 2026-11-25); white disc so dark logos show on any card color
 function tiles(){
   const T = tally(), {finals, su, ats, mou, mx, rec} = T;
   const t = (l,v,s,c) => `<div class="tile${c?" champ":""}"${c?` title="${l} won last week"`:""}><div class="lbl">${l}</div><div class="v">${v}${s?`<small>${s}</small>`:""}</div></div>`;
@@ -869,7 +870,7 @@ function tiles(){
 
 // ---- persistence: shared store (Google Apps Script web app, Mack 2026-09-29) + local cache ----
 const STORE = "https://script.google.com/macros/s/AKfycbwy0C0StLOn41vJQOeqBElzg1QyAu84evLOujqtUO_0bKWTL3v_WS-YBCjaUgnvhjat/exec";
-const WEEK = 12, KEY = "wk12-cache", BOARD_VER = "v210";
+const WEEK = 12, KEY = "wk12-cache", BOARD_VER = "v211";
 const PEOPLE = ["Todd","Ryota","Scott"];
 const CHAMP = ["Mack"];   // last week's winner(s) wear the crown — a tie is a shared crown (Scott 11/3); set by nfl_site_week.py each Tuesday
 function loadCache(){ try{ Object.assign(state, JSON.parse(localStorage.getItem(KEY)||"{}")); }catch(e){} }
