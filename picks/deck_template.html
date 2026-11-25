@@ -451,6 +451,7 @@ body.dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
 dialog.tldlg{border:2px solid #FB4F14;border-radius:10px;background:#0d2f57;color:#fff;padding:18px 20px 16px;width:min(560px,calc(100vw - 32px));max-height:calc(100vh - 32px);overflow:auto;box-shadow:0 12px 40px rgba(0,0,0,.5);font-family:Barlow,sans-serif}dialog.tldlg::backdrop{background:rgba(0,10,25,.6)}
 dialog.tldlg .tk{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#ffb089}dialog.tldlg h3{margin:4px 34px 10px 0;font-size:20px;line-height:1.25;color:#fff}dialog.tldlg ul{margin:0;padding-left:18px;display:grid;gap:7px;font-size:15px;line-height:1.4}
 dialog.tldlg a{display:inline-block;margin-top:14px;padding:6px 12px;border-radius:8px;background:#fe5200;color:#fff;font-weight:700;text-decoration:none}dialog.tldlg button{position:absolute;top:8px;right:8px;width:32px;height:32px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font-size:18px;cursor:pointer}
+.dk button.pkjump{display:block;width:100%;margin:0 0 10px;padding:9px 12px;border:0;border-radius:8px;background:#fe5200;color:#fff;font:700 15px Barlow,sans-serif;cursor:pointer;text-align:center}.dk .pick{scroll-margin-top:70px}
 details.tlbox{margin:10px 0;border-left:4px solid #fe5200;border-radius:8px;background:#0d2f57;color:#fff;font-family:Barlow,sans-serif}
 details.tlbox summary{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:10px 14px;cursor:pointer;list-style:none}details.tlbox summary::-webkit-details-marker{display:none}
 details.tlbox .tk{font-size:12px;font-weight:700;letter-spacing:.08em;color:#ffb089;white-space:nowrap}details.tlbox .th{flex:1 1 240px;font-size:16px;font-weight:700;line-height:1.3;color:#fff}
@@ -667,6 +668,12 @@ function pkOpen(src){
     document.body.appendChild(d); }
   d.querySelector("img").src = src; d.showModal();
 }
+// jump from the top of a card to its picks at the bottom, cursor in the first open pick box (Scott 2026-11-24)
+function jumpPicks(id){
+  const t = document.getElementById("pk-" + id); if (!t) return;
+  t.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  const f = document.querySelector("#you-" + id + " select:not([disabled])"); if (f) f.focus({ preventScroll: true });
+}
 const TLO = {};   // which cards have the in-card TL;DR open, so a re-render keeps it (Scott 2026-11-24)
 // TL;DR pop-up for a game with a pre-game analysis: g.tl = [headline, bullet, ...] (Scott 2026-11-24)
 function tlOpen(id){
@@ -755,6 +762,7 @@ function card(g){
     `<span class="kick">${g.kick}${g.qb?" · QB change":""}</span>${g.pre?`<a class="prechip" href="${g.pre}" onclick="event.stopPropagation()">📋 Pre-game</a>`:""}${g.tl?`<button type="button" class="tlchip" aria-haspopup="dialog" onclick="event.stopPropagation();tlOpen('${g.id}')">⚡ TL;DR</button>`:""}<span class="lock" id="lk-${g.id}">${started(g)?" · picks locked":""}</span><span class="${leadClass(g)}" id="ld-${g.id}">${leadText(g)}</span>`);
   return `<article class="g dk pick-${tint.replace(/[^A-Za-z0-9]/g,"")} ${g.bron?"bron":""} ${r?"final":""} ${g.mu?"has-mu":""} ${isOpen(g.id)?"open":""}" data-id="${g.id}">
     <span class="saved" id="sv-${g.id}">saved</span>${strip}<div class="body" id="bd-${g.id}"><div class="bi"><div class="bc">
+    <button type="button" class="pkjump" onclick="event.stopPropagation();jumpPicks('${g.id}')">${started(g) ? "See the picks ↓" : "✏️ Make your picks ↓"}</button>
     <div class="teams">
       <div class="team away"><span class="nm">${g.away}</span>${g.al?`<small class="lw">${g.al}</small>`:""}</div><div class="at">final score</div><div class="team home"><span class="nm">${g.home}</span>${g.hl?`<small class="lw">${g.hl}</small>`:""}</div>
       <input class="score ${LIVE[g.id]?"lv":""}" id="as-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="${LIVE[g.id]?.as ?? "–"}" value="${s.as ?? ""}" aria-label="${g.away} score" ${canWrite?"":"disabled"}>
@@ -780,9 +788,9 @@ function card(g){
       <div class="it"><b>${g.away}</b>${g.inj.away.length?g.inj.away.map(e=>`<div class="ir">${injFace(e)}</div>`).join(""):`<div class="ir">none listed</div>`}</div>
       <div class="it"><b>${g.home}</b>${g.inj.home.length?g.inj.home.map(e=>`<div class="ir">${injFace(e)}</div>`).join(""):`<div class="ir">none listed</div>`}</div></div>
     ${g.tl ? `<details class="tlbox" ${TLO[g.id]?"open":""} onclick="event.stopPropagation()" ontoggle="TLO['${g.id}']=this.open"><summary><span class="tk">⚡ TL;DR</span><span class="th">${g.tl[0]}</span><span class="tm"></span></summary><ul>${g.tl.slice(1).map(x => `<li>${x}</li>`).join("")}</ul>${g.pre ? `<a href="${g.pre}">Full analysis →</a>` : ""}</details>` : ""}
-    <div class="pick">${chip(g.px ? (g.px.td ? `Mack: TFL ${g.px.msk} · 1st TD ${g.px.mtd} · total ${g.mou}` : `Mack: sacks ${g.px.msk} · takeaways ${g.px.mtk} · total ${g.mou}`) : `Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
+    <div class="pick" id="pk-${g.id}">${chip(g.px ? (g.px.td ? `Mack: TFL ${g.px.msk} · 1st TD ${g.px.mtd} · total ${g.mou}` : `Mack: sacks ${g.px.msk} · takeaways ${g.px.mtk} · total ${g.mou}`) : `Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
     ${g.px?`<div class="pxf"><span class="lbl">Finals</span> ${g.px.td?"TFL":"Sacks"} <input id="sk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).as??""}" aria-label="Total sacks" ${canWrite?"":"disabled"}> ${g.px.td ? `1st TD <input id="tk-${g.id}" class="tdres" readonly placeholder="–" value="${(state.g99||{}).hs??""}" aria-label="First Broncos touchdown scorer (filled automatically after the game)">` : `Takeaways <input id="tk-${g.id}" inputmode="numeric" pattern="[0-9]*" placeholder="–" value="${(state.g99||{}).hs??""}" aria-label="Total takeaways" ${canWrite?"":"disabled"}>`}</div>`:""}
-    <div class="you">
+    <div class="you" id="you-${g.id}">
       ${g.px ? `<div class="px-note">Broncos game: no winner or spread pick. ${g.px.td ? "Over/Under on total tackles for loss and total points (both teams; a sack counts as a TFL), plus the first Broncos player to score a touchdown (rushing or receiving; a passing TD counts for the catcher; any return score — interception, fumble, punt or kick — is Defense TD)." : "Over/Under on total sacks, total takeaways (interceptions + fumbles recovered) and total points, both teams combined."}</div>` : ""}
       <span class="lbl"></span><span class="lbl">${g.px?`${g.px.td?"TFL":"Sacks"} ${g.px.sk}`:"Winner"}</span><span class="lbl">${g.px?(g.px.td?"1st Broncos TD":`Takeaways ${g.px.tk}`):"Spread"}</span><span class="lbl">Total ${g.ou}</span>
       ${PEOPLE.map(p => { const pk=(s.picks||{})[p]||{}; const sel=(v,x)=>v===x?"selected":""; const ou2=v=>`<option ${sel(v,"Over")}>Over</option><option ${sel(v,"Under")}>Under</option>`;
