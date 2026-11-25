@@ -32,7 +32,17 @@ h1 span{color:var(--orange)}
 .tile.champ::before{content:"👑";position:absolute;top:-14px;left:6px;font-size:24px;line-height:1;transform:rotate(-14deg)}
 #tiles{padding-top:16px}   /* room for the crown: the card body clips overflow (Scott 10/19 "Ryota's crown got cut off") */
 .you .px-note{grid-column:1/-1;color:var(--muted);font-style:italic}
-.pm{margin:10px 0 4px}.pm .lbl small{text-transform:none;letter-spacing:0;font-weight:500}
+.pm{margin:10px 0 4px}
+.mu th .lbl,.pm>.lbl,.ijbox>.lbl{display:block;font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:700;letter-spacing:.04em;line-height:1.15;color:var(--ink);margin-bottom:6px}.pm>.lbl small,.ijbox>.lbl small{display:block;font-family:Barlow,sans-serif;font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;color:var(--muted)}   /* section titles bigger (Scott 2026-11-24) */
+.ijbox{border-left:4px solid #d93a2b;padding-left:10px}.ijbox .lbl small{font-weight:400;text-transform:none;letter-spacing:0}
+.ijr{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:5px;margin-bottom:4px;border:1px solid var(--line);background:var(--paper)}
+.ijr img,.ijr>i{width:32px;height:32px;border-radius:50%;object-fit:cover;object-position:top;background:#fff;border:2px solid var(--line);flex:none}
+.ijs{font-size:11px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:3px;white-space:nowrap;border:1px solid}
+.ij-out{border-color:#d93a2b}.ij-out img{filter:grayscale(1);opacity:.75;border-color:#d93a2b}.ij-out .pmn>b{text-decoration:line-through;text-decoration-color:#d93a2b}.ij-out .ijs{background:#d93a2b;color:#fff;border-color:#d93a2b}
+.ij-d{border-color:#e8741c}.ij-d .ijs{background:#e8741c;color:#fff;border-color:#e8741c}.ij-d img{border-color:#e8741c}
+.ij-q .ijs{background:#f4c430;color:#222;border-color:#d9a900}.ij-q img{border-color:#d9a900}
+.ijx{display:block;color:var(--muted)}.ijx i{font-style:normal}.ijn{font-size:12px;color:var(--muted);padding:4px 2px}
+details.ijd summary{cursor:pointer;font-size:12px;color:var(--muted);padding:2px 4px;list-style:none}details.ijd summary::-webkit-details-marker{display:none}details.ijd summary::before{content:"▸ "}details.ijd[open] summary::before{content:"▾ "}.pm .lbl small{text-transform:none;letter-spacing:0;font-weight:500}
 .pmg{display:grid;grid-template-columns:1fr;gap:8px;margin-top:6px}.mu{align-content:start}.mu table{align-self:start}
 .pmt{display:block;font-family:"Barlow Condensed";font-size:16px;margin-bottom:4px}
 .pmr{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:5px;margin-bottom:4px;border:1px solid var(--line);background:var(--paper)}
@@ -729,6 +739,16 @@ function card(g){
     const bm = e.match(/ ⟦(LOSS|EVEN|GAIN)⟧$/), bdg = bm ? `<span class="ivb iv-${bm[1].toLowerCase()}">${bm[1]}</span>` : "";   // LOSS/EVEN/GAIN badge (Scott 2026-11-17)
     e = e.replace(/ ⟦(LOSS|EVEN|GAIN)⟧$/, "");
     return bdg + e.replace(/^([^(]+?) \(/, (m, n) => f(n) + " (").replace(/→ ([^(]+?) \(/, (m, n) => "→ " + f(n) + " ("); };
+  // injury box rows, Playmakers-style with a status badge (Scott 2026-11-24): parse "Name (POS, ST · rank) → Next (POS, exp) ⟦LOSS⟧"
+  const injRow = e => { const m = e.match(/^(.+?) \((\w+), ([^·)]+?)(?: · ([^)]*))?\)(?: → (.*?))?(?: ⟦(LOSS|EVEN|GAIN)⟧)?$/);
+    if (!m) return `<div class="ijr">${injFace(e)}</div>`;
+    const [, nm, pos, st, rk, nx, sw] = m, k = /^(Out|IR|PUP|SUSP)/.test(st) ? "out" : st === "D" ? "d" : "q";
+    const lab = {out: st === "IR" ? "IR" : st === "Out" ? "OUT" : st, d: "DOUBTFUL", q: "QUESTIONABLE"}[k];
+    const depth = /depth piece/.test(nx || "");
+    const next = !nx || depth ? "" : /expected to start/.test(nx) ? `<small class="ijx">expected to start</small>` : `<small class="ijx">→ next up: ${nx.replace(/ \(([^)]*)\)$/, " <i>($1)</i>")}${sw ? ` <span class="ivb iv-${sw.toLowerCase()}">${sw}</span>` : ""}</small>`;
+    return { depth, html: `<div class="ijr ij-${k}">${HS[nm] ? `<img src="${HS[nm]}" alt="" loading="lazy">` : "<i></i>"}<div class="pmn"><b>${nm}</b> <small>${pos}</small>${rk ? `<small class="pms">${rk.replace(/(starter|\w+ string)/, "$1")}</small>` : ""}${next}</div><span class="ijs">${lab}</span></div>` }; };
+  const injCol = (t, list) => { const R = list.map(injRow).map(x => typeof x === "string" ? {depth:false, html:x} : x), key = R.filter(x => !x.depth), dp = R.filter(x => x.depth);
+    return `<div class="pmc"><b class="pmt">${t}</b>${key.map(x => x.html).join("") || `<div class="ijn">no key injuries</div>`}${dp.length ? `<details class="ijd" onclick="event.stopPropagation()"><summary>+${dp.length} depth piece${dp.length > 1 ? "s" : ""}</summary>${dp.map(x => x.html).join("")}</details>` : ""}</div>`; };
   const s = state[g.id] || {}; const r = grade(g, s);
   const chip = (t, k) => `<span class="chip ${k||""}">${t}</span>`;
   const verdict = r ? [
@@ -770,9 +790,7 @@ function card(g){
       <thead><tr><th><span class="lbl">Matchup</span></th><th class="col">${g.away}<small>offense (NFL rank)</small></th><th class="col">${g.home}<small>offense (NFL rank)</small></th></tr></thead>
       <tbody>${g.mu.rows.map(r => `<tr><th>${r.k}</th><td class="${r.wa?(r.wa===g.away?"win":"lose"):""}">${r.wa?(r.wa===g.away?"wins":"loses"):"even"}${r.ra?` <small class="nrk">(#${r.ra})</small>`:""}</td><td class="${r.wh?(r.wh===g.home?"win":"lose"):""}">${r.wh?(r.wh===g.home?"wins":"loses"):"even"}${r.rh?` <small class="nrk">(#${r.rh})</small>`:""}</td></tr>`).join("")}</tbody></table>${g.pm ? `<div class="pm"><span class="lbl">Playmakers Matchup <small>NFL rank among the 32 teams' leaders · vs the other defense's rank</small></span><div class="pmg">${[g.away,g.home].map(t => `<div class="pmc"><b class="pmt">${t}</b>${(g.pm[t]||[]).map(x => `<div class="pmr ${x.res}">${x.head?`<img src="${x.head}" alt="" loading="lazy">`:"<i></i>"}<div class="pmn"><b>${x.name}</b>${x.inj?` <span class="pinj" title="${x.injf}${x.inj==="D"?" (treated as out)":""}">${x.inj}</span>`:""} <small>${x.pos}</small><small class="pms">${x.stat} · <b>#${x.rank}</b> ${({QB:"QB",RB:"rusher",Target:"receiver",Rusher:"pass rusher"})[x.role]} · vs ${x.vs} #${x.vrank}</small></div><span class="pmv">${x.res}</span></div>`).join("")}</div>`).join("")}</div></div>` : ""}</div>` : ""}
     ${[].concat(g.yt || []).map(v => `<div class="ytv"><span class="lbl">Video</span><a class="ytb" href="https://www.youtube.com/watch?v=${v.id}" target="_blank" rel="noopener" aria-label="Watch on YouTube: ${v.t}" onclick="event.stopPropagation()"><img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="" loading="lazy"><span class="ytp">▶</span></a><small>${v.t} · opens on YouTube (the NFL blocks playback on other sites)</small></div>${v.pk ? `<div class="ytv"><span class="lbl">Analysts' picks</span><button type="button" class="ytb pkb" aria-label="Open the NFL analysts' picks for this game" onclick="event.stopPropagation();pkOpen('${v.pk}')"><img src="${v.pk}" alt="NFL analysts' score predictions" loading="lazy"><span class="pkz">⤢ Open</span></button><small>The NFL preview's closing picks panel · click to open</small></div>` : ""}`).join("")}
-    <div class="inj"><span class="lbl">Key injuries → who steps in</span>
-      <div class="it"><b>${g.away}</b>${g.inj.away.length?g.inj.away.map(e=>`<div class="ir">${injFace(e)}</div>`).join(""):`<div class="ir">none listed</div>`}</div>
-      <div class="it"><b>${g.home}</b>${g.inj.home.length?g.inj.home.map(e=>`<div class="ir">${injFace(e)}</div>`).join(""):`<div class="ir">none listed</div>`}</div></div>
+    <div class="inj ijbox"><span class="lbl">🚑 Key injuries <small>who's missing · who steps in</small></span><div class="pmg">${injCol(g.away, g.inj.away)}${injCol(g.home, g.inj.home)}</div></div>
     <div class="fin" id="fin-${g.id}">
     ${g.tl ? `<details class="tlbox" id="tl-${g.id}" ${TLO[g.id]?"open":""} onclick="event.stopPropagation()" ontoggle="TLO['${g.id}']=this.open"><summary><span class="tk">⚡ TL;DR</span><span class="th">${g.tl[0]}</span><span class="tm"></span></summary><ul>${g.tl.slice(1).map(x => `<li>${x}</li>`).join("")}</ul>${g.pre ? `<a href="${g.pre}">Full analysis →</a>` : ""}</details>` : ""}
     <div class="pick" id="pk-${g.id}">${chip(g.px ? (g.px.td ? `Mack: TFL ${g.px.msk} · 1st TD ${g.px.mtd} · total ${g.mou}` : `Mack: sacks ${g.px.msk} · takeaways ${g.px.mtk} · total ${g.mou}`) : `Mack: ${g.su} ${g.p}%`, "mack")}${verdict}</div>
